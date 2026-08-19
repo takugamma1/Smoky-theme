@@ -284,11 +284,18 @@
         "limit": 3,
         "show_top": true
       }
+    },
+    "smoky_gallery": {
+      "type": "smoky-gallery",
+      "settings": {
+        "heading": "ГАЛЕРИЯ"
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
     "smoky_best_sellers",
+    "smoky_gallery",
     "product_list_fa6P9H"
   ]
 }

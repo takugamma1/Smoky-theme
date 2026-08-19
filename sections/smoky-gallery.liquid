@@ -1,0 +1,177 @@
+{%- doc -%}
+  Smoky gallery.
+
+  Cream section: huge dark ГАЛЕРИЯ heading + winking mascot on the left,
+  collage of rounded photos on the right (up to 5 image blocks).
+{%- enddoc -%}
+
+<div class="smoky-gal" id="smoky-gal-{{ section.id }}">
+  <div class="smoky-gal__side">
+    <h2 class="smoky-gal__heading">{{ section.settings.heading }}</h2>
+    <img
+      src="{{ 'smoky-mascot-front.svg' | asset_url }}"
+      alt=""
+      class="smoky-gal__mascot"
+      loading="lazy"
+    >
+  </div>
+
+  <div class="smoky-gal__grid">
+    {%- assign slots = 'a,b,c,d,e' | split: ',' -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks limit: 5 -%}
+        <div class="smoky-gal__item smoky-gal__item--{{ slots[forloop.index0] }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 700, 1000, 1200', sizes: '(min-width: 990px) 30vw, 50vw' }}
+          {%- else -%}
+            <div class="smoky-gal__ph">{{ 'image' | placeholder_svg_tag }}</div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..5) -%}
+        <div class="smoky-gal__item smoky-gal__item--{{ slots[forloop.index0] }}">
+          <div class="smoky-gal__ph">{{ 'image' | placeholder_svg_tag }}</div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .smoky-gal {
+    background: #F2ECDF;
+    display: grid;
+    grid-template-columns: minmax(260px, 0.9fr) 2.1fr;
+    gap: clamp(24px, 4vw, 64px);
+    align-items: stretch;
+    padding: clamp(48px, 7vw, 100px) clamp(20px, 5vw, 80px);
+  }
+
+  .smoky-gal__side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .smoky-gal__heading {
+    margin: 0;
+    color: #282828;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 5.8rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+
+  .smoky-gal__mascot {
+    width: clamp(180px, 18vw, 300px);
+    height: auto;
+    align-self: center;
+    margin-bottom: clamp(8px, 2vw, 32px);
+  }
+
+  .smoky-gal__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-areas:
+      'a a b b b b'
+      'c c d d e e';
+    grid-auto-rows: clamp(160px, 17vw, 260px);
+    gap: clamp(14px, 1.6vw, 24px);
+  }
+
+  .smoky-gal__item--a { grid-area: a; }
+  .smoky-gal__item--b { grid-area: b; }
+  .smoky-gal__item--c { grid-area: c; }
+  .smoky-gal__item--d { grid-area: d; }
+  .smoky-gal__item--e { grid-area: e; }
+
+  .smoky-gal__item {
+    border-radius: clamp(14px, 1.8vw, 26px);
+    overflow: hidden;
+    background: #282828;
+  }
+
+  .smoky-gal__item img,
+  .smoky-gal__ph,
+  .smoky-gal__ph svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .smoky-gal__ph svg {
+    opacity: 0.35;
+  }
+
+  @media screen and (max-width: 749px) {
+    .smoky-gal {
+      grid-template-columns: 1fr;
+    }
+
+    .smoky-gal__side {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .smoky-gal__mascot {
+      width: clamp(110px, 30vw, 160px);
+      margin-bottom: 0;
+    }
+
+    .smoky-gal__grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-areas:
+        'a b'
+        'c b'
+        'd e';
+      grid-auto-rows: clamp(130px, 34vw, 200px);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky галерия",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Заглавие",
+      "default": "ГАЛЕРИЯ"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Снимка",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Снимка"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Smoky галерия",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}
