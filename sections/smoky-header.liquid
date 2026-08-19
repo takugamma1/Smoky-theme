@@ -1,0 +1,354 @@
+{%- doc -%}
+  Smoky flame navigation bar.
+
+  Floating pink flame-shaped bar, centered, not full width.
+  Desktop: SMOKY wordmark left, menu links right, dot under the active link.
+  Mobile: wordmark left, burger right, full-screen drawer menu.
+{%- enddoc -%}
+
+{% liquid
+  assign menu = linklists[section.settings.menu]
+%}
+
+<header-smoky
+  id="header-component"
+  class="smoky-header{% if section.settings.sticky %} smoky-header--sticky{% endif %}"
+>
+  <div class="smoky-nav" style="--smoky-nav-max: {{ section.settings.max_width }}px;">
+    <picture>
+      <source media="(max-width: 749px)" srcset="{{ 'smoky-flame-nav-mobile.png' | asset_url }}">
+      <img
+        src="{{ 'smoky-flame-nav-desktop.png' | asset_url }}"
+        alt=""
+        class="smoky-nav__bg"
+        width="2023"
+        height="235"
+        fetchpriority="high"
+      >
+    </picture>
+
+    <div class="smoky-nav__inner">
+      <a href="{{ routes.root_url }}" class="smoky-nav__logo" aria-label="{{ shop.name }}">
+        {% render 'smoky-logo' %}
+      </a>
+
+      <nav class="smoky-nav__menu" aria-label="{{ 'accessibility.navigation' | t | default: 'Navigation' }}">
+        <ul>
+          {%- if menu.links.size > 0 -%}
+            {%- for link in menu.links -%}
+              <li{% if link.current %} class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            <li class="is-active"><a href="{{ routes.root_url }}">Начало</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">Меню</a></li>
+            <li><a href="#">За нас</a></li>
+            <li><a href="#">Локации</a></li>
+            <li><a href="#">Резервации</a></li>
+          {%- endif -%}
+        </ul>
+      </nav>
+
+      <button
+        type="button"
+        class="smoky-nav__burger"
+        aria-expanded="false"
+        aria-controls="smoky-drawer"
+        aria-label="{{ 'accessibility.open_menu' | t | default: 'Меню' }}"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="smoky-drawer" id="smoky-drawer" hidden>
+    <nav aria-label="{{ 'accessibility.navigation' | t | default: 'Navigation' }}">
+      <ul>
+        {%- if menu.links.size > 0 -%}
+          {%- for link in menu.links -%}
+            <li{% if link.current %} class="is-active"{% endif %}>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li class="is-active"><a href="{{ routes.root_url }}">Начало</a></li>
+          <li><a href="{{ routes.all_products_collection_url }}">Меню</a></li>
+          <li><a href="#">За нас</a></li>
+          <li><a href="#">Локации</a></li>
+          <li><a href="#">Резервации</a></li>
+        {%- endif -%}
+      </ul>
+      <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" class="smoky-drawer__mascot" loading="lazy">
+    </nav>
+  </div>
+</header-smoky>
+
+<style>
+  .smoky-header {
+    position: relative;
+    z-index: 100;
+    padding-block: 10px 6px;
+    background: transparent;
+  }
+
+  .smoky-header--sticky {
+    position: sticky;
+    top: 0;
+  }
+
+  .smoky-nav {
+    position: relative;
+    width: min(var(--smoky-nav-max, 1400px), 96vw);
+    margin-inline: auto;
+  }
+
+  .smoky-nav__bg {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* content sits in the solid band of the flame (bottom ~54% of the image) */
+  .smoky-nav__inner {
+    position: absolute;
+    inset: 46% 4.2% 6% 5.2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .smoky-nav__logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    color: #EBDCC3;
+  }
+
+  .smoky-nav__logo:hover {
+    color: #EBDCC3;
+  }
+
+  .smoky-logo-svg {
+    height: 74%;
+    max-height: 58px;
+    width: auto;
+    display: block;
+  }
+
+  .smoky-nav__menu {
+    padding-right: 2.5%;
+  }
+
+  .smoky-nav__menu ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(24px, 4.5vw, 88px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .smoky-nav__menu a {
+    position: relative;
+    display: inline-block;
+    color: #EBDCC3;
+    text-decoration: none;
+    font-family: var(--font-body--family, sans-serif);
+    font-weight: 500;
+    font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+    letter-spacing: 0.01em;
+    padding-block: 4px 10px;
+  }
+
+  .smoky-nav__menu a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #EBDCC3;
+    transform: translateX(-50%) scale(0);
+    transition: transform 0.18s ease;
+  }
+
+  .smoky-nav__menu li.is-active a::after,
+  .smoky-nav__menu a:hover::after {
+    transform: translateX(-50%) scale(1);
+  }
+
+  .smoky-nav__burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 6px 2px;
+    cursor: pointer;
+    height: 100%;
+  }
+
+  .smoky-nav__burger span {
+    display: block;
+    width: 30px;
+    height: 4.5px;
+    border-radius: 3px;
+    background: #EBDCC3;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .smoky-nav__burger[aria-expanded='true'] span:nth-child(1) {
+    transform: translateY(9.5px) rotate(45deg);
+  }
+
+  .smoky-nav__burger[aria-expanded='true'] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .smoky-nav__burger[aria-expanded='true'] span:nth-child(3) {
+    transform: translateY(-9.5px) rotate(-45deg);
+  }
+
+  .smoky-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: #282828;
+    padding-top: 130px;
+    overflow-y: auto;
+  }
+
+  .smoky-drawer ul {
+    list-style: none;
+    margin: 0;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .smoky-drawer a {
+    display: inline-block;
+    color: #EBDCC3;
+    text-decoration: none;
+    font-family: var(--font-heading--family, sans-serif);
+    font-weight: 700;
+    font-size: 2rem;
+    padding-block: 10px;
+  }
+
+  .smoky-drawer li.is-active a {
+    color: #FA0082;
+  }
+
+  .smoky-drawer__mascot {
+    display: block;
+    width: 110px;
+    padding: 26px 24px 18px;
+    background: #EBDCC3;
+    border-radius: 50%;
+    margin: 28px auto 40px;
+  }
+
+  html.smoky-drawer-open,
+  html.smoky-drawer-open body {
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: 749px) {
+    .smoky-header {
+      padding-block: 8px 4px;
+    }
+
+    .smoky-nav {
+      width: 94vw;
+    }
+
+    /* mobile flame image band (2146x408, solid bottom ~52%) */
+    .smoky-nav__inner {
+      inset: 48% 6.5% 7% 7%;
+    }
+
+    .smoky-logo-svg {
+      height: 78%;
+      max-height: 44px;
+    }
+
+    .smoky-nav__menu {
+      display: none;
+    }
+
+    .smoky-nav__burger {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    class HeaderSmoky extends HTMLElement {
+      connectedCallback() {
+        this.burger = this.querySelector('.smoky-nav__burger');
+        this.drawer = this.querySelector('.smoky-drawer');
+        if (!this.burger || !this.drawer) return;
+        this.burger.addEventListener('click', () => this.toggle());
+        this.addEventListener('keyup', (e) => {
+          if (e.key === 'Escape') this.toggle(false);
+        });
+        this.drawer.addEventListener('click', (e) => {
+          if (e.target.closest('a')) this.toggle(false);
+        });
+      }
+
+      toggle(force) {
+        const open = force ?? this.burger.getAttribute('aria-expanded') !== 'true';
+        this.burger.setAttribute('aria-expanded', open);
+        this.drawer.hidden = !open;
+        document.documentElement.classList.toggle('smoky-drawer-open', open);
+      }
+    }
+    if (!customElements.get('header-smoky')) customElements.define('header-smoky', HeaderSmoky);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky header",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Меню",
+      "default": "main-menu"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Максимална ширина",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Залепена навигация (sticky)",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Smoky header"
+    }
+  ]
+}
+{% endschema %}
