@@ -276,10 +276,19 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "smoky_best_sellers": {
+      "type": "smoky-best-sellers",
+      "settings": {
+        "heading": "НАЙ-ПРОДАВАНИ",
+        "limit": 3,
+        "show_top": true
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
+    "smoky_best_sellers",
     "product_list_fa6P9H"
   ]
 }

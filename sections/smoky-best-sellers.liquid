@@ -1,0 +1,358 @@
+{%- doc -%}
+  Smoky best sellers.
+
+  Cream paper section with a heavy condensed heading, collection tabs,
+  and arch-shaped product cards on black paper material:
+  image, uppercase name, pink separator, price. Optional TOP flame sticker
+  on the first card. Each block = one collection tab.
+{%- enddoc -%}
+
+<div class="smoky-bs" id="smoky-bs-{{ section.id }}">
+  <h2 class="smoky-bs__heading">{{ section.settings.heading }}</h2>
+
+  {%- assign has_blocks = false -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.collection != blank -%}{%- assign has_blocks = true -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if has_blocks -%}
+    <div class="smoky-bs__tabs" role="tablist">
+      {%- assign first_tab = true -%}
+      {%- for block in section.blocks -%}
+        {%- assign c = block.settings.collection -%}
+        {%- if c != blank -%}
+          <button
+            type="button"
+            class="smoky-bs__tab{% if first_tab %} is-active{% endif %}"
+            role="tab"
+            aria-selected="{% if first_tab %}true{% else %}false{% endif %}"
+            data-panel="panel-{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.title != blank -%}{{ block.settings.title }}{%- else -%}{{ c.title }}{%- endif -%}
+          </button>
+          {%- assign first_tab = false -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- assign first_panel = true -%}
+    {%- for block in section.blocks -%}
+      {%- assign c = block.settings.collection -%}
+      {%- if c != blank -%}
+        <div class="smoky-bs__panel" id="panel-{{ block.id }}" {% unless first_panel %}hidden{% endunless %}>
+          <div class="smoky-bs__grid">
+            {%- for product in c.products limit: section.settings.limit -%}
+              <a href="{{ product.url }}" class="smoky-bs__card">
+                {%- if section.settings.show_top and forloop.first -%}
+                  <span class="smoky-bs__top" aria-hidden="true">
+                    <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="lazy">
+                    <span>TOP</span>
+                  </span>
+                {%- endif -%}
+                <span class="smoky-bs__card-inner">
+                  <span class="smoky-bs__media">
+                    {%- if product.featured_image -%}
+                      {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 30vw, 80vw' }}
+                    {%- else -%}
+                      <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" class="smoky-bs__media-fallback">
+                    {%- endif -%}
+                  </span>
+                  <span class="smoky-bs__name">{{ product.title }}</span>
+                  <span class="smoky-bs__sep" aria-hidden="true"></span>
+                  <span class="smoky-bs__price">{{ product.price | money }}</span>
+                </span>
+              </a>
+            {%- else -%}
+              {%- render 'smoky-bs-placeholders', show_top: section.settings.show_top -%}
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- assign first_panel = false -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- # no collections chosen yet: demo tabs + placeholder cards so the design reads immediately -%}
+    <div class="smoky-bs__tabs" role="tablist">
+      {%- assign demo_tabs = 'Кебабчета,Кюфтета,Стекове,Пилешко,Гарнитури' | split: ',' -%}
+      {%- for t in demo_tabs -%}
+        <button type="button" class="smoky-bs__tab{% if forloop.first %} is-active{% endif %}" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{ t }}</button>
+      {%- endfor -%}
+    </div>
+    <div class="smoky-bs__panel">
+      <div class="smoky-bs__grid">
+        {%- render 'smoky-bs-placeholders', show_top: section.settings.show_top -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+  .smoky-bs {
+    background: #F2ECDF;
+    padding: clamp(48px, 8vw, 96px) clamp(16px, 4vw, 48px) clamp(56px, 8vw, 110px);
+  }
+
+  .smoky-bs__heading {
+    margin: 0 0 clamp(18px, 2.5vw, 30px);
+    text-align: center;
+    color: #282828;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6.5vw, 5rem);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .smoky-bs__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(18px, 3.2vw, 56px);
+    margin-bottom: clamp(32px, 4.5vw, 64px);
+  }
+
+  .smoky-bs__tab {
+    background: none;
+    border: none;
+    padding: 4px 2px 8px;
+    cursor: pointer;
+    color: #282828;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.2vw, 1.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 3px solid transparent;
+  }
+
+  .smoky-bs__tab.is-active {
+    border-bottom-color: #282828;
+  }
+
+  .smoky-bs__tab:hover {
+    color: #FA0082;
+  }
+
+  .smoky-bs__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(24px, 3.5vw, 56px);
+    max-width: 1200px;
+    margin-inline: auto;
+  }
+
+  .smoky-bs__card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border: 10px solid #E7DFCC;
+    border-radius: 999px 999px 22px 22px;
+    box-shadow: 0 10px 30px rgb(40 40 40 / 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .smoky-bs__card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgb(40 40 40 / 0.2);
+  }
+
+  /* black paper material */
+  .smoky-bs__card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: clamp(380px, 42vw, 560px);
+    padding: clamp(48px, 6vw, 84px) 20px clamp(30px, 3.5vw, 46px);
+    border-radius: 992px 992px 15px 15px;
+    background-color: #232221;
+    background-image:
+      radial-gradient(120% 90% at 25% 12%, rgb(255 255 255 / 0.07), transparent 55%),
+      linear-gradient(155deg, transparent 30%, rgb(0 0 0 / 0.35) 78%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    overflow: hidden;
+  }
+
+  .smoky-bs__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+  }
+
+  .smoky-bs__media img {
+    max-width: 82%;
+    height: auto;
+    filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.55));
+  }
+
+  .smoky-bs__media-fallback {
+    max-width: 62% !important;
+    opacity: 0.9;
+    filter: none !important;
+  }
+
+  .smoky-bs__name {
+    color: #EBDCC3;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 600;
+    font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  .smoky-bs__sep {
+    display: block;
+    width: 38px;
+    height: 3px;
+    border-radius: 2px;
+    background: #FA0082;
+    margin: 12px auto 10px;
+  }
+
+  .smoky-bs__price {
+    color: #EBDCC3;
+    font-family: var(--font-body--family, 'Fira Sans', sans-serif);
+    font-weight: 500;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    letter-spacing: 0.04em;
+  }
+
+  .smoky-bs__top {
+    position: absolute;
+    top: -26px;
+    left: -30px;
+    width: clamp(84px, 8vw, 110px);
+    z-index: 2;
+    transform: rotate(-9deg);
+    filter: drop-shadow(0 6px 12px rgb(40 40 40 / 0.3));
+  }
+
+  .smoky-bs__top img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .smoky-bs__top span {
+    position: absolute;
+    inset: 40% 0 0 0;
+    text-align: center;
+    color: #282828;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 1.7vw, 1.7rem);
+    letter-spacing: 0.05em;
+    transform: rotate(-3deg);
+  }
+
+  @media screen and (max-width: 989px) {
+    .smoky-bs__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .smoky-bs__grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 30px 8px 16px;
+      margin-inline: -16px;
+    }
+
+    .smoky-bs__card {
+      flex: 0 0 76vw;
+      scroll-snap-align: center;
+    }
+
+    .smoky-bs__top {
+      top: -22px;
+      left: -12px;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('smoky-bs-{{ section.id }}');
+    if (!root) return;
+    const tabs = root.querySelectorAll('.smoky-bs__tab');
+    const panels = root.querySelectorAll('.smoky-bs__panel');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => {
+          t.classList.toggle('is-active', t === tab);
+          t.setAttribute('aria-selected', t === tab);
+        });
+        if (panels.length > 1) {
+          panels.forEach((p) => (p.hidden = p.id !== tab.dataset.panel));
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky най-продавани",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Заглавие",
+      "default": "НАЙ-ПРОДАВАНИ"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Продукти на таб",
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_top",
+      "label": "TOP стикер на първия продукт",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Колекция (таб)",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Колекция"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Име на таба (по избор)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Smoky най-продавани",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

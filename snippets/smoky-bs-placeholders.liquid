@@ -1,0 +1,28 @@
+{%- doc -%}
+  Placeholder best-seller cards shown until real collections/products are assigned.
+  @param show_top - whether to render the TOP sticker on the first card
+{%- enddoc -%}
+
+{%- assign ph_names = 'Кебабчета,Кюфтета,Стек' | split: ',' -%}
+{%- assign ph_prices = '8.90 €,8.90 €,16.90 €' | split: ',' -%}
+{%- assign ph_arts = 'smoky-stamp-smoky.svg,smoky-pattern-fork.svg,smoky-pattern-knife.svg' | split: ',' -%}
+
+{%- for name in ph_names -%}
+  {%- assign i = forloop.index0 -%}
+  <span class="smoky-bs__card">
+    {%- if show_top and forloop.first -%}
+      <span class="smoky-bs__top" aria-hidden="true">
+        <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="lazy">
+        <span>TOP</span>
+      </span>
+    {%- endif -%}
+    <span class="smoky-bs__card-inner">
+      <span class="smoky-bs__media">
+        <img src="{{ ph_arts[i] | asset_url }}" alt="" loading="lazy" class="smoky-bs__media-fallback">
+      </span>
+      <span class="smoky-bs__name">{{ name }}</span>
+      <span class="smoky-bs__sep" aria-hidden="true"></span>
+      <span class="smoky-bs__price">{{ ph_prices[i] }}</span>
+    </span>
+  </span>
+{%- endfor -%}
