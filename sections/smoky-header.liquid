@@ -158,20 +158,21 @@
     display: inline-block;
     color: #EBDCC3;
     text-decoration: none;
-    font-family: var(--font-body--family, sans-serif);
-    font-weight: 500;
-    font-size: clamp(0.85rem, 1vw, 1.05rem);
-    letter-spacing: 0.01em;
-    padding-block: 4px 10px;
+    font-family: var(--font-heading--family, 'Oswald', sans-serif);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-block: 4px 8px;
   }
 
   .smoky-nav__menu a::after {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -2px;
-    width: 6px;
-    height: 6px;
+    bottom: 1px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #EBDCC3;
     transform: translateX(-50%) scale(0);
