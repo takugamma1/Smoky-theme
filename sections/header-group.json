@@ -15,7 +15,7 @@
       "type": "smoky-header",
       "settings": {
         "menu": "main-menu",
-        "max_width": 1400,
+        "max_width": 1150,
         "sticky": true
       }
     }

@@ -88,7 +88,7 @@
   .smoky-header {
     position: relative;
     z-index: 100;
-    padding-block: 10px 6px;
+    padding-block: 12px 8px;
     background: transparent;
   }
 
@@ -99,7 +99,7 @@
 
   .smoky-nav {
     position: relative;
-    width: min(var(--smoky-nav-max, 1400px), 96vw);
+    width: min(var(--smoky-nav-max, 1150px), 92vw);
     margin-inline: auto;
   }
 
@@ -133,8 +133,8 @@
   }
 
   .smoky-logo-svg {
-    height: 74%;
-    max-height: 58px;
+    height: 68%;
+    max-height: 44px;
     width: auto;
     display: block;
   }
@@ -146,7 +146,7 @@
   .smoky-nav__menu ul {
     display: flex;
     align-items: center;
-    gap: clamp(24px, 4.5vw, 88px);
+    gap: clamp(20px, 3.6vw, 64px);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -159,7 +159,7 @@
     text-decoration: none;
     font-family: var(--font-body--family, sans-serif);
     font-weight: 500;
-    font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+    font-size: clamp(0.85rem, 1vw, 1.05rem);
     letter-spacing: 0.01em;
     padding-block: 4px 10px;
   }
@@ -169,8 +169,8 @@
     position: absolute;
     left: 50%;
     bottom: -2px;
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #EBDCC3;
     transform: translateX(-50%) scale(0);
@@ -186,7 +186,7 @@
     display: none;
     flex-direction: column;
     justify-content: center;
-    gap: 5px;
+    gap: 4px;
     background: none;
     border: none;
     padding: 6px 2px;
@@ -196,15 +196,15 @@
 
   .smoky-nav__burger span {
     display: block;
-    width: 30px;
-    height: 4.5px;
+    width: 24px;
+    height: 3.5px;
     border-radius: 3px;
     background: #EBDCC3;
     transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
   .smoky-nav__burger[aria-expanded='true'] span:nth-child(1) {
-    transform: translateY(9.5px) rotate(45deg);
+    transform: translateY(7.5px) rotate(45deg);
   }
 
   .smoky-nav__burger[aria-expanded='true'] span:nth-child(2) {
@@ -212,7 +212,7 @@
   }
 
   .smoky-nav__burger[aria-expanded='true'] span:nth-child(3) {
-    transform: translateY(-9.5px) rotate(-45deg);
+    transform: translateY(-7.5px) rotate(-45deg);
   }
 
   .smoky-drawer {
@@ -220,7 +220,7 @@
     inset: 0;
     z-index: -1;
     background: #282828;
-    padding-top: 130px;
+    padding-top: 110px;
     overflow-y: auto;
   }
 
@@ -239,7 +239,7 @@
     text-decoration: none;
     font-family: var(--font-heading--family, sans-serif);
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 1.75rem;
     padding-block: 10px;
   }
 
@@ -267,7 +267,7 @@
     }
 
     .smoky-nav {
-      width: 94vw;
+      width: 88vw;
     }
 
     /* mobile flame image band (2146x408, solid bottom ~52%) */
@@ -276,8 +276,8 @@
     }
 
     .smoky-logo-svg {
-      height: 78%;
-      max-height: 44px;
+      height: 72%;
+      max-height: 32px;
     }
 
     .smoky-nav__menu {
@@ -332,11 +332,11 @@
       "type": "range",
       "id": "max_width",
       "label": "Максимална ширина",
-      "min": 1000,
+      "min": 900,
       "max": 1800,
       "step": 50,
       "unit": "px",
-      "default": 1400
+      "default": 1150
     },
     {
       "type": "checkbox",
