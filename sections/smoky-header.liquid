@@ -85,17 +85,20 @@
 </header-smoky>
 
 <style>
+  /* overlay header: takes no layout space, first section starts at the page top */
   .smoky-header {
     display: block;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     padding-block: 16px 8px;
     background: transparent;
   }
 
   .smoky-header--sticky {
-    position: sticky;
-    top: 0;
+    position: fixed;
   }
 
   .smoky-nav {
