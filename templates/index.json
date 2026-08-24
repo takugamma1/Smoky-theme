@@ -120,7 +120,7 @@
         "heading_after": "от скарата",
         "card_button_label": "Виж",
         "curve_top": false,
-        "curve_bottom": true
+        "curve_bottom": false
       }
     },
     "smoky_compare": {
@@ -218,7 +218,9 @@
         "us_title": "SMOKY",
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
-        "button_link": "shopify://collections/all"
+        "button_link": "shopify://collections/all",
+        "curve_top": true,
+        "curve_bottom": true
       }
     },
     "smoky_marquee": {
@@ -239,8 +241,8 @@
         "background": "dark",
         "separator": "smoky-pattern-shevitsa",
         "sep_repeat": 3,
-        "curve_top": true,
-        "curve_bottom": true,
+        "curve_top": false,
+        "curve_bottom": false,
         "speed": 70,
         "size": 4,
         "direction": "left"
@@ -297,7 +299,9 @@
       "settings": {
         "background": "cream",
         "speed": 50,
-        "direction": "right"
+        "direction": "right",
+        "curve_top": true,
+        "curve_bottom": false
       }
     },
     "smoky_steps": {
@@ -349,7 +353,8 @@
         "s6"
       ],
       "settings": {
-        "heading": "СТЪПКА"
+        "heading": "СТЪПКА",
+        "curve_bottom": true
       }
     },
     "smoky_stats": {
@@ -391,7 +396,7 @@
         "st4"
       ],
       "settings": {
-        "curve_top": true,
+        "curve_top": false,
         "curve_bottom": false
       }
     }
