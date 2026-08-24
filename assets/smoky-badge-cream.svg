@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="286" height="438" viewBox="1047 353 286 438">
 <defs>
+<clipPath id="smoky-arch-clip"><path d="M 1054 789 L 1054 496 A 136 136 0 0 1 1326 496 L 1326 789 Z"/></clipPath>
 <filter id="filter-remove-color-and-invert-alpha" x="0%" y="0%" width="100%" height="100%">
 <feColorMatrix color-interpolation-filters="sRGB" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -1 1"/>
 </filter>
@@ -702,7 +703,9 @@
 <use xlink:href="#compositing-group-2"/>
 </g>
 </defs>
+<g clip-path="url(#smoky-arch-clip)">
 <g filter="url(#filter-1)" transform="translate(-192, -108)">
 <rect x="0" y="0" width="2304" height="1296" fill="#282828" fill-opacity="1"/>
+</g>
 </g>
 </svg>
