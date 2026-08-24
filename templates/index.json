@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -17,7 +16,6 @@
         "line2": "СКАРАТА!",
         "loop_words": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!",
         "use_mascot": true,
-        "show_flames": true,
         "video_url": "",
         "button_label": "Поръчай сега",
         "button_link": "shopify://collections/all",
