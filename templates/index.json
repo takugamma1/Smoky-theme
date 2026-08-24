@@ -35,10 +35,6 @@
         "background": "cream"
       }
     },
-    "smoky_image_divider": {
-      "type": "smoky-image-divider",
-      "settings": {}
-    },
     "smoky_concepts": {
       "type": "smoky-concepts",
       "blocks": {
@@ -389,7 +385,6 @@
   "order": [
     "smoky_hero",
     "smoky_intro",
-    "smoky_image_divider",
     "smoky_concepts",
     "smoky_compare",
     "smoky_marquee",

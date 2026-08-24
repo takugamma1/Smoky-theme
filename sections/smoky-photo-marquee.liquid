@@ -30,7 +30,8 @@
 <style>
   #smoky-photomq-{{ section.id }} {
     background: {% if section.settings.background == 'dark' %}var(--smoky-dark-soft){% else %}var(--smoky-cream){% endif %};
-    padding-block: clamp(28px, 4vw, 56px);
+    /* clear the curled corners: padding always exceeds the curl radius */
+    padding-block: calc(var(--smoky-radius-big) + clamp(16px, 2vw, 28px));
     overflow: clip;
   }
 
@@ -63,9 +64,10 @@
   }
 
   #smoky-photomq-{{ section.id }} .smoky-photomq__placeholder img {
-    width: 46%;
-    height: auto;
-    opacity: 0.6;
+    width: 56% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    opacity: 0.45;
   }
 
   #smoky-photomq-{{ section.id }} .smoky-marquee-track { align-items: center; }
