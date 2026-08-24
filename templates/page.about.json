@@ -15,7 +15,9 @@
         "kicker": "За нас",
         "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
         "marquee": true,
-        "lead": "Скарата е нашият език на любов. Виж се, усети се, вкуси се."
+        "lead": "Скарата е нашият език на любов. Виж се, усети се, вкуси се.",
+        "curve_top": false,
+        "curve_bottom": false
       }
     },
     "about_intro": {
@@ -23,22 +25,23 @@
       "settings": {
         "heading": "ЗАПОЧНА С ЕДНА СКАРА НА СЕЛО",
         "text": "<p>Да върнем лентата назад. Едно село в Балкана, един двор, една скара и дядо, който твърдеше, че <strong>кебапчето е наука</strong>. Оттам тръгна всичко.</p><p>Днес Smoky е екип от хора, които мелят месото сутрин, палят въглищата на обяд и не признават фризер. Готвили сме за сватби, фирмени купони и много гладни квартали.</p><p>От една скара — до цяла кухня на жар. Но правилото си остана същото: <strong>без компромиси с огъня</strong>.</p>",
+        "button_label": "",
+        "button_link": "",
         "sticker_asset": "smoky-stamp-smoky",
         "background": "cream",
-        "curve_bottom": true
+        "curve_bottom": true,
+        "curve_top": false
       }
     },
     "about_divider": {
       "type": "smoky-image-divider",
-      "settings": {}
+      "settings": {
+        "curve_top": false,
+        "curve_bottom": false
+      }
     },
     "about_values": {
       "type": "smoky-values",
-      "settings": {
-        "heading": "НАШИТЕ ЦЕННОСТИ",
-        "background": "cream",
-        "curve_top": true
-      },
       "blocks": {
         "v1": {
           "type": "value",
@@ -46,7 +49,7 @@
             "title": "Истинска жар",
             "text": "Готвим само на дървени въглища — без плочи, без компромиси.",
             "mascot": "smoky-mascot-happy",
-            "circle_color": "#FA0082"
+            "circle_color": "#fa0082"
           }
         },
         "v2": {
@@ -55,7 +58,7 @@
             "title": "Прясно всеки ден",
             "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
             "mascot": "smoky-mascot-smiling",
-            "circle_color": "#EBDCC3"
+            "circle_color": "#ebdcc3"
           }
         },
         "v3": {
@@ -64,7 +67,7 @@
             "title": "От Балкана",
             "text": "Рецепти, предавани през поколения — с уважение към традицията.",
             "mascot": "smoky-mascot-front",
-            "circle_color": "#EBDCC3"
+            "circle_color": "#ebdcc3"
           }
         },
         "v4": {
@@ -73,7 +76,7 @@
             "title": "С усмивка",
             "text": "Димо и екипът готвим с кеф — и се познава на вкуса.",
             "mascot": "smoky-mascot-surprised",
-            "circle_color": "#FA0082"
+            "circle_color": "#fa0082"
           }
         }
       },
@@ -82,40 +85,52 @@
         "v2",
         "v3",
         "v4"
-      ]
+      ],
+      "settings": {
+        "heading": "НАШИТЕ ЦЕННОСТИ",
+        "background": "cream",
+        "curve_top": true,
+        "curve_bottom": false
+      }
     },
     "about_photos": {
       "type": "smoky-photo-marquee",
-      "settings": {
-        "background": "cream",
-        "speed": 50,
-        "direction": "right",
-        "curve_bottom": true
-      },
       "blocks": {
         "p1": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         },
         "p2": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         },
         "p3": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         },
         "p4": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         },
         "p5": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         },
         "p6": {
           "type": "photo",
-          "settings": {}
+          "settings": {
+            "alt": ""
+          }
         }
       },
       "block_order": [
@@ -125,11 +140,17 @@
         "p4",
         "p5",
         "p6"
-      ]
+      ],
+      "settings": {
+        "background": "cream",
+        "speed": 50,
+        "direction": "right",
+        "curve_top": false,
+        "curve_bottom": true
+      }
     },
     "about_stats": {
       "type": "smoky-stats",
-      "settings": {},
       "blocks": {
         "st1": {
           "type": "stat",
@@ -165,7 +186,11 @@
         "st2",
         "st3",
         "st4"
-      ]
+      ],
+      "settings": {
+        "curve_top": false,
+        "curve_bottom": false
+      }
     }
   },
   "order": [

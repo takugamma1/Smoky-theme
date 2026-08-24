@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -16,6 +17,7 @@
         "line2": "СКАРАТА!",
         "loop_words": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!",
         "use_mascot": true,
+        "sticker": "shopify://shop_images/smoky-logo-horizontal-2.svg",
         "video_url": "",
         "button_label": "Поръчай сега",
         "button_link": "shopify://collections/all",
@@ -120,7 +122,7 @@
         "heading_after": "от скарата",
         "card_button_label": "Виж",
         "curve_top": false,
-        "curve_bottom": false
+        "curve_bottom": true
       }
     },
     "smoky_compare": {
@@ -218,9 +220,7 @@
         "us_title": "SMOKY",
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
-        "button_link": "shopify://collections/all",
-        "curve_top": true,
-        "curve_bottom": true
+        "button_link": "shopify://collections/all"
       }
     },
     "smoky_marquee": {
@@ -241,8 +241,8 @@
         "background": "dark",
         "separator": "smoky-pattern-shevitsa",
         "sep_repeat": 3,
-        "curve_top": false,
-        "curve_bottom": false,
+        "curve_top": true,
+        "curve_bottom": true,
         "speed": 70,
         "size": 4,
         "direction": "left"
@@ -299,9 +299,7 @@
       "settings": {
         "background": "cream",
         "speed": 50,
-        "direction": "right",
-        "curve_top": true,
-        "curve_bottom": false
+        "direction": "right"
       }
     },
     "smoky_steps": {
@@ -353,8 +351,7 @@
         "s6"
       ],
       "settings": {
-        "heading": "СТЪПКА",
-        "curve_bottom": true
+        "heading": "СТЪПКА"
       }
     },
     "smoky_stats": {
@@ -396,7 +393,7 @@
         "st4"
       ],
       "settings": {
-        "curve_top": false,
+        "curve_top": true,
         "curve_bottom": false
       }
     }
