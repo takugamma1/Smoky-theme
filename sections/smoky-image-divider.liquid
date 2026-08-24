@@ -1,0 +1,87 @@
+{% comment %}
+  Smoky image divider — full-bleed atmosphere photo band on the dark slab,
+  with a gentle parallax drift (GSAP scrub) and optional rounded caps.
+  Sits between light sections to create the FTC light→dark→light rhythm.
+{% endcomment %}
+
+<section class="smoky-imgdiv" id="smoky-imgdiv-{{ section.id }}">
+  <figure class="smoky-imgdiv__figure">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 2600 | image_tag: loading: 'lazy', widths: '750, 1100, 1500, 1920, 2600', sizes: '100vw', class: 'smoky-imgdiv__img' }}
+    {%- else -%}
+      <div class="smoky-imgdiv__placeholder">
+        <img src="{{ 'smoky-wordmark-pink.svg' | asset_url }}" alt="" loading="lazy" width="600" height="200">
+      </div>
+    {%- endif -%}
+  </figure>
+</section>
+
+<style>
+  #smoky-imgdiv-{{ section.id }} {
+    position: relative;
+    background: var(--smoky-dark-soft);
+    height: clamp(320px, 55vw, 640px);
+    overflow: clip;
+  }
+
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__figure {
+    margin: 0;
+    position: absolute;
+    inset: -12% 0;
+  }
+
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__img,
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__placeholder img {
+    width: 40%;
+    opacity: 0.5;
+  }
+</style>
+
+<script>
+  (() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const section = document.getElementById('smoky-imgdiv-{{ section.id }}');
+    const fig = section?.querySelector('.smoky-imgdiv__figure');
+    if (!fig) return;
+    const tryInit = () => {
+      if (!window.gsap || !window.ScrollTrigger) return false;
+      window.gsap.registerPlugin(window.ScrollTrigger);
+      window.gsap.fromTo(
+        fig,
+        { yPercent: -8 },
+        { yPercent: 8, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } }
+      );
+      return true;
+    };
+    if (!tryInit()) {
+      let tries = 0;
+      const t = setInterval(() => {
+        if (tryInit() || ++tries > 100) clearInterval(t);
+      }, 50);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky фото лента",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Снимка (широка, атмосферна)" }
+  ],
+  "presets": [{ "name": "Smoky фото лента" }]
+}
+{% endschema %}

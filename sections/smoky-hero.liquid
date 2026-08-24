@@ -1,0 +1,269 @@
+{% comment %}
+  Smoky hero — the "Let's change catering!" pattern in Smoky clothes.
+
+  Line 1 of the giant condensed title sits on cream paper next to a looping
+  word bubble (sand pill cycling greetings) with a round mascot sticker.
+  Line 2 overlaps the rounded media panel below in a notched cream box with
+  inverted corners. Media is a photo or a muted looping mp4 video.
+{% endcomment %}
+
+<section class="smoky-hero" id="smoky-hero-{{ section.id }}">
+  <div class="smoky-container smoky-hero__container">
+    <h1 class="visually-hidden">{{ section.settings.seo_title | default: 'Smoky — балканска скара с доставка' }}</h1>
+
+    <div class="smoky-title smoky-title--big smoky-hero__title" aria-hidden="true">
+      <div class="smoky-hero__line1" data-smoky-reveal>
+        <span>{{ section.settings.line1 }}</span>
+        {%- assign words = section.settings.loop_words | split: ',' -%}
+        {%- if words.size > 0 -%}
+          <span class="smoky-hero__bubble" data-smoky-loop-words>
+            <span class="smoky-hero__bubble-words">
+              {%- for word in words -%}
+                <span class="smoky-loop-word">{{ word | strip }}</span>
+              {%- endfor -%}
+            </span>
+            {%- if section.settings.sticker != blank or section.settings.use_mascot -%}
+              <span class="smoky-hero__sticker" data-smoky-scrub-rotate="16">
+                {%- if section.settings.sticker != blank -%}
+                  {{ section.settings.sticker | image_url: width: 300 | image_tag: loading: 'eager', alt: '' }}
+                {%- else -%}
+                  <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" width="150" height="150">
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="smoky-hero__media-wrap" data-smoky-reveal data-smoky-reveal-delay="0.1">
+      <div class="smoky-hero__media">
+        {%- if section.settings.video_url != blank -%}
+          <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
+            <source src="{{ section.settings.video_url }}" type="video/mp4">
+          </video>
+        {%- elsif section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+        {%- else -%}
+          <div class="smoky-hero__media-placeholder">
+            <img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="" loading="eager" width="600" height="200">
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="smoky-hero__h1box" aria-hidden="true">
+        <span class="smoky-hero__corner smoky-hero__corner--left"></span>
+        <span class="smoky-hero__corner smoky-hero__corner--bottom"></span>
+        <span class="smoky-title smoky-title--big smoky-hero__line2">{{ section.settings.line2 }}</span>
+      </div>
+    </div>
+
+    {%- if section.settings.button_label != blank or section.settings.button2_label != blank -%}
+      <div class="smoky-hero__actions" data-smoky-reveal data-smoky-reveal-delay="0.2">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn">
+            <span class="smoky-btn__shadow"></span>
+            <span class="smoky-btn__content">
+              <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
+            </span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button2_label != blank -%}
+          <a href="{{ section.settings.button2_link | default: '#' }}" class="smoky-btn smoky-btn--light">
+            <span class="smoky-btn__shadow"></span>
+            <span class="smoky-btn__content">
+              <span class="smoky-roll"><span>{{ section.settings.button2_label }}</span><span class="smoky-roll__dup">{{ section.settings.button2_label }}</span></span>
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  #smoky-hero-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-top: clamp(120px, 15vw, 190px);
+    padding-bottom: clamp(32px, 4vw, 64px);
+    overflow: clip;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__line1 {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.15em;
+    color: var(--smoky-dark);
+  }
+
+  /* looping greeting bubble */
+  #smoky-hero-{{ section.id }} .smoky-hero__bubble {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 0.92em;
+    margin-left: 0.12em;
+    padding: 0 0.85em;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-sand);
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__bubble-words {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-width: 4.2em;
+    height: 0.42em;
+    font-family: var(--smoky-font-body);
+    font-weight: 500;
+    font-size: 0.3em;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    text-transform: none;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-loop-word {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transform: translateY(110%);
+    transition: transform 0.5s var(--smoky-bounce);
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='active'] { transform: translateY(0); }
+  #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='prev'] { transform: translateY(-110%); }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__sticker {
+    position: absolute;
+    right: -0.42em;
+    top: 50%;
+    width: 1.05em;
+    height: 1.05em;
+    margin-top: -0.525em;
+    border-radius: 50%;
+    border: var(--smoky-border);
+    background: var(--smoky-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__sticker img {
+    width: 78%;
+    height: 78%;
+    object-fit: contain;
+  }
+
+  /* media panel with notched title box */
+  #smoky-hero-{{ section.id }} .smoky-hero__media-wrap {
+    position: relative;
+    margin-top: clamp(14px, 1.6vw, 26px);
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__media {
+    border-radius: var(--smoky-radius-big);
+    overflow: hidden;
+    background: var(--smoky-dark-soft);
+    aspect-ratio: 16 / 8.2;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__media img,
+  #smoky-hero-{{ section.id }} .smoky-hero__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__media-placeholder img {
+    width: 46%;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.85;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__h1box {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0 0 clamp(10px, 1.4vw, 22px) clamp(14px, 2vw, 30px);
+    background: var(--smoky-cream);
+    border-radius: 0 0 0 var(--smoky-radius-big);
+    line-height: 0;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__line2 {
+    color: var(--smoky-dark);
+    line-height: 0.85;
+  }
+
+  /* inverted corners melting the box into the rounded media frame */
+  #smoky-hero-{{ section.id }} .smoky-hero__corner {
+    position: absolute;
+    width: var(--smoky-radius-big);
+    height: var(--smoky-radius-big);
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__corner--left {
+    top: 0;
+    left: calc(-1 * var(--smoky-radius-big) + 1px);
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__corner--bottom {
+    right: 0;
+    bottom: calc(-1 * var(--smoky-radius-big) + 1px);
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: clamp(20px, 2.6vw, 36px);
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-hero-{{ section.id }} { padding-top: 108px; }
+
+    #smoky-hero-{{ section.id }} .smoky-hero__media { aspect-ratio: 4 / 5; }
+
+    #smoky-hero-{{ section.id }} .smoky-hero__bubble-words { min-width: 3.6em; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky херо",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "seo_title", "label": "SEO заглавие (скрито)", "default": "Smoky — балканска скара с доставка" },
+    { "type": "text", "id": "line1", "label": "Заглавие — ред 1", "default": "ДА ЗАПАЛИМ" },
+    { "type": "text", "id": "line2", "label": "Заглавие — ред 2", "default": "СКАРАТА!" },
+    { "type": "text", "id": "loop_words", "label": "Въртящи се думи (със запетая)", "default": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!" },
+    { "type": "checkbox", "id": "use_mascot", "label": "Стикер с Димо до балончето", "default": true },
+    { "type": "image_picker", "id": "sticker", "label": "Собствен стикер (по избор)" },
+    { "type": "image_picker", "id": "image", "label": "Снимка" },
+    { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },
+    { "type": "text", "id": "button_label", "label": "Бутон 1 — текст", "default": "Поръчай сега" },
+    { "type": "url", "id": "button_link", "label": "Бутон 1 — линк" },
+    { "type": "text", "id": "button2_label", "label": "Бутон 2 — текст", "default": "Виж менюто" },
+    { "type": "url", "id": "button2_link", "label": "Бутон 2 — линк" }
+  ],
+  "presets": [{ "name": "Smoky херо" }]
+}
+{% endschema %}

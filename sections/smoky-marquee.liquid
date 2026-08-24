@@ -1,0 +1,171 @@
+{% comment %}
+  Smoky marquee — infinite auto-scrolling strip that reverses with scroll
+  direction (GSAP). Blocks are words or logo images; between items sits a
+  brand separator (shevitsa / flame / fork / knife SVG or a pink dot).
+  Use for "СКАРА • ЖАР • ДИМ • ВКУС" strips or partner logos.
+{% endcomment %}
+
+<section class="smoky-marquee" id="smoky-marquee-{{ section.id }}">
+  <div
+    data-smoky-marquee
+    data-marquee-speed="{{ section.settings.speed }}"
+    data-marquee-direction="{{ section.settings.direction }}"
+    class="smoky-marquee__viewport"
+    aria-hidden="true"
+  >
+    <div class="smoky-marquee-track">
+      {%- for block in section.blocks -%}
+        <div class="smoky-marquee__item" {{ block.shopify_attributes }}>
+          {%- if block.type == 'word' -%}
+            <span class="smoky-marquee__word{% if block.settings.outline %} smoky-marquee__word--outline{% endif %}">{{ block.settings.text }}</span>
+          {%- else -%}
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.alt, class: 'smoky-marquee__logo' }}
+            {%- endif -%}
+          {%- endif -%}
+          {%- unless section.settings.separator == 'none' -%}
+            <span class="smoky-marquee__sep">
+              {%- case section.settings.separator -%}
+                {%- when 'dot' -%}
+                  <span class="smoky-marquee__dot"></span>
+                {%- else -%}
+                  <img src="{{ section.settings.separator | append: '.svg' | asset_url }}" alt="" loading="lazy" width="60" height="40">
+              {%- endcase -%}
+            </span>
+          {%- endunless -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-marquee-{{ section.id }} {
+    background: {% if section.settings.background == 'dark' %}var(--smoky-dark-soft){% elsif section.settings.background == 'pink' %}var(--smoky-pink){% elsif section.settings.background == 'sand' %}var(--smoky-sand){% else %}var(--smoky-cream){% endif %};
+    color: {% if section.settings.background == 'dark' %}var(--smoky-sand){% elsif section.settings.background == 'pink' %}var(--smoky-cream){% else %}var(--smoky-dark){% endif %};
+    padding-block: clamp(18px, 2.4vw, 34px);
+    overflow: clip;
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__viewport { overflow: hidden; }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__item {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 2.6vw, 44px);
+    padding-right: clamp(20px, 2.6vw, 44px);
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__word {
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.8rem, {{ section.settings.size }}vw, {{ section.settings.size | times: 16 }}px);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__word--outline {
+    color: transparent;
+    -webkit-text-stroke: 2px currentColor;
+    -webkit-text-stroke-color: {% if section.settings.background == 'dark' %}var(--smoky-sand){% elsif section.settings.background == 'pink' %}var(--smoky-cream){% else %}var(--smoky-dark){% endif %};
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__logo {
+    height: clamp(30px, 3.4vw, 54px);
+    width: auto;
+    object-fit: contain;
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__sep img {
+    height: clamp(20px, 2.2vw, 36px);
+    width: auto;
+    display: block;
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__dot {
+    display: block;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    background: var(--smoky-pink);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky маркии лента",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Фон",
+      "options": [
+        { "value": "cream", "label": "Крем" },
+        { "value": "sand", "label": "Пясък" },
+        { "value": "pink", "label": "Розово" },
+        { "value": "dark", "label": "Тъмен" }
+      ],
+      "default": "pink"
+    },
+    {
+      "type": "select",
+      "id": "separator",
+      "label": "Разделител",
+      "options": [
+        { "value": "none", "label": "Без" },
+        { "value": "dot", "label": "Точка" },
+        { "value": "smoky-pattern-shevitsa", "label": "Шевица" },
+        { "value": "smoky-flame-sticker", "label": "Пламък" },
+        { "value": "smoky-pattern-fork", "label": "Вилица" },
+        { "value": "smoky-pattern-knife", "label": "Нож" }
+      ],
+      "default": "smoky-pattern-shevitsa"
+    },
+    { "type": "range", "id": "speed", "label": "Скорост (px/сек)", "min": 20, "max": 160, "step": 10, "default": 70 },
+    { "type": "range", "id": "size", "label": "Размер на текста (vw)", "min": 2, "max": 8, "step": 1, "default": 4 },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Посока",
+      "options": [
+        { "value": "left", "label": "Наляво" },
+        { "value": "right", "label": "Надясно" }
+      ],
+      "default": "left"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "word",
+      "name": "Дума",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Текст", "default": "СКАРА" },
+        { "type": "checkbox", "id": "outline", "label": "Само контур", "default": false }
+      ]
+    },
+    {
+      "type": "logo",
+      "name": "Лого",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Лого" },
+        { "type": "text", "id": "alt", "label": "Алт текст" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "Smoky маркии лента",
+      "blocks": [
+        { "type": "word", "settings": { "text": "СКАРА" } },
+        { "type": "word", "settings": { "text": "ЖАР", "outline": true } },
+        { "type": "word", "settings": { "text": "ДИМ" } },
+        { "type": "word", "settings": { "text": "ВКУС", "outline": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

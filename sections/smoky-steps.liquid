@@ -1,0 +1,211 @@
+{% comment %}
+  Smoky steps — "how to order" slider on a giant pink starburst background.
+  Big "СТЪПКА" title + a small dark starburst badge showing the current step
+  number (spins on change). Slides are text-only; arrows + drag to navigate.
+{% endcomment %}
+
+{%- assign star_points = '100.0,0.0 109.2,18.5 122.3,2.5 127.1,22.6 143.4,9.9 143.6,30.6 162.3,21.8 158.0,42.0 178.2,37.7 169.4,56.4 190.1,56.6 177.4,72.9 197.5,77.7 181.5,90.8 200.0,100.0 181.5,109.2 197.5,122.3 177.4,127.1 190.1,143.4 169.4,143.6 178.2,162.3 158.0,158.0 162.3,178.2 143.6,169.4 143.4,190.1 127.1,177.4 122.3,197.5 109.2,181.5 100.0,200.0 90.8,181.5 77.7,197.5 72.9,177.4 56.6,190.1 56.4,169.4 37.7,178.2 42.0,158.0 21.8,162.3 30.6,143.6 9.9,143.4 22.6,127.1 2.5,122.3 18.5,109.2 0.0,100.0 18.5,90.8 2.5,77.7 22.6,72.9 9.9,56.6 30.6,56.4 21.8,37.7 42.0,42.0 37.7,21.8 56.4,30.6 56.6,9.9 72.9,22.6 77.7,2.5 90.8,18.5' -%}
+
+<section class="smoky-steps" id="smoky-steps-{{ section.id }}">
+  <svg class="smoky-steps__bigstar" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
+    <polygon points="{{ star_points }}" fill="var(--smoky-pink)"></polygon>
+  </svg>
+
+  <div class="smoky-container smoky-steps__inner">
+    <div class="smoky-steps__head" data-smoky-reveal>
+      <h2 class="smoky-title smoky-title--big smoky-steps__title">{{ section.settings.heading }}</h2>
+      <span class="smoky-steps__badge">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <polygon points="{{ star_points }}" fill="var(--smoky-dark)"></polygon>
+        </svg>
+        <span class="smoky-steps__number">1.</span>
+      </span>
+    </div>
+
+    <div class="smoky-steps__viewport" data-smoky-drag-cursor tabindex="0">
+      <ul class="smoky-steps__track">
+        {%- for block in section.blocks -%}
+          <li class="smoky-steps__slide" data-step="{{ forloop.index }}" {{ block.shopify_attributes }}>
+            <h3>{{ block.settings.text }}</h3>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="smoky-steps__controls">
+      <button type="button" class="smoky-arrow smoky-arrow--prev" data-dir="-1" aria-label="Назад">
+        <span class="smoky-arrow__shadow"></span>
+        <span class="smoky-arrow__fill">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+      <button type="button" class="smoky-arrow" data-dir="1" aria-label="Напред">
+        <span class="smoky-arrow__shadow"></span>
+        <span class="smoky-arrow__fill">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-steps-{{ section.id }} {
+    position: relative;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-block: clamp(72px, 10vw, 150px);
+    overflow: clip;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__bigstar {
+    position: absolute;
+    inset: clamp(24px, 4vw, 64px) min(4vw, 56px);
+    width: calc(100% - min(8vw, 112px));
+    height: calc(100% - clamp(48px, 8vw, 128px));
+    opacity: 0.16;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__inner { position: relative; }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.2em;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__title { text-align: center; }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__badge {
+    position: relative;
+    width: clamp(56px, 6.5vw, 104px);
+    height: clamp(56px, 6.5vw, 104px);
+    flex: 0 0 auto;
+    margin-top: -0.4em;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__badge svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: transform 0.6s var(--smoky-bounce);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__badge.is-spun svg { transform: rotate(32deg); }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.3rem, 1.9vw, 2rem);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__viewport {
+    margin-top: clamp(32px, 4.5vw, 64px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__viewport::-webkit-scrollbar { display: none; }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__track {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: max-content;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__slide {
+    width: min(720px, 84vw);
+    scroll-snap-align: center;
+    padding-inline: clamp(16px, 3vw, 48px);
+    text-align: center;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__slide h3 {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 2.2vw, 2rem);
+    line-height: 1.4;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__controls {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: clamp(28px, 3.6vw, 48px);
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('smoky-steps-{{ section.id }}');
+    if (!root) return;
+    const viewport = root.querySelector('.smoky-steps__viewport');
+    const slides = [...root.querySelectorAll('.smoky-steps__slide')];
+    const badge = root.querySelector('.smoky-steps__badge');
+    const number = root.querySelector('.smoky-steps__number');
+    if (!viewport || !slides.length) return;
+
+    root.querySelectorAll('.smoky-arrow').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        viewport.scrollBy({ left: slides[0].offsetWidth * parseInt(btn.dataset.dir, 10), behavior: 'smooth' });
+      });
+    });
+
+    let current = '1';
+    const sync = () => {
+      const mid = viewport.scrollLeft + viewport.clientWidth / 2;
+      const active = slides.find((s) => s.offsetLeft <= mid && mid < s.offsetLeft + s.offsetWidth) || slides[0];
+      if (active.dataset.step !== current) {
+        current = active.dataset.step;
+        number.textContent = current + '.';
+        badge.classList.toggle('is-spun');
+      }
+    };
+    viewport.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky стъпки",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "СТЪПКА" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Стъпка",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Текст", "default": "Разгледай менюто и си избери любимата скара." }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Smoky стъпки",
+      "blocks": [
+        { "type": "step", "settings": { "text": "Разгледай менюто и избери любимата си скара — кебапчета, кюфтета, стекове или сач." } },
+        { "type": "step", "settings": { "text": "Поръчай онлайн за минути — без обаждания, без чакане на линия." } },
+        { "type": "step", "settings": { "text": "Мятаме месото на жарта в мига, в който поръчката ти пристигне при нас." } },
+        { "type": "step", "settings": { "text": "Опаковаме всичко горещо в брандирана опаковка, която пази вкуса и димеца." } },
+        { "type": "step", "settings": { "text": "Нашата доставка тръгва веднага — средно 30 минути до твоята врата." } },
+        { "type": "step", "settings": { "text": "Добър апетит! Остава само да си доволен — и гладен за още." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

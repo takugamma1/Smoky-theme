@@ -1,281 +1,111 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */{
+{
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
-      "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
-          "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "text_color": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
-          "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-custom",
-            "custom_button_background": "rgba(0,0,0,0)",
-            "custom_button_text": "{{ settings.color_palette.background }}",
-            "custom_button_border": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
-      "name": "t:names.hero",
+    "smoky_hero": {
+      "type": "smoky-hero",
       "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
-        "media_type_1_mobile": "image",
-        "media_type_2_mobile": "image",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "background_color": "rgba(0,0,0,0)",
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
+        "seo_title": "Smoky — балканска скара с доставка",
+        "line1": "ДА ЗАПАЛИМ",
+        "line2": "СКАРАТА!",
+        "loop_words": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!",
+        "use_mascot": true,
+        "button_label": "Поръчай сега",
+        "button_link": "shopify://collections/all",
+        "button2_label": "Виж менюто",
+        "button2_link": "/pages/menu"
       }
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
-      "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
-          "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "View all",
-                "open_in_new_tab": false,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 4,
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
-        }
-      },
-      "name": "t:names.product_list",
+    "smoky_intro": {
+      "type": "smoky-intro",
       "settings": {
-        "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "background_color": "{{ settings.color_palette.background }}",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "heading": "НОВИЯТ СТАНДАРТ ЗА СКАРА!",
+        "text": "<p>Smoky е балканска скара без компромиси — <strong>прясно мляно месо</strong>, истинска жар и рецепти, предавани от поколения. Всичко се готви на момента и пристига горещо на твоята врата.</p><p>Едно меню, една любов: кебапчета, кюфтета, стекове и всичко, което ухае на неделен обяд на село. Поръчваш онлайн — ние палим огъня.</p>",
+        "sticker_asset": "smoky-flame-sticker",
+        "background": "cream",
+        "curve_bottom": true
       }
+    },
+    "smoky_image_divider": {
+      "type": "smoky-image-divider",
+      "settings": {}
+    },
+    "smoky_concepts": {
+      "type": "smoky-concepts",
+      "settings": {
+        "heading_before": "Нашите",
+        "heading_accent": "вкусове",
+        "heading_after": "от скарата",
+        "card_button_label": "Виж"
+      },
+      "blocks": {
+        "card_kebapcheta": { "type": "card", "settings": { "title": "Кебапчета", "subtitle": "Класиката, която ни събира", "tile_bg": "#4A1230", "tile_border": "#FA0082", "link": "shopify://collections/all" } },
+        "card_kyufteta": { "type": "card", "settings": { "title": "Кюфтета", "subtitle": "По селски, с лук и кимион", "tile_bg": "#3A2E2A", "tile_border": "#EBDCC3", "link": "shopify://collections/all" } },
+        "card_stekove": { "type": "card", "settings": { "title": "Стекове", "subtitle": "Врат, флейка, вешалица", "tile_bg": "#301B14", "tile_border": "#E8956B", "link": "shopify://collections/all" } },
+        "card_pileshko": { "type": "card", "settings": { "title": "Пилешко", "subtitle": "Мариновано и на въглища", "tile_bg": "#3F3A1E", "tile_border": "#E4D96F", "link": "shopify://collections/all" } },
+        "card_sach": { "type": "card", "settings": { "title": "Сач", "subtitle": "Цвърчащ, за компания", "tile_bg": "#1F3328", "tile_border": "#9BC49A", "link": "shopify://collections/all" } },
+        "card_garnituri": { "type": "card", "settings": { "title": "Гарнитури", "subtitle": "Картофки, лютеница, топъл хляб", "tile_bg": "#403014", "tile_border": "#EFC069", "link": "shopify://collections/all" } }
+      },
+      "block_order": ["card_kebapcheta", "card_kyufteta", "card_stekove", "card_pileshko", "card_sach", "card_garnituri"]
+    },
+    "smoky_compare": {
+      "type": "smoky-compare",
+      "settings": {
+        "heading_accent": "Защо",
+        "heading_after": "Smoky?",
+        "us_title": "SMOKY",
+        "them_title": "Обикновената доставка",
+        "button_label": "Поръчай сега",
+        "button_link": "shopify://collections/all"
+      },
+      "blocks": {
+        "plus_1": { "type": "plus", "settings": { "title": "Прясно смляно месо всеки ден", "text": "Работим само с проверени български доставчици." } },
+        "plus_2": { "type": "plus", "settings": { "title": "На жар, не на плоча", "text": "Истински огън, истински дим, истински вкус." } },
+        "plus_3": { "type": "plus", "settings": { "title": "Собствена доставка", "text": "Пристига горещо, в брандирана опаковка, точно навреме." } },
+        "plus_4": { "type": "plus", "settings": { "title": "Балкански рецепти", "text": "Както на село — без консерванти и без компромиси." } },
+        "plus_5": { "type": "plus", "settings": { "title": "Реални порции", "text": "Ставаш сит. Точка." } },
+        "minus_1": { "type": "minus", "settings": { "title": "Замразени полуфабрикати", "text": "Никой не знае откога са във фризера." } },
+        "minus_2": { "type": "minus", "settings": { "title": "Претоплено във фритюрник", "text": "Вкус на олио вместо на огън." } },
+        "minus_3": { "type": "minus", "settings": { "title": "Куриер на парче", "text": "Пристига хладко и разклатено." } },
+        "minus_4": { "type": "minus", "settings": { "title": "Вкус „под линия“", "text": "Едно и също, отвсякъде." } },
+        "minus_5": { "type": "minus", "settings": { "title": "Порция въздух", "text": "Снимката обещава, кутията разочарова." } }
+      },
+      "block_order": ["plus_1", "plus_2", "plus_3", "plus_4", "plus_5", "minus_1", "minus_2", "minus_3", "minus_4", "minus_5"]
+    },
+    "smoky_marquee": {
+      "type": "smoky-marquee",
+      "settings": { "background": "pink", "separator": "smoky-pattern-shevitsa", "speed": 70, "size": 4, "direction": "left" },
+      "blocks": {
+        "w1": { "type": "word", "settings": { "text": "СКАРА", "outline": false } },
+        "w2": { "type": "word", "settings": { "text": "ЖАР", "outline": true } },
+        "w3": { "type": "word", "settings": { "text": "ДИМ", "outline": false } },
+        "w4": { "type": "word", "settings": { "text": "ВКУС", "outline": true } }
+      },
+      "block_order": ["w1", "w2", "w3", "w4"]
+    },
+    "smoky_photo_marquee": {
+      "type": "smoky-photo-marquee",
+      "settings": { "background": "cream", "speed": 50, "direction": "right" },
+      "blocks": {
+        "p1": { "type": "photo", "settings": {} },
+        "p2": { "type": "photo", "settings": {} },
+        "p3": { "type": "photo", "settings": {} },
+        "p4": { "type": "photo", "settings": {} },
+        "p5": { "type": "photo", "settings": {} },
+        "p6": { "type": "photo", "settings": {} }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+    },
+    "smoky_steps": {
+      "type": "smoky-steps",
+      "settings": { "heading": "СТЪПКА" },
+      "blocks": {
+        "s1": { "type": "step", "settings": { "text": "Разгледай менюто и избери любимата си скара — кебапчета, кюфтета, стекове или сач." } },
+        "s2": { "type": "step", "settings": { "text": "Поръчай онлайн за минути — без обаждания, без чакане на линия." } },
+        "s3": { "type": "step", "settings": { "text": "Мятаме месото на жарта в мига, в който поръчката ти пристигне при нас." } },
+        "s4": { "type": "step", "settings": { "text": "Опаковаме всичко горещо в брандирана опаковка, която пази вкуса и димеца." } },
+        "s5": { "type": "step", "settings": { "text": "Нашата доставка тръгва веднага — средно 30 минути до твоята врата." } },
+        "s6": { "type": "step", "settings": { "text": "Добър апетит! Остава само да си доволен — и гладен за още." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4", "s5", "s6"]
     },
     "smoky_best_sellers": {
       "type": "smoky-best-sellers",
@@ -290,12 +120,30 @@
       "settings": {
         "heading": "ГАЛЕРИЯ"
       }
+    },
+    "smoky_stats": {
+      "type": "smoky-stats",
+      "settings": {},
+      "blocks": {
+        "st1": { "type": "stat", "settings": { "number": "100%", "label": "На истинска жар" } },
+        "st2": { "type": "stat", "settings": { "number": "30", "label": "Минути средна доставка" } },
+        "st3": { "type": "stat", "settings": { "number": "12+", "label": "Вида скара" } },
+        "st4": { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+      },
+      "block_order": ["st1", "st2", "st3", "st4"]
     }
   },
   "order": [
-    "hero_jVaWmY",
+    "smoky_hero",
+    "smoky_intro",
+    "smoky_image_divider",
+    "smoky_concepts",
+    "smoky_compare",
+    "smoky_marquee",
+    "smoky_photo_marquee",
+    "smoky_steps",
     "smoky_best_sellers",
     "smoky_gallery",
-    "product_list_fa6P9H"
+    "smoky_stats"
   ]
 }

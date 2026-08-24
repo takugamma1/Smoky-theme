@@ -1,0 +1,220 @@
+{% comment %}
+  Smoky delivery menu — the FTC "printed menu card" adapted for ordering:
+  one big sand card per category with a dashed accent frame, the Smoky badge
+  in a logo box on top, and dish rows (name + dotted leader + price, optional
+  description). A category is either a Shopify collection (products link to
+  their pages) or manual item blocks. Empty collections render demo rows so
+  the design reads in the editor.
+{% endcomment %}
+
+<section class="smoky-menu" id="smoky-menu-{{ section.id }}">
+  <div class="smoky-container smoky-container--medium">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="smoky-title smoky-title--small smoky-menu__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="smoky-menu__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'category' -%}
+          {%- assign c = block.settings.collection -%}
+          <article class="smoky-menu__card" style="--menu-accent: {{ block.settings.accent }};" data-smoky-reveal {{ block.shopify_attributes }}>
+            <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+              <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--menu-accent)"></rect>
+            </svg>
+            <div class="smoky-menu__logobox" aria-hidden="true">
+              <img src="{{ 'smoky-badge-dark.svg' | asset_url }}" alt="" loading="lazy" width="72" height="72">
+            </div>
+            <h3 class="smoky-menu__cat">
+              {%- if block.settings.title != blank -%}{{ block.settings.title }}{%- elsif c != blank -%}{{ c.title }}{%- else -%}Категория{%- endif -%}
+            </h3>
+            <ul class="smoky-menu__items">
+              {%- if c != blank and c.products.size > 0 -%}
+                {%- for product in c.products limit: block.settings.limit -%}
+                  <li class="smoky-menu__item">
+                    <a href="{{ product.url }}" class="smoky-menu__item-link">
+                      <span class="smoky-menu__item-top">
+                        <h4>{{ product.title }}</h4>
+                        <span class="smoky-menu__leader" aria-hidden="true"></span>
+                        <span class="smoky-menu__price">{{ product.price | money }}</span>
+                      </span>
+                      {%- assign desc = product.description | strip_html | truncate: 90 -%}
+                      {%- if desc != blank -%}<p>{{ desc }}</p>{%- endif -%}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              {%- else -%}
+                {%- assign demo = 'Кебапче класик|прясно смляно телешко, чубрица|3,20 лв.;Кюфте по селски|телешко и свинско, лук, кимион|3,40 лв.;Свински врат на жар|300 г, зелена салка|14,90 лв.;Пилешки филенца|мариновани, на дървени въглища|11,50 лв.' | split: ';' -%}
+                {%- for row in demo -%}
+                  {%- assign parts = row | split: '|' -%}
+                  <li class="smoky-menu__item">
+                    <span class="smoky-menu__item-link">
+                      <span class="smoky-menu__item-top">
+                        <h4>{{ parts[0] }}</h4>
+                        <span class="smoky-menu__leader" aria-hidden="true"></span>
+                        <span class="smoky-menu__price">{{ parts[2] }}</span>
+                      </span>
+                      <p>{{ parts[1] }}</p>
+                    </span>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+            {%- if c != blank -%}
+              <a href="{{ c.url }}" class="smoky-btn smoky-menu__all">
+                <span class="smoky-btn__shadow"></span>
+                <span class="smoky-btn__content">
+                  <span class="smoky-roll"><span>{{ section.settings.card_button_label }}</span><span class="smoky-roll__dup">{{ section.settings.card_button_label }}</span></span>
+                </span>
+              </a>
+            {%- endif -%}
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-menu-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-block: clamp(48px, 7vw, 110px);
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__heading {
+    text-align: center;
+    margin-bottom: clamp(36px, 5vw, 64px);
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+    gap: clamp(24px, 3.5vw, 48px);
+    align-items: start;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__card {
+    position: relative;
+    background: var(--smoky-sand);
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    padding: clamp(52px, 6vw, 72px) clamp(22px, 3vw, 40px) clamp(28px, 3.4vw, 44px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 36px;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__logobox {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-5deg);
+    width: clamp(64px, 6vw, 88px);
+    filter: drop-shadow(0 5px 9px rgb(40 40 40 / 0.28));
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__logobox img { width: 100%; height: auto; display: block; }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__cat {
+    margin: 0 0 clamp(18px, 2.2vw, 28px);
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--menu-accent, var(--smoky-pink));
+    text-align: center;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.8vw, 22px);
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__item-top {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__item-top h4 {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    transition: color 0.25s ease;
+  }
+
+  #smoky-menu-{{ section.id }} a.smoky-menu__item-link:hover h4 { color: var(--smoky-pink); }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__leader {
+    flex: 1;
+    border-bottom: 2px dotted rgb(40 40 40 / 0.4);
+    transform: translateY(-4px);
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__price {
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+    white-space: nowrap;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__item p {
+    margin: 4px 0 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.88rem, 1vw, 0.98rem);
+    line-height: 1.4;
+    opacity: 0.75;
+    max-width: 46ch;
+  }
+
+  #smoky-menu-{{ section.id }} .smoky-menu__all { margin-top: clamp(22px, 2.6vw, 32px); font-size: 0.85rem; }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky меню за доставка",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "МЕНЮ ЗА ДОСТАВКА" },
+    { "type": "text", "id": "card_button_label", "label": "Бутон на картите", "default": "Поръчай от тук" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Категория (колекция)",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Колекция" },
+        { "type": "text", "id": "title", "label": "Име (по избор)" },
+        { "type": "color", "id": "accent", "label": "Акцентен цвят", "default": "#FA0082" },
+        { "type": "range", "id": "limit", "label": "Максимум продукти", "min": 3, "max": 20, "step": 1, "default": 10 }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "Smoky меню за доставка",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Скара", "accent": "#FA0082" } },
+        { "type": "category", "settings": { "title": "Гарнитури и салати", "accent": "#282828" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

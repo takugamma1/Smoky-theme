@@ -1,9 +1,9 @@
-{%- doc -%}
+{% comment %}
   Smoky gallery.
 
   Cream section: huge dark ГАЛЕРИЯ heading + winking mascot on the left,
   collage of rounded photos on the right (up to 5 image blocks).
-{%- enddoc -%}
+{% endcomment %}
 
 <div class="smoky-gal" id="smoky-gal-{{ section.id }}">
   <div class="smoky-gal__side">
@@ -11,6 +11,7 @@
     <img
       src="{{ 'smoky-mascot-front.svg' | asset_url }}"
       alt=""
+      width="200" height="200"
       class="smoky-gal__mascot"
       loading="lazy"
     >

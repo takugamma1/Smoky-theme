@@ -1,0 +1,152 @@
+{% comment %}
+  Smoky values — grid of value cards, each fronted by one of Димо's mascot
+  emotions (or a custom image) in a colored circle, with title + text.
+  Used on the About page ("Нашите ценности").
+{% endcomment %}
+
+<section class="smoky-values" id="smoky-values-{{ section.id }}">
+  <div class="smoky-container smoky-container--medium">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="smoky-title smoky-title--small smoky-values__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="smoky-values__grid">
+      {%- for block in section.blocks -%}
+        <article class="smoky-values__card" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
+          <span class="smoky-values__circle" style="--circle-bg: {{ block.settings.circle_color }};">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: '' }}
+            {%- else -%}
+              <img src="{{ block.settings.mascot | append: '.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
+            {%- endif -%}
+          </span>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-values-{{ section.id }} {
+    background: {% if section.settings.background == 'dark' %}var(--smoky-dark-soft){% else %}var(--smoky-cream){% endif %};
+    color: {% if section.settings.background == 'dark' %}var(--smoky-sand){% else %}var(--smoky-dark){% endif %};
+    padding-block: clamp(56px, 8vw, 120px);
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__heading {
+    text-align: center;
+    margin-bottom: clamp(36px, 5vw, 64px);
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: clamp(20px, 2.6vw, 36px);
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__card {
+    background: var(--smoky-sand);
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    padding: clamp(24px, 3vw, 40px) clamp(18px, 2.2vw, 28px);
+    text-align: center;
+    color: var(--smoky-dark);
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__card:hover { transform: translateY(-8px) rotate(-1deg); }
+
+  #smoky-values-{{ section.id }} .smoky-values__circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(88px, 9vw, 128px);
+    height: clamp(88px, 9vw, 128px);
+    margin: 0 auto clamp(14px, 1.8vw, 22px);
+    border-radius: 50%;
+    border: var(--smoky-border);
+    background: var(--circle-bg, var(--smoky-pink));
+    overflow: hidden;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__circle img {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__card h3 {
+    margin: 0 0 8px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__card p {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky ценности",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "НАШИТЕ ЦЕННОСТИ" },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Фон",
+      "options": [
+        { "value": "cream", "label": "Крем" },
+        { "value": "dark", "label": "Тъмен" }
+      ],
+      "default": "cream"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Ценност",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Заглавие", "default": "Истинска жар" },
+        { "type": "textarea", "id": "text", "label": "Текст", "default": "Готвим само на дървени въглища — без плочи, без компромиси." },
+        {
+          "type": "select",
+          "id": "mascot",
+          "label": "Емоция на Димо",
+          "options": [
+            { "value": "smoky-mascot-happy", "label": "Щастлив" },
+            { "value": "smoky-mascot-smiling", "label": "Усмихнат" },
+            { "value": "smoky-mascot-surprised", "label": "Изненадан" },
+            { "value": "smoky-mascot-front", "label": "Фронтален" },
+            { "value": "smoky-mascot-sad", "label": "Тъжен" }
+          ],
+          "default": "smoky-mascot-happy"
+        },
+        { "type": "image_picker", "id": "image", "label": "Собствена картинка (по избор)" },
+        { "type": "color", "id": "circle_color", "label": "Цвят на кръга", "default": "#FA0082" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Smoky ценности",
+      "blocks": [
+        { "type": "value", "settings": { "title": "Истинска жар", "text": "Готвим само на дървени въглища — без плочи, без компромиси.", "mascot": "smoky-mascot-happy", "circle_color": "#FA0082" } },
+        { "type": "value", "settings": { "title": "Прясно всеки ден", "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.", "mascot": "smoky-mascot-smiling", "circle_color": "#EBDCC3" } },
+        { "type": "value", "settings": { "title": "От Балкана", "text": "Рецепти, предавани през поколения — с уважение към традицията.", "mascot": "smoky-mascot-front", "circle_color": "#EBDCC3" } },
+        { "type": "value", "settings": { "title": "С усмивка", "text": "Димо и екипът готвим с кеф — и се познава на вкуса.", "mascot": "smoky-mascot-surprised", "circle_color": "#FA0082" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

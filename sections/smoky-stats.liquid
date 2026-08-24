@@ -1,0 +1,84 @@
+{% comment %}
+  Smoky stats — dark slab with count-up numbers (GSAP, on scroll into view).
+  Each block is one stat: number (with optional suffix like "+" or "%")
+  and a label beneath.
+{% endcomment %}
+
+<section class="smoky-stats" id="smoky-stats-{{ section.id }}">
+  <div class="smoky-container smoky-stats__row">
+    {%- for block in section.blocks -%}
+      <div class="smoky-stats__col" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.08 }}"{% endunless %} {{ block.shopify_attributes }}>
+        <h2 class="smoky-stats__number"><span data-smoky-countup>{{ block.settings.number }}</span></h2>
+        <h3 class="smoky-stats__label">{{ block.settings.label }}</h3>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<style>
+  #smoky-stats-{{ section.id }} {
+    background: var(--smoky-dark-soft);
+    color: var(--smoky-sand);
+    padding-block: clamp(56px, 8vw, 110px);
+  }
+
+  #smoky-stats-{{ section.id }} .smoky-stats__row {
+    display: grid;
+    grid-template-columns: repeat({{ section.blocks.size | at_least: 1 | at_most: 4 }}, minmax(0, 1fr));
+    gap: clamp(28px, 4vw, 48px);
+    text-align: center;
+  }
+
+  #smoky-stats-{{ section.id }} .smoky-stats__number {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1;
+    color: var(--smoky-pink);
+  }
+
+  #smoky-stats-{{ section.id }} .smoky-stats__label {
+    margin: 10px 0 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.2vw, 1.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--smoky-sand);
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-stats-{{ section.id }} .smoky-stats__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky статистика",
+  "tag": "section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Статистика",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Число (може с наставка: 400+, 100%)", "default": "100%" },
+        { "type": "text", "id": "label", "label": "Етикет", "default": "На жар" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Smoky статистика",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "100%", "label": "На истинска жар" } },
+        { "type": "stat", "settings": { "number": "30", "label": "Минути средна доставка" } },
+        { "type": "stat", "settings": { "number": "12+", "label": "Вида скара" } },
+        { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

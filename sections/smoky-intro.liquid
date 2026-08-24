@@ -1,0 +1,134 @@
+{% comment %}
+  Smoky intro — two-column editorial block: compact condensed heading left,
+  large lead paragraphs right, optional rotating sticker (mascot/flame/stamp).
+  Background choice + optional rounded bottom "cap" so it curls over a dark
+  section beneath (the FTC section-intro pattern).
+{% endcomment %}
+
+{%- assign bg = section.settings.background -%}
+<section
+  class="smoky-intro{% if section.settings.curve_bottom %} smoky-intro--curled{% endif %}"
+  id="smoky-intro-{{ section.id }}"
+>
+  <div class="smoky-container smoky-intro__row">
+    <div class="smoky-intro__col-title" data-smoky-reveal>
+      <h2 class="smoky-title smoky-title--small">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="smoky-intro__col-text" data-smoky-reveal data-smoky-reveal-delay="0.1">
+      <div class="smoky-intro__text">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn{% if bg == 'dark' %} smoky-btn--sand{% endif %}" style="margin-top: clamp(20px, 2.4vw, 32px);">
+          <span class="smoky-btn__shadow"></span>
+          <span class="smoky-btn__content">
+            <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
+          </span>
+        </a>
+      {%- endif -%}
+    </div>
+    {%- if section.settings.sticker_asset != 'none' -%}
+      <div class="smoky-intro__sticker" data-smoky-scrub-rotate="24" aria-hidden="true">
+        <img src="{{ section.settings.sticker_asset | append: '.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  #smoky-intro-{{ section.id }} {
+    position: relative;
+    background: {% if bg == 'dark' %}var(--smoky-dark-soft){% elsif bg == 'sand' %}var(--smoky-sand){% else %}var(--smoky-cream){% endif %};
+    color: {% if bg == 'dark' %}var(--smoky-sand){% else %}var(--smoky-dark){% endif %};
+    padding-block: clamp(56px, 8vw, 120px);
+  }
+
+  #smoky-intro-{{ section.id }}.smoky-intro--curled {
+    border-radius: 0 0 var(--smoky-radius-big) var(--smoky-radius-big);
+    margin-bottom: calc(-1 * var(--smoky-radius-big));
+    z-index: 1;
+  }
+
+  #smoky-intro-{{ section.id }} .smoky-intro__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: start;
+  }
+
+  #smoky-intro-{{ section.id }} .smoky-intro__text {
+    font-family: var(--smoky-font-body);
+    font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+  #smoky-intro-{{ section.id }} .smoky-intro__text p { margin: 0 0 1em; }
+  #smoky-intro-{{ section.id }} .smoky-intro__text p:last-child { margin-bottom: 0; }
+  #smoky-intro-{{ section.id }} .smoky-intro__text strong { color: var(--smoky-pink); font-weight: 600; }
+
+  #smoky-intro-{{ section.id }} .smoky-intro__sticker {
+    position: absolute;
+    right: min(4vw, 48px);
+    top: -22px;
+    width: clamp(76px, 8vw, 120px);
+    filter: drop-shadow(0 6px 10px rgb(40 40 40 / 0.25));
+  }
+
+  #smoky-intro-{{ section.id }} .smoky-intro__sticker img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media screen and (max-width: 899px) {
+    #smoky-intro-{{ section.id }} .smoky-intro__row { grid-template-columns: 1fr; }
+    #smoky-intro-{{ section.id }} .smoky-intro__sticker { top: auto; bottom: -14px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky интро текст",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "НОВИЯТ СТАНДАРТ ЗА СКАРА!" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Текст",
+      "default": "<p>Smoky е балканска скара без компромиси — <strong>прясно мляно месо</strong>, истинска жар и рецепти, предавани от поколения. Всичко се готви на момента и пристига горещо на твоята врата.</p><p>Едно меню, една любов: кебапчета, кюфтета, стекове и всичко, което ухае на неделен обяд на село. Поръчваш онлайн — ние палим огъня.</p>"
+    },
+    { "type": "text", "id": "button_label", "label": "Бутон — текст" },
+    { "type": "url", "id": "button_link", "label": "Бутон — линк" },
+    {
+      "type": "select",
+      "id": "sticker_asset",
+      "label": "Стикер",
+      "options": [
+        { "value": "none", "label": "Без" },
+        { "value": "smoky-flame-sticker", "label": "Пламък" },
+        { "value": "smoky-mascot-happy", "label": "Димо — щастлив" },
+        { "value": "smoky-mascot-smiling", "label": "Димо — усмихнат" },
+        { "value": "smoky-mascot-surprised", "label": "Димо — изненадан" },
+        { "value": "smoky-stamp-smoky", "label": "Печат Smoky" },
+        { "value": "smoky-badge-dark", "label": "Значка (тъмна)" },
+        { "value": "smoky-badge-cream", "label": "Значка (крем)" }
+      ],
+      "default": "smoky-flame-sticker"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Фон",
+      "options": [
+        { "value": "cream", "label": "Крем" },
+        { "value": "sand", "label": "Пясък" },
+        { "value": "dark", "label": "Тъмен" }
+      ],
+      "default": "cream"
+    },
+    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмна секция)", "default": true }
+  ],
+  "presets": [{ "name": "Smoky интро текст" }]
+}
+{% endschema %}

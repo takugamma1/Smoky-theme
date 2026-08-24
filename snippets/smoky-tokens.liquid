@@ -1,0 +1,295 @@
+{%- doc -%}
+  Smoky design tokens + shared component styles, rendered once in theme.liquid <head>.
+
+  Adapted from the De Foodtruck Club recipe to the Smoky brand:
+  - warm cream paper page vs shadow-grey dark slabs, neon pink accent, sand dune surfaces
+  - condensed uppercase headings (Oswald), Fira Sans body
+  - 2px dark borders, hard offset shadows (never blurred), huge radii, pill buttons
+  - bounce easing cubic-bezier(0.35,1.5,0.6,1) on hovers, paper grain overlay
+  - shared primitives: .smoky-btn (text-roll hover), .smoky-arrow, .smoky-container,
+    .smoky-cap-* rounded section caps, .smoky-dotted-border, [data-smoky-reveal]
+{%- enddoc -%}
+<style>
+  :root {
+    --smoky-dark: #282828;
+    --smoky-dark-soft: #232120;
+    --smoky-cream: #F2ECDF;
+    --smoky-sand: #EBDCC3;
+    --smoky-pink: #FA0082;
+    --smoky-pink-soft: #FFB9DE;
+    --smoky-title-size: clamp(3.2rem, 7.5vw, 7rem);
+    --smoky-radius: clamp(20px, 3vw, 44px);
+    --smoky-radius-big: clamp(28px, 4.5vw, 64px);
+    --smoky-border: 2px solid var(--smoky-dark);
+    --smoky-shadow-distance: 0.25em;
+    --smoky-shadow-color: rgb(40 40 40 / 0.22);
+    --smoky-ease: cubic-bezier(0.75, 0, 0.25, 1);
+    --smoky-bounce: cubic-bezier(0.35, 1.5, 0.6, 1);
+    --smoky-anim: 0.4s var(--smoky-ease);
+    --smoky-anim-bounce: 0.4s var(--smoky-bounce);
+    --smoky-font-heading: var(--font-heading--family, 'Oswald', sans-serif);
+    --smoky-font-body: var(--font-body--family, 'Fira Sans', sans-serif);
+    --smoky-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .smoky-container {
+    max-width: 1680px;
+    margin-inline: auto;
+    padding-inline: min(8vw, 96px);
+  }
+
+  .smoky-container--medium { max-width: 1200px; }
+  .smoky-container--small { max-width: 960px; }
+
+  @media screen and (max-width: 749px) {
+    .smoky-container { padding-inline: 5vw; }
+  }
+
+  /* ---- headings ---- */
+  .smoky-title {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+  }
+
+  .smoky-title--big { font-size: calc(var(--smoky-title-size) * 1.3); }
+  .smoky-title--main { font-size: var(--smoky-title-size); }
+  .smoky-title--small { font-size: calc(var(--smoky-title-size) * 0.62); }
+  .smoky-title .smoky-accent { color: var(--smoky-pink); }
+
+  .smoky-kicker {
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+  }
+
+  /* ---- paper grain over the whole page ---- */
+  .smoky-grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    pointer-events: none;
+    background-image: var(--smoky-grain);
+    background-size: 240px;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+
+  /* ---- buttons: pill + hard shadow + text roll hover ---- */
+  .smoky-btn {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--smoky-font-heading);
+  }
+
+  .smoky-btn__shadow {
+    position: absolute;
+    inset: 0;
+    transform: translateY(var(--smoky-shadow-distance));
+    border-radius: 999px;
+    background: var(--smoky-shadow-color);
+  }
+
+  .smoky-btn__content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    height: 3em;
+    padding-inline: 1.6em;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.15vw, 1.15rem);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: transform var(--smoky-anim-bounce), background-color var(--smoky-anim);
+    will-change: transform;
+  }
+
+  .smoky-btn:hover .smoky-btn__content,
+  .smoky-btn:focus-visible .smoky-btn__content {
+    transform: translateY(calc(var(--smoky-shadow-distance) * -0.75));
+  }
+
+  .smoky-btn--dark .smoky-btn__content { background: var(--smoky-dark); color: var(--smoky-sand); }
+  .smoky-btn--light .smoky-btn__content { background: var(--smoky-cream); color: var(--smoky-dark); }
+  .smoky-btn--sand .smoky-btn__content { background: var(--smoky-sand); color: var(--smoky-dark); }
+
+  .smoky-roll {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .smoky-roll > span {
+    display: inline-block;
+    transition: transform var(--smoky-anim-bounce);
+    will-change: transform;
+  }
+
+  .smoky-roll > .smoky-roll__dup {
+    position: absolute;
+    inset: 0;
+    transform: translateY(125%);
+  }
+
+  .smoky-btn:hover .smoky-roll > span:first-child,
+  .smoky-link:hover .smoky-roll > span:first-child {
+    transform: translateY(-115%);
+  }
+
+  .smoky-btn:hover .smoky-roll > .smoky-roll__dup,
+  .smoky-link:hover .smoky-roll > .smoky-roll__dup {
+    transform: translateY(0);
+  }
+
+  .smoky-link {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- round arrow buttons for sliders ---- */
+  .smoky-arrow {
+    position: relative;
+    width: 3.2em;
+    height: 3.2em;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+
+  .smoky-arrow__shadow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--smoky-shadow-color);
+    transform: translateY(var(--smoky-shadow-distance));
+  }
+
+  .smoky-arrow__fill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    overflow: hidden;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-arrow:hover .smoky-arrow__fill {
+    transform: translateY(calc(var(--smoky-shadow-distance) * -0.75));
+  }
+
+  .smoky-arrow svg {
+    width: 1.1em;
+    height: 1.1em;
+    display: block;
+  }
+
+  .smoky-arrow--prev svg { transform: rotate(180deg); }
+
+  /* ---- rounded caps: a light section curling over the dark slab beneath ---- */
+  .smoky-cap-bottom {
+    border-radius: 0 0 var(--smoky-radius-big) var(--smoky-radius-big);
+    position: relative;
+    z-index: 1;
+  }
+
+  .smoky-cap-top {
+    border-radius: var(--smoky-radius-big) var(--smoky-radius-big) 0 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- dotted border card frame (svg is injected per-section) ---- */
+  .smoky-dotted-frame {
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+  }
+
+  .smoky-dotted-frame rect {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-dasharray: 8 8;
+    transition: stroke-dashoffset 0.6s var(--smoky-ease);
+  }
+
+  /* ---- scroll reveals (JS adds is-inview; no-JS stays visible) ---- */
+  @media (prefers-reduced-motion: no-preference) {
+    html.smoky-js [data-smoky-reveal] {
+      opacity: 0;
+      transform: translateY(2.5em) rotate(0.001deg);
+      transition: opacity 0.7s var(--smoky-ease), transform 0.7s var(--smoky-bounce);
+    }
+
+    html.smoky-js [data-smoky-reveal].is-inview {
+      opacity: 1;
+      transform: translateY(0) rotate(0.001deg);
+    }
+  }
+
+  /* ---- marquee primitives ---- */
+  .smoky-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .smoky-marquee-track > * { flex: 0 0 auto; }
+
+  /* ---- drag-cursor bubble ---- */
+  .smoky-cursor-bubble {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 3000;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5em;
+    height: 5em;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  @media (hover: none) {
+    .smoky-cursor-bubble { display: none; }
+  }
+</style>
+<script>document.documentElement.classList.add('smoky-js');</script>

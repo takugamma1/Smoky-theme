@@ -1,0 +1,257 @@
+{% comment %}
+  Smoky footer — FTC playful contact footer: giant title rows interleaved
+  with pill "speech bubble" links (email / phone / Instagram), then link
+  columns from admin menus, then the legal bottom bar with the wordmark.
+  Dark slab with a rounded top cap curling over the page.
+{% endcomment %}
+
+<footer class="smoky-footer" id="smoky-footer-{{ section.id }}">
+  <div class="smoky-container">
+    <div class="smoky-footer__contact">
+      <div class="smoky-footer__row" data-smoky-reveal>
+        <h2 class="smoky-title smoky-title--big">{{ section.settings.title1 }}</h2>
+        {%- if section.settings.email != blank -%}
+          <a href="mailto:{{ section.settings.email }}" class="smoky-footer__bubble smoky-footer__bubble--pink">
+            <span class="smoky-roll"><span>{{ section.settings.email }}</span><span class="smoky-roll__dup">{{ section.settings.email }}</span></span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.instagram != blank -%}
+          <a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" class="smoky-footer__bubble smoky-footer__bubble--icon" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="5.5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>
+          </a>
+        {%- endif -%}
+      </div>
+      <div class="smoky-footer__row smoky-footer__row--bottom" data-smoky-reveal data-smoky-reveal-delay="0.1">
+        {%- if section.settings.phone != blank -%}
+          <a href="tel:{{ section.settings.phone | remove: ' ' }}" class="smoky-footer__bubble smoky-footer__bubble--sand">
+            <span class="smoky-roll"><span>{{ section.settings.phone }}</span><span class="smoky-roll__dup">{{ section.settings.phone }}</span></span>
+          </a>
+        {%- endif -%}
+        <h2 class="smoky-title smoky-title--big">{{ section.settings.title2 }}</h2>
+        <span class="smoky-footer__mascot" data-smoky-scrub-rotate="14" aria-hidden="true">
+          <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
+        </span>
+      </div>
+    </div>
+
+    <div class="smoky-footer__columns">
+      {%- for i in (1..3) -%}
+        {%- assign key = 'menu_' | append: i -%}
+        {%- assign menu = section.settings[key] -%}
+        {%- if menu != blank -%}
+          <nav class="smoky-footer__col" aria-label="{{ menu.title | escape }}">
+            <h3>{{ menu.title }}</h3>
+            <ul>
+              {%- for link in menu.links -%}
+                <li><a href="{{ link.url }}" class="smoky-link smoky-footer__navlink">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+      <div class="smoky-footer__col smoky-footer__col--brand">
+        <img src="{{ 'smoky-wordmark-pink.svg' | asset_url }}" alt="Smoky" loading="lazy" width="600" height="200" class="smoky-footer__wordmark">
+        {%- if section.settings.tagline != blank -%}
+          <p>{{ section.settings.tagline }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="smoky-footer__legal">
+      <p>{{ 'now' | date: '%Y' }} © {{ section.settings.copyright }}</p>
+      {%- assign legal = section.settings.menu_legal -%}
+      {%- if legal != blank -%}
+        <ul>
+          {%- for link in legal.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+<style>
+  #smoky-footer-{{ section.id }} {
+    background: var(--smoky-dark-soft);
+    color: var(--smoky-sand);
+    border-radius: var(--smoky-radius-big) var(--smoky-radius-big) 0 0;
+    margin-top: calc(-1 * var(--smoky-radius-big));
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(64px, 9vw, 130px) clamp(24px, 3vw, 40px);
+    overflow: clip;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(14px, 2vw, 28px);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__row--bottom {
+    justify-content: flex-end;
+    position: relative;
+    margin-top: clamp(8px, 1.2vw, 18px);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__row .smoky-title { color: var(--smoky-sand); }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: clamp(3em, 5vw, 4.4em);
+    padding-inline: clamp(1.2em, 2vw, 2em);
+    border: var(--smoky-border);
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.6vw, 1.5rem);
+    letter-spacing: 0.02em;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 22%;
+    width: 16px;
+    height: 12px;
+    background: inherit;
+    border: var(--smoky-border);
+    border-top: none;
+    clip-path: polygon(0 0, 100% 0, 30% 100%);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble:hover { transform: translateY(-0.2em) rotate(-2deg); }
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--pink { background: var(--smoky-pink); color: var(--smoky-cream); }
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--sand { background: var(--smoky-sand); color: var(--smoky-dark); }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon {
+    width: clamp(3em, 5vw, 4.4em);
+    padding: 0;
+    justify-content: center;
+    background: transparent;
+    color: var(--smoky-sand);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon::after { display: none; }
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon svg { width: 40%; height: 40%; }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__mascot {
+    width: clamp(72px, 7vw, 110px);
+    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.4));
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__mascot img { width: 100%; height: auto; display: block; }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    margin-top: clamp(56px, 7vw, 96px);
+    padding-top: clamp(32px, 4vw, 48px);
+    border-top: 2px solid rgb(235 220 195 / 0.2);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__col h3 {
+    margin: 0 0 14px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--smoky-pink);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__navlink {
+    color: var(--smoky-sand);
+    font-weight: 500;
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__navlink:hover { opacity: 1; color: var(--smoky-pink); }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__wordmark {
+    width: min(220px, 60%);
+    height: auto;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__col--brand p {
+    margin: 12px 0 0;
+    font-family: var(--smoky-font-body);
+    font-size: 0.92rem;
+    opacity: 0.7;
+    max-width: 30ch;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__legal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: clamp(36px, 4.5vw, 56px);
+    padding-top: 18px;
+    border-top: 2px solid rgb(235 220 195 / 0.2);
+    font-family: var(--smoky-font-body);
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__legal p { margin: 0; }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__legal ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__legal a { color: inherit; }
+  #smoky-footer-{{ section.id }} .smoky-footer__legal a:hover { color: var(--smoky-pink); }
+
+  @media screen and (max-width: 749px) {
+    #smoky-footer-{{ section.id }} .smoky-footer__row--bottom { justify-content: flex-start; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky футър",
+  "tag": "section",
+  "class": "smoky-footer-section",
+  "settings": [
+    { "type": "text", "id": "title1", "label": "Голямо заглавие 1", "default": "ГЛАДЕН?" },
+    { "type": "text", "id": "title2", "label": "Голямо заглавие 2", "default": "ЗВЪННИ НИ!" },
+    { "type": "text", "id": "email", "label": "Имейл", "default": "hello@smoky.bg" },
+    { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 88 888 8888" },
+    { "type": "url", "id": "instagram", "label": "Instagram линк" },
+    { "type": "link_list", "id": "menu_1", "label": "Колона 1 (меню)" },
+    { "type": "link_list", "id": "menu_2", "label": "Колона 2 (меню)" },
+    { "type": "link_list", "id": "menu_3", "label": "Колона 3 (меню)" },
+    { "type": "text", "id": "tagline", "label": "Слоган", "default": "Балканска скара с доставка. На жар, с дим и с любов." },
+    { "type": "text", "id": "copyright", "label": "Копирайт", "default": "Smoky. Всички права запазени." },
+    { "type": "link_list", "id": "menu_legal", "label": "Правни линкове (меню)" }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

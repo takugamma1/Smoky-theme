@@ -1,0 +1,272 @@
+{% comment %}
+  Smoky concepts slider — the FTC foodtruck-card carousel as a menu-category
+  slider. Each block is a colored tile with its own bg/border colors (inline
+  CSS custom properties), a dashed ring circle behind a cutout dish image,
+  and a "Виж" pill. Native scroll-snap drag + round arrows + drag cursor.
+{% endcomment %}
+
+<section class="smoky-concepts" id="smoky-concepts-{{ section.id }}">
+  <div class="smoky-container">
+    <h2 class="smoky-title smoky-title--small smoky-concepts__heading" data-smoky-reveal>
+      {{ section.settings.heading_before }}
+      <span class="smoky-accent">{{ section.settings.heading_accent }}</span>
+      {{ section.settings.heading_after }}
+    </h2>
+  </div>
+
+  <div class="smoky-concepts__viewport" data-smoky-drag-cursor tabindex="0" aria-label="{{ section.settings.heading_accent | escape }}">
+    <ul class="smoky-concepts__track">
+      {%- for block in section.blocks -%}
+        <li
+          class="smoky-concepts__card"
+          style="--tile-bg: {{ block.settings.tile_bg }}; --tile-border: {{ block.settings.tile_border }};"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="smoky-concepts__link" aria-label="{{ block.settings.title | escape }}"></a>
+          {%- endif -%}
+          <div class="smoky-concepts__circle" aria-hidden="true">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="200" cy="200" r="150" fill="var(--tile-border)"></circle>
+              <circle class="smoky-concepts__ring" cx="200" cy="200" r="178" fill="none" stroke="var(--tile-border)" stroke-width="2.5" stroke-dasharray="7 7"></circle>
+            </svg>
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', alt: block.settings.title, class: 'smoky-concepts__img' }}
+            {%- else -%}
+              <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" loading="lazy" width="300" height="300" class="smoky-concepts__img smoky-concepts__img--placeholder">
+            {%- endif -%}
+          </div>
+          <h3 class="smoky-concepts__title">{{ block.settings.title }}</h3>
+          {%- if block.settings.subtitle != blank -%}
+            <p class="smoky-concepts__subtitle">{{ block.settings.subtitle }}</p>
+          {%- endif -%}
+          {%- if block.settings.link != blank -%}
+            <span class="smoky-btn smoky-btn--light smoky-concepts__btn" aria-hidden="true">
+              <span class="smoky-btn__shadow"></span>
+              <span class="smoky-btn__content">{{ section.settings.card_button_label }}</span>
+            </span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+
+  <div class="smoky-container smoky-concepts__controls">
+    <button type="button" class="smoky-arrow smoky-arrow--prev" data-dir="-1" aria-label="Назад">
+      <span class="smoky-arrow__shadow"></span>
+      <span class="smoky-arrow__fill">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+    <button type="button" class="smoky-arrow" data-dir="1" aria-label="Напред">
+      <span class="smoky-arrow__shadow"></span>
+      <span class="smoky-arrow__fill">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+  </div>
+</section>
+
+<style>
+  #smoky-concepts-{{ section.id }} {
+    background: var(--smoky-dark-soft);
+    color: var(--smoky-sand);
+    padding-block: clamp(64px, 9vw, 130px);
+    overflow: clip;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__heading {
+    color: var(--smoky-sand);
+    max-width: 14em;
+    margin-bottom: clamp(28px, 4vw, 56px);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__viewport::-webkit-scrollbar { display: none; }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__track {
+    display: flex;
+    gap: clamp(18px, 2.2vw, 32px);
+    list-style: none;
+    margin: 0;
+    padding: 10px min(8vw, 96px) 10px;
+    width: max-content;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: clamp(270px, 26vw, 380px);
+    padding: clamp(24px, 2.4vw, 36px) clamp(18px, 2vw, 28px) clamp(26px, 2.6vw, 38px);
+    background: var(--tile-bg);
+    border: 2px solid var(--tile-border);
+    border-radius: var(--smoky-radius);
+    scroll-snap-align: center;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__card:hover { transform: translateY(-8px); }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__circle {
+    position: relative;
+    width: 100%;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__circle svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__ring {
+    transform-origin: 50% 50%;
+    transition: transform 0.6s var(--smoky-bounce);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__card:hover .smoky-concepts__ring { transform: rotate(-14deg); }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__img {
+    position: absolute;
+    inset: 12%;
+    width: 76%;
+    height: 76%;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 20px rgb(0 0 0 / 0.35));
+    transition: transform 0.5s var(--smoky-bounce);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__card:hover .smoky-concepts__img {
+    transform: scale(1.06) rotate(-4deg);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__img--placeholder { inset: 20%; width: 60%; height: 60%; }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__title {
+    margin: clamp(14px, 1.6vw, 22px) 0 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tile-border);
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__subtitle {
+    margin: 6px 0 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    color: var(--tile-border);
+    opacity: 0.85;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__btn {
+    margin-top: clamp(16px, 1.8vw, 24px);
+    font-size: 0.85rem;
+  }
+
+  #smoky-concepts-{{ section.id }} .smoky-concepts__controls {
+    display: flex;
+    gap: 14px;
+    margin-top: clamp(24px, 3vw, 40px);
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-concepts-{{ section.id }} .smoky-concepts__card { width: 78vw; }
+    #smoky-concepts-{{ section.id }} .smoky-concepts__track { padding-inline: 5vw; }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById('smoky-concepts-{{ section.id }}');
+    if (!root) return;
+    const viewport = root.querySelector('.smoky-concepts__viewport');
+    const card = root.querySelector('.smoky-concepts__card');
+    root.querySelectorAll('.smoky-arrow').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const step = (card ? card.offsetWidth + 24 : 320) * parseInt(btn.dataset.dir, 10);
+        viewport.scrollBy({ left: step, behavior: 'smooth' });
+      });
+    });
+
+    // drag to scroll with the mouse (touch scrolls natively)
+    let down = false, startX = 0, startScroll = 0;
+    viewport.addEventListener('mousedown', (e) => {
+      down = true;
+      startX = e.pageX;
+      startScroll = viewport.scrollLeft;
+      viewport.style.cursor = 'grabbing';
+      viewport.style.scrollSnapType = 'none';
+    });
+    window.addEventListener('mouseup', () => {
+      if (!down) return;
+      down = false;
+      viewport.style.cursor = 'grab';
+      viewport.style.scrollSnapType = '';
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!down) return;
+      e.preventDefault();
+      viewport.scrollLeft = startScroll - (e.pageX - startX);
+    });
+    viewport.addEventListener('click', (e) => {
+      if (Math.abs(viewport.scrollLeft - startScroll) > 8) e.preventDefault();
+    }, true);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky категории слайдер",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading_before", "label": "Заглавие — начало", "default": "Нашите" },
+    { "type": "text", "id": "heading_accent", "label": "Заглавие — акцент (розово)", "default": "вкусове" },
+    { "type": "text", "id": "heading_after", "label": "Заглавие — край", "default": "от скарата" },
+    { "type": "text", "id": "card_button_label", "label": "Бутон на картите", "default": "Виж" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Карта",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Име", "default": "Кебапчета" },
+        { "type": "text", "id": "subtitle", "label": "Подзаглавие" },
+        { "type": "image_picker", "id": "image", "label": "Изрязана снимка (PNG)" },
+        { "type": "color", "id": "tile_bg", "label": "Фон на картата", "default": "#3A2E2A" },
+        { "type": "color", "id": "tile_border", "label": "Рамка и акцент", "default": "#EBDCC3" },
+        { "type": "url", "id": "link", "label": "Линк" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Smoky категории слайдер",
+      "blocks": [
+        { "type": "card", "settings": { "title": "Кебапчета", "tile_bg": "#4A1230", "tile_border": "#FA0082" } },
+        { "type": "card", "settings": { "title": "Кюфтета", "tile_bg": "#3A2E2A", "tile_border": "#EBDCC3" } },
+        { "type": "card", "settings": { "title": "Стекове", "tile_bg": "#301B14", "tile_border": "#E8956B" } },
+        { "type": "card", "settings": { "title": "Пилешко", "tile_bg": "#3F3A1E", "tile_border": "#E4D96F" } },
+        { "type": "card", "settings": { "title": "Сач", "tile_bg": "#1F3328", "tile_border": "#9BC49A" } },
+        { "type": "card", "settings": { "title": "Гарнитури", "tile_bg": "#403014", "tile_border": "#EFC069" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

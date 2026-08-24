@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "menu_hero": {
+      "type": "smoky-page-hero",
+      "settings": {
+        "kicker": "Горещо до вратата",
+        "title": "МЕНЮ ЗА ДОСТАВКА",
+        "marquee": false,
+        "lead": "Всичко се готви на момента, на истинска жар. Избери, поръчай онлайн — ние палим огъня."
+      }
+    },
+    "menu_list": {
+      "type": "smoky-menu-list",
+      "settings": { "heading": "", "card_button_label": "Поръчай от тук" },
+      "blocks": {
+        "cat_skara": { "type": "category", "settings": { "title": "Скара", "accent": "#FA0082", "limit": 12 } },
+        "cat_sach": { "type": "category", "settings": { "title": "Сач и плата", "accent": "#282828", "limit": 8 } },
+        "cat_garnituri": { "type": "category", "settings": { "title": "Гарнитури и салати", "accent": "#282828", "limit": 10 } },
+        "cat_deserti": { "type": "category", "settings": { "title": "Десерти и напитки", "accent": "#FA0082", "limit": 8 } }
+      },
+      "block_order": ["cat_skara", "cat_sach", "cat_garnituri", "cat_deserti"]
+    },
+    "menu_marquee": {
+      "type": "smoky-marquee",
+      "settings": { "background": "pink", "separator": "smoky-pattern-shevitsa", "speed": 70, "size": 3, "direction": "left" },
+      "blocks": {
+        "w1": { "type": "word", "settings": { "text": "ПРЯСНО", "outline": false } },
+        "w2": { "type": "word", "settings": { "text": "НА ЖАР", "outline": true } },
+        "w3": { "type": "word", "settings": { "text": "ГОРЕЩО", "outline": false } },
+        "w4": { "type": "word", "settings": { "text": "ДО 45 МИН", "outline": true } }
+      },
+      "block_order": ["w1", "w2", "w3", "w4"]
+    },
+    "menu_faq": {
+      "type": "smoky-faq",
+      "settings": { "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА" },
+      "blocks": {
+        "q1": { "type": "qa", "settings": { "question": "Къде доставяте?", "answer": "<p>Доставяме в цяла София. Точните квартали и времена виждаш при завършване на поръчката.</p>" } },
+        "q2": { "type": "qa", "settings": { "question": "Колко време отнема доставката?", "answer": "<p>Средно 30–45 минути — готвим на момента и тръгваме веднага.</p>" } },
+        "q3": { "type": "qa", "settings": { "question": "Има ли минимална поръчка?", "answer": "<p>Да — 20 лв. за доставка. По-малки поръчки можеш да вземеш на място.</p>" } },
+        "q4": { "type": "qa", "settings": { "question": "Как се плаща?", "answer": "<p>Онлайн с карта или при доставка — в брой или с карта.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"]
+    }
+  },
+  "order": ["menu_hero", "menu_list", "menu_marquee", "menu_faq"]
+}

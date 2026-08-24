@@ -1,11 +1,11 @@
-{%- doc -%}
+{% comment %}
   Smoky best sellers.
 
   Cream paper section with a heavy condensed heading, collection tabs,
   and arch-shaped product cards on black paper material:
   image, uppercase name, pink separator, price. Optional TOP flame sticker
   on the first card. Each block = one collection tab.
-{%- enddoc -%}
+{% endcomment %}
 
 <div class="smoky-bs" id="smoky-bs-{{ section.id }}">
   <h2 class="smoky-bs__heading">{{ section.settings.heading }}</h2>
@@ -46,7 +46,7 @@
               <a href="{{ product.url }}" class="smoky-bs__card">
                 {%- if section.settings.show_top and forloop.first -%}
                   <span class="smoky-bs__top" aria-hidden="true">
-                    <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="lazy">
+                    <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
                     <span>TOP</span>
                   </span>
                 {%- endif -%}
@@ -55,7 +55,7 @@
                     {%- if product.featured_image -%}
                       {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 30vw, 80vw' }}
                     {%- else -%}
-                      <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" class="smoky-bs__media-fallback">
+                      <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="200" height="200" class="smoky-bs__media-fallback">
                     {%- endif -%}
                   </span>
                   <span class="smoky-bs__name">{{ product.title }}</span>

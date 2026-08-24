@@ -1,0 +1,234 @@
+{% comment %}
+  Smoky compare — the FTC "us vs regular caterers" objection-handler.
+  Two sand cards with dashed SVG borders: left = Smoky (pink dashes, ✓ list,
+  logo badge overhanging the top, CTA), right = the alternative (grey dashes,
+  ✗ list). Blocks: "plus" rows go left, "minus" rows go right.
+{% endcomment %}
+
+<section class="smoky-compare" id="smoky-compare-{{ section.id }}">
+  <div class="smoky-container smoky-container--medium">
+    <h2 class="smoky-title smoky-title--small smoky-compare__heading" data-smoky-reveal>
+      <span class="smoky-accent">{{ section.settings.heading_accent }}</span>
+      {{ section.settings.heading_after }}
+    </h2>
+
+    <div class="smoky-compare__row">
+      <div class="smoky-compare__card smoky-compare__card--us" data-smoky-reveal>
+        <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+          <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-pink)"></rect>
+        </svg>
+        <div class="smoky-compare__badge" aria-hidden="true">
+          <img src="{{ 'smoky-badge-dark.svg' | asset_url }}" alt="" loading="lazy" width="88" height="88">
+        </div>
+        <h3 class="smoky-compare__title">{{ section.settings.us_title }}</h3>
+        <ul class="smoky-compare__list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'plus' -%}
+              <li {{ block.shopify_attributes }}>
+                <span class="smoky-compare__icon smoky-compare__icon--plus" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m5 13 4.5 4.5L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div>
+                  <h4>{{ block.settings.title }}</h4>
+                  {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn">
+            <span class="smoky-btn__shadow"></span>
+            <span class="smoky-btn__content">
+              <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div class="smoky-compare__card smoky-compare__card--them" data-smoky-reveal data-smoky-reveal-delay="0.12">
+        <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+          <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="rgb(40 40 40 / 0.4)"></rect>
+        </svg>
+        <h3 class="smoky-compare__title smoky-compare__title--them">{{ section.settings.them_title }}</h3>
+        <ul class="smoky-compare__list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'minus' -%}
+              <li {{ block.shopify_attributes }}>
+                <span class="smoky-compare__icon smoky-compare__icon--minus" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                </span>
+                <div>
+                  <h4>{{ block.settings.title }}</h4>
+                  {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-compare-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-block: clamp(64px, 9vw, 130px);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__heading {
+    text-align: center;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 3vw, 44px);
+    align-items: start;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__card {
+    position: relative;
+    background: var(--smoky-sand);
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    padding: clamp(48px, 5.5vw, 72px) clamp(24px, 3vw, 44px) clamp(30px, 3.6vw, 48px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 2.4vw, 30px);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__card--them {
+    background: #EFE7D6;
+    opacity: 0.92;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-6deg);
+    width: clamp(72px, 7vw, 100px);
+    filter: drop-shadow(0 6px 10px rgb(40 40 40 / 0.3));
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__badge img { width: 100%; height: auto; display: block; }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__title {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__title--them { opacity: 0.6; }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.6vw, 20px);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__icon {
+    flex: 0 0 auto;
+    width: 1.9em;
+    height: 1.9em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__icon svg { width: 55%; height: 55%; }
+  #smoky-compare-{{ section.id }} .smoky-compare__icon--plus { background: var(--smoky-pink); color: var(--smoky-cream); }
+  #smoky-compare-{{ section.id }} .smoky-compare__icon--minus { background: rgb(40 40 40 / 0.18); color: var(--smoky-dark); }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__list h4 {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__list p {
+    margin: 4px 0 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    line-height: 1.45;
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 899px) {
+    #smoky-compare-{{ section.id }} .smoky-compare__row { grid-template-columns: 1fr; gap: 52px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky сравнение",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading_accent", "label": "Заглавие — акцент", "default": "Защо" },
+    { "type": "text", "id": "heading_after", "label": "Заглавие — след акцента", "default": "Smoky?" },
+    { "type": "text", "id": "us_title", "label": "Лява карта — заглавие", "default": "SMOKY" },
+    { "type": "text", "id": "them_title", "label": "Дясна карта — заглавие", "default": "Обикновената доставка" },
+    { "type": "text", "id": "button_label", "label": "Бутон — текст", "default": "Поръчай сега" },
+    { "type": "url", "id": "button_link", "label": "Бутон — линк" }
+  ],
+  "blocks": [
+    {
+      "type": "plus",
+      "name": "✓ Предимство (лява карта)",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Заглавие", "default": "Прясно на жар" },
+        { "type": "text", "id": "text", "label": "Описание" }
+      ]
+    },
+    {
+      "type": "minus",
+      "name": "✗ Недостатък (дясна карта)",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Заглавие", "default": "Претоплена храна" },
+        { "type": "text", "id": "text", "label": "Описание" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Smoky сравнение",
+      "blocks": [
+        { "type": "plus", "settings": { "title": "Прясно смляно месо всеки ден", "text": "Работим само с проверени български доставчици." } },
+        { "type": "plus", "settings": { "title": "На жар, не на плоча", "text": "Истински огън, истински дим, истински вкус." } },
+        { "type": "plus", "settings": { "title": "Собствена доставка", "text": "Пристига горещо, в брандирана опаковка, точно навреме." } },
+        { "type": "plus", "settings": { "title": "Балкански рецепти", "text": "Както на село — без консерванти и без компромиси." } },
+        { "type": "plus", "settings": { "title": "Реални порции", "text": "Ставаш сит. Точка." } },
+        { "type": "minus", "settings": { "title": "Замразени полуфабрикати", "text": "Никой не знае откога са във фризера." } },
+        { "type": "minus", "settings": { "title": "Претоплено във фритюрник", "text": "Вкус на олио вместо на огън." } },
+        { "type": "minus", "settings": { "title": "Куриер на парче", "text": "Пристига хладко и разклатено." } },
+        { "type": "minus", "settings": { "title": "Вкус „под линия“", "text": "Едно и също, отвсякъде." } },
+        { "type": "minus", "settings": { "title": "Порция въздух", "text": "Снимката обещава, кутията разочарова." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

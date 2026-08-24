@@ -1,10 +1,10 @@
-{%- doc -%}
+{% comment %}
   Smoky flame navigation bar.
 
   Floating pink flame-shaped bar, centered, not full width.
   Desktop: SMOKY wordmark left, menu links right, dot under the active link.
   Mobile: wordmark left, burger right, full-screen drawer menu.
-{%- enddoc -%}
+{% endcomment %}
 
 {% liquid
   assign menu = linklists[section.settings.menu]
@@ -79,7 +79,7 @@
           <li><a href="#">Резервации</a></li>
         {%- endif -%}
       </ul>
-      <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" class="smoky-drawer__mascot" loading="lazy">
+      <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" width="120" height="120" class="smoky-drawer__mascot" loading="lazy">
     </nav>
   </div>
 </header-smoky>
