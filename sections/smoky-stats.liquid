@@ -20,8 +20,6 @@
     background: var(--smoky-dark-soft);
     color: var(--smoky-sand);
     padding-block: clamp(76px, 9vw, 140px);
-    {% if section.settings.curve_top %}border-top-left-radius: var(--smoky-radius-big); border-top-right-radius: var(--smoky-radius-big);{% endif %}
-    {% if section.settings.curve_bottom %}border-bottom-left-radius: var(--smoky-radius-big); border-bottom-right-radius: var(--smoky-radius-big);{% endif %}
   }
 
   #smoky-stats-{{ section.id }} .smoky-stats__row {
@@ -59,20 +57,7 @@
 {
   "name": "Smoky статистика",
   "tag": "section",
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "curve_top",
-      "label": "Заоблен горен ръб",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_bottom",
-      "label": "Заоблен долен ръб",
-      "default": false
-    }
-  ],
+  "settings": [],
   "blocks": [
     {
       "type": "stat",

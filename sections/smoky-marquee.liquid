@@ -50,8 +50,6 @@
     /* tall enough that the light sections curling over both edges leave a full band visible */
     padding-block: calc(var(--smoky-radius-big) + clamp(20px, 2.5vw, 36px));
     overflow: clip;
-    {% if section.settings.curve_top %}border-top-left-radius: min(var(--smoky-radius-big), 40px); border-top-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
-    {% if section.settings.curve_bottom %}border-bottom-left-radius: min(var(--smoky-radius-big), 40px); border-bottom-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
   }
 
   #smoky-marquee-{{ section.id }} .smoky-marquee__viewport { overflow: hidden; }
@@ -184,18 +182,6 @@
       "max": 5,
       "step": 1,
       "default": 3
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_top",
-      "label": "Заоблен горен ръб",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_bottom",
-      "label": "Заоблен долен ръб",
-      "default": false
     },
     {
       "type": "range",

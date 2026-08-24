@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "menu_hero": {
       "type": "smoky-page-hero",
@@ -22,8 +21,7 @@
       "type": "smoky-menu-list",
       "settings": {
         "heading": "",
-        "card_button_label": "Поръчай от тук",
-        "curve_bottom": true
+        "card_button_label": "Поръчай от тук"
       },
       "blocks": {
         "cat_skara": {
@@ -73,9 +71,7 @@
         "separator": "smoky-pattern-shevitsa",
         "speed": 70,
         "size": 3,
-        "direction": "left",
-        "curve_top": false,
-        "curve_bottom": false
+        "direction": "left"
       },
       "blocks": {
         "w1": {
@@ -117,8 +113,7 @@
     "menu_faq": {
       "type": "smoky-faq",
       "settings": {
-        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА",
-        "curve_top": true
+        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА"
       },
       "blocks": {
         "q1": {

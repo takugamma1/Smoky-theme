@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -33,16 +32,12 @@
         "button_label": "",
         "button_link": "",
         "sticker_asset": "smoky-flame-sticker",
-        "background": "cream",
-        "curve_bottom": true
+        "background": "cream"
       }
     },
     "smoky_image_divider": {
       "type": "smoky-image-divider",
-      "settings": {
-        "curve_top": false,
-        "curve_bottom": false
-      }
+      "settings": {}
     },
     "smoky_concepts": {
       "type": "smoky-concepts",
@@ -120,9 +115,7 @@
         "heading_before": "Нашите",
         "heading_accent": "вкусове",
         "heading_after": "от скарата",
-        "card_button_label": "Виж",
-        "curve_top": false,
-        "curve_bottom": true
+        "card_button_label": "Виж"
       }
     },
     "smoky_compare": {
@@ -241,8 +234,6 @@
         "background": "dark",
         "separator": "smoky-pattern-shevitsa",
         "sep_repeat": 3,
-        "curve_top": true,
-        "curve_bottom": true,
         "speed": 70,
         "size": 4,
         "direction": "left"
@@ -392,10 +383,7 @@
         "st3",
         "st4"
       ],
-      "settings": {
-        "curve_top": true,
-        "curve_bottom": false
-      }
+      "settings": {}
     }
   },
   "order": [

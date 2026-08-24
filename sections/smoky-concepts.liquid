@@ -108,8 +108,6 @@
     color: var(--smoky-sand);
     padding-block: clamp(64px, 9vw, 130px);
     overflow: clip;
-    {% if section.settings.curve_top %}border-top-left-radius: var(--smoky-radius-big); border-top-right-radius: var(--smoky-radius-big);{% endif %}
-    {% if section.settings.curve_bottom %}border-bottom-left-radius: var(--smoky-radius-big); border-bottom-right-radius: var(--smoky-radius-big);{% endif %}
   }
 
   #smoky-concepts-{{ section.id }} .smoky-concepts__heading {
@@ -318,18 +316,6 @@
       "id": "card_button_label",
       "label": "Бутон на картите",
       "default": "Виж"
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_top",
-      "label": "Заоблен горен ръб",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_bottom",
-      "label": "Заоблен долен ръб",
-      "default": false
     }
   ],
   "blocks": [

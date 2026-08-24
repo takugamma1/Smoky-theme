@@ -22,8 +22,6 @@
     background: var(--smoky-dark-soft);
     height: clamp(320px, 55vw, 640px);
     overflow: clip;
-    {% if section.settings.curve_top %}border-top-left-radius: var(--smoky-radius-big); border-top-right-radius: var(--smoky-radius-big);{% endif %}
-    {% if section.settings.curve_bottom %}border-bottom-left-radius: var(--smoky-radius-big); border-bottom-right-radius: var(--smoky-radius-big);{% endif %}
   }
 
   #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__figure {
@@ -86,18 +84,6 @@
       "type": "image_picker",
       "id": "image",
       "label": "Снимка (широка, атмосферна)"
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_top",
-      "label": "Заоблен горен ръб",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "curve_bottom",
-      "label": "Заоблен долен ръб",
-      "default": false
     }
   ],
   "presets": [

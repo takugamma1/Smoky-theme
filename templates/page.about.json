@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "about_hero": {
       "type": "smoky-page-hero",
@@ -15,9 +14,7 @@
         "kicker": "За нас",
         "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
         "marquee": true,
-        "lead": "Скарата е нашият език на любов. Виж се, усети се, вкуси се.",
-        "curve_top": false,
-        "curve_bottom": false
+        "lead": "Скарата е нашият език на любов. Виж се, усети се, вкуси се."
       }
     },
     "about_intro": {
@@ -28,17 +25,12 @@
         "button_label": "",
         "button_link": "",
         "sticker_asset": "smoky-stamp-smoky",
-        "background": "cream",
-        "curve_bottom": true,
-        "curve_top": false
+        "background": "cream"
       }
     },
     "about_divider": {
       "type": "smoky-image-divider",
-      "settings": {
-        "curve_top": false,
-        "curve_bottom": false
-      }
+      "settings": {}
     },
     "about_values": {
       "type": "smoky-values",
@@ -88,9 +80,7 @@
       ],
       "settings": {
         "heading": "НАШИТЕ ЦЕННОСТИ",
-        "background": "cream",
-        "curve_top": true,
-        "curve_bottom": false
+        "background": "cream"
       }
     },
     "about_photos": {
@@ -144,9 +134,7 @@
       "settings": {
         "background": "cream",
         "speed": 50,
-        "direction": "right",
-        "curve_top": false,
-        "curve_bottom": true
+        "direction": "right"
       }
     },
     "about_stats": {
@@ -187,10 +175,7 @@
         "st3",
         "st4"
       ],
-      "settings": {
-        "curve_top": false,
-        "curve_bottom": false
-      }
+      "settings": {}
     }
   },
   "order": [
