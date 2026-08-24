@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "smoky_hero": {
@@ -8,6 +17,8 @@
         "line2": "СКАРАТА!",
         "loop_words": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!",
         "use_mascot": true,
+        "show_flames": true,
+        "video_url": "",
         "button_label": "Поръчай сега",
         "button_link": "shopify://collections/all",
         "button2_label": "Виж менюто",
@@ -19,6 +30,8 @@
       "settings": {
         "heading": "НОВИЯТ СТАНДАРТ ЗА СКАРА!",
         "text": "<p>Smoky е балканска скара без компромиси — <strong>прясно мляно месо</strong>, истинска жар и рецепти, предавани от поколения. Всичко се готви на момента и пристига горещо на твоята врата.</p><p>Едно меню, една любов: кебапчета, кюфтета, стекове и всичко, което ухае на неделен обяд на село. Поръчваш онлайн — ние палим огъня.</p>",
+        "button_label": "",
+        "button_link": "",
         "sticker_asset": "smoky-flame-sticker",
         "background": "cream",
         "curve_bottom": true
@@ -30,24 +43,169 @@
     },
     "smoky_concepts": {
       "type": "smoky-concepts",
+      "blocks": {
+        "card_kebapcheta": {
+          "type": "card",
+          "settings": {
+            "title": "Кебапчета",
+            "subtitle": "Класиката, която ни събира",
+            "tile_bg": "#4a1230",
+            "tile_border": "#fa0082",
+            "link": "shopify://collections/all"
+          }
+        },
+        "card_kyufteta": {
+          "type": "card",
+          "settings": {
+            "title": "Кюфтета",
+            "subtitle": "По селски, с лук и кимион",
+            "tile_bg": "#3a2e2a",
+            "tile_border": "#ebdcc3",
+            "link": "shopify://collections/all"
+          }
+        },
+        "card_stekove": {
+          "type": "card",
+          "settings": {
+            "title": "Стекове",
+            "subtitle": "Врат, флейка, вешалица",
+            "tile_bg": "#301b14",
+            "tile_border": "#e8956b",
+            "link": "shopify://collections/all"
+          }
+        },
+        "card_pileshko": {
+          "type": "card",
+          "settings": {
+            "title": "Пилешко",
+            "subtitle": "Мариновано и на въглища",
+            "tile_bg": "#3f3a1e",
+            "tile_border": "#e4d96f",
+            "link": "shopify://collections/all"
+          }
+        },
+        "card_sach": {
+          "type": "card",
+          "settings": {
+            "title": "Сач",
+            "subtitle": "Цвърчащ, за компания",
+            "tile_bg": "#1f3328",
+            "tile_border": "#9bc49a",
+            "link": "shopify://collections/all"
+          }
+        },
+        "card_garnituri": {
+          "type": "card",
+          "settings": {
+            "title": "Гарнитури",
+            "subtitle": "Картофки, лютеница, топъл хляб",
+            "tile_bg": "#403014",
+            "tile_border": "#efc069",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "card_kebapcheta",
+        "card_kyufteta",
+        "card_stekove",
+        "card_pileshko",
+        "card_sach",
+        "card_garnituri"
+      ],
       "settings": {
         "heading_before": "Нашите",
         "heading_accent": "вкусове",
         "heading_after": "от скарата",
         "card_button_label": "Виж"
-      },
-      "blocks": {
-        "card_kebapcheta": { "type": "card", "settings": { "title": "Кебапчета", "subtitle": "Класиката, която ни събира", "tile_bg": "#4A1230", "tile_border": "#FA0082", "link": "shopify://collections/all" } },
-        "card_kyufteta": { "type": "card", "settings": { "title": "Кюфтета", "subtitle": "По селски, с лук и кимион", "tile_bg": "#3A2E2A", "tile_border": "#EBDCC3", "link": "shopify://collections/all" } },
-        "card_stekove": { "type": "card", "settings": { "title": "Стекове", "subtitle": "Врат, флейка, вешалица", "tile_bg": "#301B14", "tile_border": "#E8956B", "link": "shopify://collections/all" } },
-        "card_pileshko": { "type": "card", "settings": { "title": "Пилешко", "subtitle": "Мариновано и на въглища", "tile_bg": "#3F3A1E", "tile_border": "#E4D96F", "link": "shopify://collections/all" } },
-        "card_sach": { "type": "card", "settings": { "title": "Сач", "subtitle": "Цвърчащ, за компания", "tile_bg": "#1F3328", "tile_border": "#9BC49A", "link": "shopify://collections/all" } },
-        "card_garnituri": { "type": "card", "settings": { "title": "Гарнитури", "subtitle": "Картофки, лютеница, топъл хляб", "tile_bg": "#403014", "tile_border": "#EFC069", "link": "shopify://collections/all" } }
-      },
-      "block_order": ["card_kebapcheta", "card_kyufteta", "card_stekove", "card_pileshko", "card_sach", "card_garnituri"]
+      }
     },
     "smoky_compare": {
       "type": "smoky-compare",
+      "blocks": {
+        "plus_1": {
+          "type": "plus",
+          "settings": {
+            "title": "Прясно смляно месо всеки ден",
+            "text": "Работим само с проверени български доставчици."
+          }
+        },
+        "plus_2": {
+          "type": "plus",
+          "settings": {
+            "title": "На жар, не на плоча",
+            "text": "Истински огън, истински дим, истински вкус."
+          }
+        },
+        "plus_3": {
+          "type": "plus",
+          "settings": {
+            "title": "Собствена доставка",
+            "text": "Пристига горещо, в брандирана опаковка, точно навреме."
+          }
+        },
+        "plus_4": {
+          "type": "plus",
+          "settings": {
+            "title": "Балкански рецепти",
+            "text": "Както на село — без консерванти и без компромиси."
+          }
+        },
+        "plus_5": {
+          "type": "plus",
+          "settings": {
+            "title": "Реални порции",
+            "text": "Ставаш сит. Точка."
+          }
+        },
+        "minus_1": {
+          "type": "minus",
+          "settings": {
+            "title": "Замразени полуфабрикати",
+            "text": "Никой не знае откога са във фризера."
+          }
+        },
+        "minus_2": {
+          "type": "minus",
+          "settings": {
+            "title": "Претоплено във фритюрник",
+            "text": "Вкус на олио вместо на огън."
+          }
+        },
+        "minus_3": {
+          "type": "minus",
+          "settings": {
+            "title": "Куриер на парче",
+            "text": "Пристига хладко и разклатено."
+          }
+        },
+        "minus_4": {
+          "type": "minus",
+          "settings": {
+            "title": "Вкус „под линия“",
+            "text": "Едно и също, отвсякъде."
+          }
+        },
+        "minus_5": {
+          "type": "minus",
+          "settings": {
+            "title": "Порция въздух",
+            "text": "Снимката обещава, кутията разочарова."
+          }
+        }
+      },
+      "block_order": [
+        "plus_1",
+        "plus_2",
+        "plus_3",
+        "plus_4",
+        "plus_5",
+        "minus_1",
+        "minus_2",
+        "minus_3",
+        "minus_4",
+        "minus_5"
+      ],
       "settings": {
         "heading_accent": "Защо",
         "heading_after": "Smoky?",
@@ -55,57 +213,159 @@
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
         "button_link": "shopify://collections/all"
-      },
-      "blocks": {
-        "plus_1": { "type": "plus", "settings": { "title": "Прясно смляно месо всеки ден", "text": "Работим само с проверени български доставчици." } },
-        "plus_2": { "type": "plus", "settings": { "title": "На жар, не на плоча", "text": "Истински огън, истински дим, истински вкус." } },
-        "plus_3": { "type": "plus", "settings": { "title": "Собствена доставка", "text": "Пристига горещо, в брандирана опаковка, точно навреме." } },
-        "plus_4": { "type": "plus", "settings": { "title": "Балкански рецепти", "text": "Както на село — без консерванти и без компромиси." } },
-        "plus_5": { "type": "plus", "settings": { "title": "Реални порции", "text": "Ставаш сит. Точка." } },
-        "minus_1": { "type": "minus", "settings": { "title": "Замразени полуфабрикати", "text": "Никой не знае откога са във фризера." } },
-        "minus_2": { "type": "minus", "settings": { "title": "Претоплено във фритюрник", "text": "Вкус на олио вместо на огън." } },
-        "minus_3": { "type": "minus", "settings": { "title": "Куриер на парче", "text": "Пристига хладко и разклатено." } },
-        "minus_4": { "type": "minus", "settings": { "title": "Вкус „под линия“", "text": "Едно и също, отвсякъде." } },
-        "minus_5": { "type": "minus", "settings": { "title": "Порция въздух", "text": "Снимката обещава, кутията разочарова." } }
-      },
-      "block_order": ["plus_1", "plus_2", "plus_3", "plus_4", "plus_5", "minus_1", "minus_2", "minus_3", "minus_4", "minus_5"]
+      }
     },
     "smoky_marquee": {
       "type": "smoky-marquee",
-      "settings": { "background": "pink", "separator": "smoky-pattern-shevitsa", "speed": 70, "size": 4, "direction": "left" },
       "blocks": {
-        "w1": { "type": "word", "settings": { "text": "СКАРА", "outline": false } },
-        "w2": { "type": "word", "settings": { "text": "ЖАР", "outline": true } },
-        "w3": { "type": "word", "settings": { "text": "ДИМ", "outline": false } },
-        "w4": { "type": "word", "settings": { "text": "ВКУС", "outline": true } }
+        "w1": {
+          "type": "word",
+          "settings": {
+            "text": "СКАРА",
+            "outline": false
+          }
+        },
+        "w2": {
+          "type": "word",
+          "settings": {
+            "text": "ЖАР",
+            "outline": true
+          }
+        },
+        "w3": {
+          "type": "word",
+          "settings": {
+            "text": "ДИМ",
+            "outline": false
+          }
+        },
+        "w4": {
+          "type": "word",
+          "settings": {
+            "text": "ВКУС",
+            "outline": true
+          }
+        }
       },
-      "block_order": ["w1", "w2", "w3", "w4"]
+      "block_order": [
+        "w1",
+        "w2",
+        "w3",
+        "w4"
+      ],
+      "settings": {
+        "background": "pink",
+        "separator": "smoky-pattern-shevitsa",
+        "speed": 70,
+        "size": 4,
+        "direction": "left"
+      }
     },
     "smoky_photo_marquee": {
       "type": "smoky-photo-marquee",
-      "settings": { "background": "cream", "speed": 50, "direction": "right" },
       "blocks": {
-        "p1": { "type": "photo", "settings": {} },
-        "p2": { "type": "photo", "settings": {} },
-        "p3": { "type": "photo", "settings": {} },
-        "p4": { "type": "photo", "settings": {} },
-        "p5": { "type": "photo", "settings": {} },
-        "p6": { "type": "photo", "settings": {} }
+        "p1": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        },
+        "p5": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        },
+        "p6": {
+          "type": "photo",
+          "settings": {
+            "alt": ""
+          }
+        }
       },
-      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
+      ],
+      "settings": {
+        "background": "cream",
+        "speed": 50,
+        "direction": "right"
+      }
     },
     "smoky_steps": {
       "type": "smoky-steps",
-      "settings": { "heading": "СТЪПКА" },
       "blocks": {
-        "s1": { "type": "step", "settings": { "text": "Разгледай менюто и избери любимата си скара — кебапчета, кюфтета, стекове или сач." } },
-        "s2": { "type": "step", "settings": { "text": "Поръчай онлайн за минути — без обаждания, без чакане на линия." } },
-        "s3": { "type": "step", "settings": { "text": "Мятаме месото на жарта в мига, в който поръчката ти пристигне при нас." } },
-        "s4": { "type": "step", "settings": { "text": "Опаковаме всичко горещо в брандирана опаковка, която пази вкуса и димеца." } },
-        "s5": { "type": "step", "settings": { "text": "Нашата доставка тръгва веднага — средно 30 минути до твоята врата." } },
-        "s6": { "type": "step", "settings": { "text": "Добър апетит! Остава само да си доволен — и гладен за още." } }
+        "s1": {
+          "type": "step",
+          "settings": {
+            "text": "Разгледай менюто и избери любимата си скара — кебапчета, кюфтета, стекове или сач."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "text": "Поръчай онлайн за минути — без обаждания, без чакане на линия."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "text": "Мятаме месото на жарта в мига, в който поръчката ти пристигне при нас."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "text": "Опаковаме всичко горещо в брандирана опаковка, която пази вкуса и димеца."
+          }
+        },
+        "s5": {
+          "type": "step",
+          "settings": {
+            "text": "Нашата доставка тръгва веднага — средно 30 минути до твоята врата."
+          }
+        },
+        "s6": {
+          "type": "step",
+          "settings": {
+            "text": "Добър апетит! Остава само да си доволен — и гладен за още."
+          }
+        }
       },
-      "block_order": ["s1", "s2", "s3", "s4", "s5", "s6"]
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6"
+      ],
+      "settings": {
+        "heading": "СТЪПКА"
+      }
     },
     "smoky_best_sellers": {
       "type": "smoky-best-sellers",
@@ -123,14 +383,43 @@
     },
     "smoky_stats": {
       "type": "smoky-stats",
-      "settings": {},
       "blocks": {
-        "st1": { "type": "stat", "settings": { "number": "100%", "label": "На истинска жар" } },
-        "st2": { "type": "stat", "settings": { "number": "30", "label": "Минути средна доставка" } },
-        "st3": { "type": "stat", "settings": { "number": "12+", "label": "Вида скара" } },
-        "st4": { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+        "st1": {
+          "type": "stat",
+          "settings": {
+            "number": "100%",
+            "label": "На истинска жар"
+          }
+        },
+        "st2": {
+          "type": "stat",
+          "settings": {
+            "number": "30",
+            "label": "Минути средна доставка"
+          }
+        },
+        "st3": {
+          "type": "stat",
+          "settings": {
+            "number": "12+",
+            "label": "Вида скара"
+          }
+        },
+        "st4": {
+          "type": "stat",
+          "settings": {
+            "number": "5000+",
+            "label": "Щастливи гости"
+          }
+        }
       },
-      "block_order": ["st1", "st2", "st3", "st4"]
+      "block_order": [
+        "st1",
+        "st2",
+        "st3",
+        "st4"
+      ],
+      "settings": {}
     }
   },
   "order": [
