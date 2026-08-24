@@ -260,11 +260,29 @@
 
     #smoky-hero-{{ section.id }} .smoky-hero__media { aspect-ratio: 4 / 5; }
 
-    #smoky-hero-{{ section.id }} .smoky-hero__line1 { flex-wrap: wrap; row-gap: 14px; white-space: normal; }
+    #smoky-hero-{{ section.id }} .smoky-hero__line1 { flex-wrap: wrap; row-gap: 10px; white-space: normal; }
 
     #smoky-hero-{{ section.id }} .smoky-hero__line1 > span:first-child { white-space: nowrap; }
 
-    #smoky-hero-{{ section.id }} .smoky-hero__bubble-words { min-width: 7.5em; }
+    /* compact bubble that always fits the phone width */
+    #smoky-hero-{{ section.id }} .smoky-hero__bubble {
+      height: 48px;
+      max-width: calc(100% - 20px);
+      margin-right: 0;
+      padding: 0 52px 0 20px;
+    }
+
+    #smoky-hero-{{ section.id }} .smoky-hero__bubble-words {
+      min-width: 8.5em;
+      font-size: 1rem;
+    }
+
+    #smoky-hero-{{ section.id }} .smoky-hero__sticker {
+      width: 64px;
+      height: 64px;
+      margin-top: calc(64px / -2 - 5px);
+      right: -16px;
+    }
 
     #smoky-hero-{{ section.id }} .smoky-hero__h1box {
       position: static;
