@@ -1,24 +1,13 @@
 {% comment %}
-  Smoky steps — the FTC "STAP" pattern: a giant soft starburst filling the
-  section, huge title with the numbered star badge overlapping its corner,
-  ONE step text visible at a time (crossfade + lift between steps), round
-  arrows at the section edges, dot pagination underneath.
+  Smoky steps — clean cream stage: huge title with the pink numbered star
+  badge biting its corner, ONE centered step text at a time (crossfade +
+  lift between steps), round arrows at the section edges, dot pagination
+  and shevitsa ornament underneath, mascot in the corner.
 {% endcomment %}
 
-{%- assign star_points = '100.0,0.0 119.4,15.2 143.4,9.9 154.2,32.0 178.2,37.7 178.4,62.3 197.5,77.7 187.0,100.0 197.5,122.3 178.4,137.7 178.2,162.3 154.2,168.0 143.4,190.1 119.4,184.8 100.0,200.0 80.6,184.8 56.6,190.1 45.8,168.0 21.8,162.3 21.6,137.7 2.5,122.3 13.0,100.0 2.5,77.7 21.6,62.3 21.8,37.7 45.8,32.0 56.6,9.9 80.6,15.2' -%}
 {%- assign badge_points = '100.0,0.0 109.2,18.5 122.3,2.5 127.1,22.6 143.4,9.9 143.6,30.6 162.3,21.8 158.0,42.0 178.2,37.7 169.4,56.4 190.1,56.6 177.4,72.9 197.5,77.7 181.5,90.8 200.0,100.0 181.5,109.2 197.5,122.3 177.4,127.1 190.1,143.4 169.4,143.6 178.2,162.3 158.0,158.0 162.3,178.2 143.6,169.4 143.4,190.1 127.1,177.4 122.3,197.5 109.2,181.5 100.0,200.0 90.8,181.5 77.7,197.5 72.9,177.4 56.6,190.1 56.4,169.4 37.7,178.2 42.0,158.0 21.8,162.3 30.6,143.6 9.9,143.4 22.6,127.1 2.5,122.3 18.5,109.2 0.0,100.0 18.5,90.8 2.5,77.7 22.6,72.9 9.9,56.6 30.6,56.4 21.8,37.7 42.0,42.0 37.7,21.8 56.4,30.6 56.6,9.9 72.9,22.6 77.7,2.5 90.8,18.5' -%}
 
 <section class="smoky-steps smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-steps-{{ section.id }}">
-  <svg class="smoky-steps__bigstar" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
-    <filter id="steps-grain-{{ section.id }}">
-      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.07 0" result="dots"/>
-      <feComposite in="dots" in2="SourceGraphic" operator="in" result="grain"/>
-      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="grain"/></feMerge>
-    </filter>
-    <polygon points="{{ star_points }}" fill="var(--smoky-pink)" filter="url(#steps-grain-{{ section.id }})"></polygon>
-  </svg>
-
   <button type="button" class="smoky-arrow smoky-arrow--prev smoky-steps__edge smoky-steps__edge--left" data-dir="-1" aria-label="Назад">
     <span class="smoky-arrow__shadow"></span>
     <span class="smoky-arrow__fill">
@@ -37,7 +26,7 @@
       <h2 class="smoky-title smoky-steps__title">{{ section.settings.heading }}</h2>
       <span class="smoky-steps__badge">
         <svg viewBox="0 0 200 200" aria-hidden="true">
-          <polygon points="{{ badge_points }}" fill="var(--smoky-dark)"></polygon>
+          <polygon points="{{ badge_points }}" fill="var(--smoky-pink)"></polygon>
         </svg>
         <span class="smoky-steps__number">1.</span>
       </span>
@@ -78,13 +67,6 @@
     overflow: clip;
   }
 
-  #smoky-steps-{{ section.id }} .smoky-steps__bigstar {
-    position: absolute;
-    inset: clamp(12px, 2vw, 32px) min(3vw, 44px);
-    width: calc(100% - min(6vw, 88px));
-    height: calc(100% - clamp(24px, 4vw, 64px));
-    filter: drop-shadow(0 12px 0 rgb(40 40 40 / 0.14));
-  }
 
   #smoky-steps-{{ section.id }} .smoky-steps__inner { position: relative; }
 
@@ -147,12 +129,12 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    width: max-content;
   }
 
   /* one step visible at a time: neighbours fade out, active lifts in */
   #smoky-steps-{{ section.id }} .smoky-steps__slide {
-    width: min(760px, 86vw);
+    flex: 0 0 100%;
+    width: 100%;
     scroll-snap-align: center;
     padding-inline: clamp(16px, 3vw, 48px);
     text-align: center;
