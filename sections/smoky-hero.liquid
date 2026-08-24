@@ -23,11 +23,11 @@
               {%- endfor -%}
             </span>
             {%- if section.settings.sticker != blank or section.settings.use_mascot -%}
-              <span class="smoky-hero__sticker" data-smoky-scrub-rotate="16">
+              <span class="smoky-hero__sticker">
                 {%- if section.settings.sticker != blank -%}
                   {{ section.settings.sticker | image_url: width: 300 | image_tag: loading: 'eager', alt: '' }}
                 {%- else -%}
-                  <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" width="150" height="150">
+                  <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" width="150" height="150">
                 {%- endif -%}
               </span>
             {%- endif -%}
@@ -115,11 +115,10 @@
     border: var(--smoky-border);
     border-radius: 999px;
     background: var(--smoky-sand);
-    box-shadow: 0 0.28em 0 rgb(40 40 40 / 0.28);
     transition: transform var(--smoky-anim-bounce);
   }
 
-  #smoky-hero-{{ section.id }} .smoky-hero__bubble:hover { transform: translateY(-0.18em) rotate(-1.5deg); }
+  #smoky-hero-{{ section.id }} .smoky-hero__bubble:hover { transform: translateY(-3px) rotate(-1.5deg); }
 
   #smoky-hero-{{ section.id }} .smoky-hero__bubble-words {
     position: relative;
@@ -164,6 +163,7 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    transform: rotate(6deg);
     filter: drop-shadow(0 6px 8px rgb(40 40 40 / 0.32));
     pointer-events: none;
   }
