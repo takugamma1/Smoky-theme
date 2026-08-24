@@ -7,14 +7,20 @@
 
 <div class="smoky-gal smoky-grained" id="smoky-gal-{{ section.id }}">
   <div class="smoky-gal__side">
-    <h2 class="smoky-gal__heading">{{ section.settings.heading }}</h2>
-    <img
-      src="{{ 'smoky-mascot-front.svg' | asset_url }}"
-      alt=""
-      width="200" height="200"
-      class="smoky-gal__mascot"
-      loading="lazy"
-    >
+    <div>
+      <h2 class="smoky-gal__heading">{{ section.settings.heading }}<span class="smoky-gal__heading-dot">.</span></h2>
+      <div class="smoky-shevitsa-row smoky-gal__ornament" aria-hidden="true">
+        <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
+      </div>
+    </div>
+    <span class="smoky-gal__mascot" data-smoky-scrub-rotate="10">
+      <img
+        src="{{ 'smoky-mascot-front.svg' | asset_url }}"
+        alt=""
+        width="200" height="200"
+        loading="lazy"
+      >
+    </span>
   </div>
 
   <div class="smoky-gal__grid">
@@ -27,12 +33,18 @@
           {%- else -%}
             <div class="smoky-gal__ph">{{ 'image' | placeholder_svg_tag }}</div>
           {%- endif -%}
+          <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+            <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="16" stroke="{% cycle '#FA0082', '#F2ECDF', '#F2ECDF', '#FA0082', '#F2ECDF' %}"></rect>
+          </svg>
         </div>
       {%- endfor -%}
     {%- else -%}
       {%- for i in (1..5) -%}
         <div class="smoky-gal__item smoky-gal__item--{{ slots[forloop.index0] }}">
           <div class="smoky-gal__ph">{{ 'image' | placeholder_svg_tag }}</div>
+          <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+            <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="16" stroke="{% cycle '#FA0082', '#F2ECDF', '#F2ECDF', '#FA0082', '#F2ECDF' %}"></rect>
+          </svg>
         </div>
       {%- endfor -%}
     {%- endif -%}
@@ -67,11 +79,27 @@
     letter-spacing: 0;
   }
 
+  .smoky-gal__heading-dot { color: #FA0082; }
+
+  .smoky-gal__ornament {
+    justify-content: flex-start;
+    margin-top: 14px;
+    color: #FA0082;
+    font-size: clamp(0.8rem, 1vw, 1rem);
+  }
+
   .smoky-gal__mascot {
+    display: block;
     width: clamp(180px, 18vw, 300px);
-    height: auto;
     align-self: center;
     margin-bottom: clamp(8px, 2vw, 32px);
+    filter: drop-shadow(0 10px 14px rgb(40 40 40 / 0.25));
+  }
+
+  .smoky-gal__mascot img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   .smoky-gal__grid {
@@ -91,10 +119,14 @@
   .smoky-gal__item--e { grid-area: e; }
 
   .smoky-gal__item {
+    position: relative;
     border-radius: clamp(14px, 1.8vw, 26px);
     overflow: hidden;
     background: #282828;
   }
+
+  .smoky-gal__item .smoky-dotted-frame { inset: 10px; width: calc(100% - 20px); height: calc(100% - 20px); }
+  .smoky-gal__item .smoky-dotted-frame rect { stroke-width: 5; stroke-dasharray: 0.4 15; }
 
   .smoky-gal__item img,
   .smoky-gal__ph,

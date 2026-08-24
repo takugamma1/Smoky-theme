@@ -8,7 +8,13 @@
 
 <section class="smoky-steps smoky-grained" id="smoky-steps-{{ section.id }}">
   <svg class="smoky-steps__bigstar" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
-    <polygon points="{{ star_points }}" fill="var(--smoky-pink)"></polygon>
+    <filter id="steps-grain-{{ section.id }}">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.07 0" result="dots"/>
+      <feComposite in="dots" in2="SourceGraphic" operator="in" result="grain"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="grain"/></feMerge>
+    </filter>
+    <polygon points="{{ star_points }}" fill="var(--smoky-pink)" filter="url(#steps-grain-{{ section.id }})"></polygon>
   </svg>
 
   <div class="smoky-container smoky-steps__inner">
@@ -31,6 +37,14 @@
         {%- endfor -%}
       </ul>
     </div>
+
+    <div class="smoky-shevitsa-row smoky-steps__ornament" aria-hidden="true">
+      <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
+    </div>
+
+    <span class="smoky-steps__mascot" data-smoky-scrub-rotate="18" aria-hidden="true">
+      <img src="{{ 'smoky-mascot-surprised.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
+    </span>
 
     <div class="smoky-steps__controls">
       <button type="button" class="smoky-arrow smoky-arrow--prev" data-dir="-1" aria-label="Назад">
@@ -63,7 +77,7 @@
     inset: clamp(24px, 4vw, 64px) min(4vw, 56px);
     width: calc(100% - min(8vw, 112px));
     height: calc(100% - clamp(48px, 8vw, 128px));
-    opacity: 0.16;
+    filter: drop-shadow(0 12px 0 rgb(40 40 40 / 0.16));
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__inner { position: relative; }
@@ -134,16 +148,38 @@
   #smoky-steps-{{ section.id }} .smoky-steps__slide h3 {
     margin: 0;
     font-family: var(--smoky-font-body);
-    font-weight: 400;
+    font-weight: 500;
     font-size: clamp(1.25rem, 2.2vw, 2rem);
     line-height: 1.4;
+    color: var(--smoky-dark);
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__controls {
     display: flex;
     justify-content: center;
     gap: 14px;
-    margin-top: clamp(28px, 3.6vw, 48px);
+    margin-top: clamp(20px, 2.6vw, 34px);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__ornament {
+    margin-top: clamp(24px, 3vw, 40px);
+    color: var(--smoky-dark);
+    font-size: clamp(0.85rem, 1vw, 1.05rem);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__mascot {
+    position: absolute;
+    right: clamp(-10px, 1vw, 40px);
+    bottom: clamp(-16px, -1vw, 0px);
+    width: clamp(84px, 9vw, 140px);
+    filter: drop-shadow(0 8px 12px rgb(40 40 40 / 0.3));
+    z-index: 2;
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__mascot img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 </style>
 

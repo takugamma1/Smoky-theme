@@ -80,19 +80,34 @@
           const speed = parseFloat(marquee.dataset.marqueeSpeed || 60);
           const dir = marquee.dataset.marqueeDirection === 'right' ? 1 : -1;
           let unit = 0;
-          originals.forEach((_, i) => (unit += track.children[i].offsetWidth));
-          if (!unit) return;
-          const wrap = gsap.utils.wrap(-unit, 0);
           let x = 0;
           let scrollDir = 1;
+
+          // web fonts change item widths after first paint — a stale unit
+          // makes the loop visibly jump at every wrap point
+          const measure = () => {
+            unit = 0;
+            originals.forEach((_, i) => (unit += track.children[i].getBoundingClientRect().width));
+            unit = Math.round(unit * 100) / 100;
+          };
+          measure();
+          if (document.fonts?.ready) document.fonts.ready.then(measure);
+          window.addEventListener('load', measure, { once: true });
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(measure, 200);
+          });
 
           window.ScrollTrigger.create({
             onUpdate: (self) => (scrollDir = self.direction || 1),
           });
 
           gsap.ticker.add((_, delta) => {
+            if (!unit) return;
             x += dir * scrollDir * speed * (delta / 1000);
-            gsap.set(track, { x: wrap(dir === 1 ? x - unit : x) });
+            const wrapped = ((x % unit) + unit) % unit; // always [0, unit)
+            gsap.set(track, { x: wrapped - unit });
           });
         });
       });

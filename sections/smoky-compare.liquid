@@ -9,7 +9,11 @@
   <div class="smoky-container smoky-container--medium">
     <h2 class="smoky-title smoky-title--small smoky-compare__heading" data-smoky-reveal>
       <span class="smoky-accent">{{ section.settings.heading_accent }}</span>
-      {{ section.settings.heading_after }}
+      {%- if section.settings.heading_logo -%}
+        <img src="{{ 'smoky-wordmark.svg' | asset_url }}" alt="Smoky" class="smoky-compare__heading-logo" width="600" height="200">{{ section.settings.heading_logo_suffix }}
+      {%- else -%}
+        {{ section.settings.heading_after }}
+      {%- endif -%}
     </h2>
 
     <div class="smoky-compare__row">
@@ -18,9 +22,15 @@
           <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-pink)"></rect>
         </svg>
         <div class="smoky-compare__badge" aria-hidden="true">
-          <img src="{{ 'smoky-badge-dark.svg' | asset_url }}" alt="" loading="lazy" width="88" height="88">
+          <img src="{{ 'smoky-badge-dark.svg' | asset_url }}" alt="" loading="lazy" width="88" height="132">
         </div>
-        <h3 class="smoky-compare__title">{{ section.settings.us_title }}</h3>
+        <h3 class="smoky-compare__title">
+          {%- if section.settings.us_logo -%}
+            <img src="{{ 'smoky-wordmark.svg' | asset_url }}" alt="{{ section.settings.us_title | escape }}" class="smoky-compare__title-logo" width="600" height="200">
+          {%- else -%}
+            {{ section.settings.us_title }}
+          {%- endif -%}
+        </h3>
         <ul class="smoky-compare__list">
           {%- for block in section.blocks -%}
             {%- if block.type == 'plus' -%}
@@ -79,8 +89,24 @@
   }
 
   #smoky-compare-{{ section.id }} .smoky-compare__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.22em;
     text-align: center;
     margin-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__heading-logo {
+    height: 0.88em;
+    width: auto;
+    transform: translateY(0.08em);
+  }
+
+  #smoky-compare-{{ section.id }} .smoky-compare__title-logo {
+    height: clamp(26px, 2.6vw, 40px);
+    width: auto;
+    display: block;
   }
 
   #smoky-compare-{{ section.id }} .smoky-compare__row {
@@ -95,7 +121,7 @@
     background: var(--smoky-sand);
     border: var(--smoky-border);
     border-radius: var(--smoky-radius);
-    padding: clamp(48px, 5.5vw, 72px) clamp(24px, 3vw, 44px) clamp(30px, 3.6vw, 48px);
+    padding: clamp(72px, 8vw, 110px) clamp(24px, 3vw, 44px) clamp(30px, 3.6vw, 48px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -111,9 +137,10 @@
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-6deg);
-    width: clamp(72px, 7vw, 100px);
+    transform: translate(-50%, -42%) rotate(-5deg);
+    width: clamp(58px, 5.6vw, 84px);
     filter: drop-shadow(0 6px 10px rgb(40 40 40 / 0.3));
+    z-index: 1;
   }
 
   #smoky-compare-{{ section.id }} .smoky-compare__badge img { width: 100%; height: auto; display: block; }
@@ -188,7 +215,10 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "heading_accent", "label": "Заглавие — акцент", "default": "Защо" },
-    { "type": "text", "id": "heading_after", "label": "Заглавие — след акцента", "default": "Smoky?" },
+    { "type": "checkbox", "id": "heading_logo", "label": "Лого вместо текст в заглавието", "default": true },
+    { "type": "text", "id": "heading_logo_suffix", "label": "Знак след логото", "default": "?" },
+    { "type": "text", "id": "heading_after", "label": "Заглавие — след акцента (ако не е лого)", "default": "Smoky?" },
+    { "type": "checkbox", "id": "us_logo", "label": "Лого вместо име на лявата карта", "default": true },
     { "type": "text", "id": "us_title", "label": "Лява карта — заглавие", "default": "SMOKY" },
     { "type": "text", "id": "them_title", "label": "Дясна карта — заглавие", "default": "Обикновената доставка" },
     { "type": "text", "id": "button_label", "label": "Бутон — текст", "default": "Поръчай сега" },

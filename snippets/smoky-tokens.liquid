@@ -30,6 +30,7 @@
     --smoky-font-heading: var(--font-heading--family, 'Oswald', sans-serif);
     --smoky-font-body: var(--font-body--family, 'Fira Sans', sans-serif);
     --smoky-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    --smoky-shevitsa-url: url('{{ 'smoky-pattern-shevitsa.svg' | asset_url }}');
     --smoky-grain-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -257,18 +258,43 @@
     z-index: 1;
   }
 
-  /* ---- dotted border card frame (svg is injected per-section) ---- */
+  /* ---- dotted border card frame (svg injected per-section) ----
+     Absolutely-positioned replaced elements keep their intrinsic size, so the
+     svg needs explicit width/height — inset alone leaves it at 300×150.
+     Dots are hand-drawn-ish ovals: near-zero dash + fat round caps, echoing
+     the brand's knife-card border. */
   .smoky-dotted-frame {
     position: absolute;
-    inset: 12px;
+    inset: 14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
     pointer-events: none;
+    overflow: visible;
   }
 
   .smoky-dotted-frame rect {
     fill: none;
-    stroke-width: 2.5;
-    stroke-dasharray: 8 8;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 0.4 19;
     transition: stroke-dashoffset 0.6s var(--smoky-ease);
+  }
+
+  /* ---- shevitsa ornament as a mask, so it recolors per surface ---- */
+  .smoky-shevitsa {
+    display: inline-block;
+    width: 1.6em;
+    height: 1.6em;
+    background: currentColor;
+    -webkit-mask: var(--smoky-shevitsa-url) center / contain no-repeat;
+    mask: var(--smoky-shevitsa-url) center / contain no-repeat;
+  }
+
+  .smoky-shevitsa-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
   }
 
   /* ---- scroll reveals (JS adds is-inview; no-JS stays visible) ---- */

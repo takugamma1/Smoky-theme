@@ -29,7 +29,11 @@
                 {%- when 'dot' -%}
                   <span class="smoky-marquee__dot"></span>
                 {%- else -%}
-                  <img src="{{ section.settings.separator | append: '.svg' | asset_url }}" alt="" loading="lazy" width="60" height="40">
+                  {%- assign sep_url = section.settings.separator | append: '.svg' | asset_url -%}
+                  {%- assign sep_reps = section.settings.sep_repeat | default: 3 -%}
+                  {%- for i in (1..sep_reps) -%}
+                    <span class="smoky-marquee__icon" style="--sep-url: url('{{ sep_url }}')"></span>
+                  {%- endfor -%}
               {%- endcase -%}
             </span>
           {%- endunless -%}
@@ -45,6 +49,8 @@
     color: {% if section.settings.background == 'dark' %}var(--smoky-sand){% elsif section.settings.background == 'pink' %}var(--smoky-cream){% else %}var(--smoky-dark){% endif %};
     padding-block: clamp(18px, 2.4vw, 34px);
     overflow: clip;
+    {% if section.settings.curve_top %}border-top-left-radius: min(var(--smoky-radius-big), 40px); border-top-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
+    {% if section.settings.curve_bottom %}border-bottom-left-radius: min(var(--smoky-radius-big), 40px); border-bottom-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
   }
 
   #smoky-marquee-{{ section.id }} .smoky-marquee__viewport { overflow: hidden; }
@@ -52,8 +58,23 @@
   #smoky-marquee-{{ section.id }} .smoky-marquee__item {
     display: flex;
     align-items: center;
-    gap: clamp(20px, 2.6vw, 44px);
-    padding-right: clamp(20px, 2.6vw, 44px);
+    gap: clamp(14px, 1.6vw, 26px);
+    padding-right: clamp(14px, 1.6vw, 26px);
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__sep {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 0.7vw, 11px);
+  }
+
+  #smoky-marquee-{{ section.id }} .smoky-marquee__icon {
+    display: block;
+    width: clamp(16px, 1.8vw, 28px);
+    height: clamp(16px, 1.8vw, 28px);
+    background: currentColor;
+    -webkit-mask: var(--sep-url) center / contain no-repeat;
+    mask: var(--sep-url) center / contain no-repeat;
   }
 
   #smoky-marquee-{{ section.id }} .smoky-marquee__word {
@@ -108,7 +129,7 @@
         { "value": "pink", "label": "Розово" },
         { "value": "dark", "label": "Тъмен" }
       ],
-      "default": "pink"
+      "default": "dark"
     },
     {
       "type": "select",
@@ -124,6 +145,9 @@
       ],
       "default": "smoky-pattern-shevitsa"
     },
+    { "type": "range", "id": "sep_repeat", "label": "Брой икони между думите", "min": 1, "max": 5, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб", "default": true },
+    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб", "default": true },
     { "type": "range", "id": "speed", "label": "Скорост (px/сек)", "min": 20, "max": 160, "step": 10, "default": 70 },
     { "type": "range", "id": "size", "label": "Размер на текста (vw)", "min": 2, "max": 8, "step": 1, "default": 4 },
     {
