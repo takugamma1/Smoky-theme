@@ -23,14 +23,14 @@
       </div>
       <div class="smoky-footer__row smoky-footer__row--bottom" data-smoky-reveal data-smoky-reveal-delay="0.1">
         {%- if section.settings.phone != blank -%}
-          <a href="tel:{{ section.settings.phone | remove: ' ' }}" class="smoky-footer__bubble smoky-footer__bubble--sand smoky-footer__bubble--has-mascot">
+          <a href="tel:{{ section.settings.phone | remove: ' ' }}" class="smoky-footer__bubble smoky-footer__bubble--sand">
             <span class="smoky-roll"><span>{{ section.settings.phone }}</span><span class="smoky-roll__dup">{{ section.settings.phone }}</span></span>
-            <span class="smoky-footer__mascot" data-smoky-scrub-rotate="12" aria-hidden="true">
-              <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
-            </span>
           </a>
         {%- endif -%}
         <h2 class="smoky-title smoky-title--big">{{ section.settings.title2 }}</h2>
+        <span class="smoky-footer__mascot" aria-hidden="true">
+          <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
+        </span>
       </div>
     </div>
 
@@ -147,18 +147,20 @@
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon::after { display: none; }
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon svg { width: 40%; height: 40%; }
 
-  /* Димо каца на телефонното балонче: лицето му е върху пясъчния фон
-     (видимо), а розовите пламъци стърчат над него в тъмното */
-  #smoky-footer-{{ section.id }} .smoky-footer__bubble--has-mascot {
-    padding-right: calc(clamp(1.2em, 2vw, 2em) + clamp(56px, 5.5vw, 92px));
-  }
-
+  /* Димо като стикер: кремав контур (насложени drop-shadows) го прави
+     видим върху тъмното без никакъв кръг отзад */
   #smoky-footer-{{ section.id }} .smoky-footer__mascot {
-    position: absolute;
-    right: clamp(6px, 0.8vw, 16px);
-    top: calc(clamp(72px, 7vw, 112px) * -0.5);
-    width: clamp(72px, 7vw, 112px);
-    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.4));
+    flex: 0 0 auto;
+    width: clamp(84px, 8vw, 132px);
+    align-self: flex-start;
+    margin-top: -0.4em;
+    transform: rotate(7deg);
+    filter:
+      drop-shadow(1.5px 0 0 var(--smoky-sand))
+      drop-shadow(-1.5px 0 0 var(--smoky-sand))
+      drop-shadow(0 1.5px 0 var(--smoky-sand))
+      drop-shadow(0 -1.5px 0 var(--smoky-sand))
+      drop-shadow(0 8px 10px rgb(0 0 0 / 0.45));
     pointer-events: none;
   }
 

@@ -114,7 +114,12 @@
     filter: drop-shadow(0 5px 9px rgb(40 40 40 / 0.28));
   }
 
-  #smoky-menu-{{ section.id }} .smoky-menu__logobox img { width: 100%; height: auto; display: block; }
+  #smoky-menu-{{ section.id }} .smoky-menu__logobox img {
+    width: 100%;
+    height: auto;
+    display: block;
+    mix-blend-mode: multiply;
+  }
 
   #smoky-menu-{{ section.id }} .smoky-menu__cat {
     margin: 0 0 clamp(18px, 2.2vw, 28px);
