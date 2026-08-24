@@ -63,23 +63,27 @@
   </div>
 
   <div class="smoky-drawer" id="smoky-drawer" hidden>
+    <span class="smoky-drawer__flames" aria-hidden="true"></span>
+    <img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="Smoky" width="600" height="200" class="smoky-drawer__wordmark" loading="lazy">
+    <button type="button" class="smoky-drawer__close" aria-label="Затвори менюто">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10 38 38 M38 10 10 38" stroke="currentColor" stroke-width="9" stroke-linecap="round"/></svg>
+    </button>
     <nav aria-label="{{ 'accessibility.navigation' | t | default: 'Navigation' }}">
       <ul>
         {%- if menu.links.size > 0 -%}
           {%- for link in menu.links -%}
-            <li{% if link.current %} class="is-active"{% endif %}>
+            <li{% if link.current %} class="is-active"{% endif %} style="--stagger: {{ forloop.index }}">
               <a href="{{ link.url }}">{{ link.title }}</a>
             </li>
           {%- endfor -%}
         {%- else -%}
-          <li class="is-active"><a href="{{ routes.root_url }}">Начало</a></li>
-          <li><a href="{{ routes.all_products_collection_url }}">Меню</a></li>
-          <li><a href="#">За нас</a></li>
-          <li><a href="#">Локации</a></li>
-          <li><a href="#">Резервации</a></li>
+          <li class="is-active" style="--stagger: 1"><a href="{{ routes.root_url }}">Начало</a></li>
+          <li style="--stagger: 2"><a href="{{ routes.all_products_collection_url }}">Меню</a></li>
+          <li style="--stagger: 3"><a href="#">За нас</a></li>
+          <li style="--stagger: 4"><a href="#">Локации</a></li>
+          <li style="--stagger: 5"><a href="#">Резервации</a></li>
         {%- endif -%}
       </ul>
-      <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" width="120" height="120" class="smoky-drawer__mascot" loading="lazy">
     </nav>
   </div>
 </header-smoky>
@@ -220,45 +224,125 @@
     transform: translateY(-7.5px) rotate(-45deg);
   }
 
+  /* full-screen pink flame overlay, revealed with an expanding circle */
   .smoky-drawer {
     position: fixed;
     inset: 0;
-    z-index: -1;
-    background: #282828;
-    padding-top: 110px;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(28px, 8vh, 64px) 24px 40px;
+    background: #FA0082;
+    background-image: var(--smoky-grain);
+    background-size: 220px;
     overflow-y: auto;
+    clip-path: circle(0% at 82% 56px);
+    transition: clip-path 0.65s cubic-bezier(0.75, 0, 0.25, 1);
   }
+
+  .smoky-drawer.is-open {
+    clip-path: circle(150% at 82% 56px);
+  }
+
+  /* tonal flames drifting in the background */
+  .smoky-drawer__flames {
+    position: fixed;
+    inset: -6%;
+    pointer-events: none;
+    background: #D4006E;
+    -webkit-mask: url('{{ 'smoky-flame-sticker.svg' | asset_url }}') 0 0 / clamp(220px, 42vw, 320px) auto repeat;
+    mask: url('{{ 'smoky-flame-sticker.svg' | asset_url }}') 0 0 / clamp(220px, 42vw, 320px) auto repeat;
+    opacity: 0.45;
+    transform: rotate(-4deg) scale(1.1);
+  }
+
+  .smoky-drawer__wordmark {
+    position: relative;
+    width: min(240px, 56vw);
+    height: auto;
+    margin-bottom: clamp(20px, 5vh, 44px);
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.35, 1.5, 0.6, 1);
+    transition-delay: 0.25s;
+  }
+
+  .smoky-drawer__close {
+    position: relative;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #F2ECDF;
+    width: clamp(56px, 14vw, 72px);
+    height: clamp(56px, 14vw, 72px);
+    margin-bottom: clamp(16px, 4vh, 36px);
+    opacity: 0;
+    transform: scale(0.4) rotate(-90deg);
+    transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.35, 1.5, 0.6, 1);
+    transition-delay: 0.32s;
+  }
+
+  .smoky-drawer__close svg { width: 100%; height: 100%; display: block; }
+  .smoky-drawer.is-open .smoky-drawer__close:hover { transform: scale(1.08) rotate(90deg); }
+
+  .smoky-drawer nav { position: relative; }
 
   .smoky-drawer ul {
     list-style: none;
     margin: 0;
-    padding: 24px 32px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: clamp(6px, 1.6vh, 16px);
+  }
+
+  .smoky-drawer li {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.35, 1.5, 0.6, 1);
+    transition-delay: calc(0.3s + var(--stagger, 1) * 0.07s);
+  }
+
+  .smoky-drawer.is-open .smoky-drawer__wordmark,
+  .smoky-drawer.is-open .smoky-drawer__close {
+    opacity: 1;
+    transform: none;
+  }
+
+  .smoky-drawer.is-open li {
+    opacity: 1;
+    transform: none;
   }
 
   .smoky-drawer a {
     display: inline-block;
-    color: #EBDCC3;
+    color: #F2ECDF;
     text-decoration: none;
-    font-family: var(--font-heading--family, sans-serif);
-    font-weight: 700;
-    font-size: 1.75rem;
-    padding-block: 10px;
+    text-align: center;
+    font-family: var(--smoky-font-heading, var(--font-heading--family, sans-serif));
+    font-weight: 800;
+    font-size: clamp(2.6rem, 11vw, 4.2rem);
+    line-height: 1.05;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
   }
 
   .smoky-drawer li.is-active a {
-    color: #FA0082;
+    text-decoration: underline;
+    text-decoration-thickness: 5px;
+    text-underline-offset: 8px;
   }
 
-  .smoky-drawer__mascot {
-    display: block;
-    width: 110px;
-    padding: 26px 24px 18px;
-    background: #EBDCC3;
-    border-radius: 50%;
-    margin: 28px auto 40px;
+  @media (prefers-reduced-motion: reduce) {
+    .smoky-drawer,
+    .smoky-drawer li,
+    .smoky-drawer__wordmark,
+    .smoky-drawer__close {
+      transition: none;
+    }
   }
 
   html.smoky-drawer-open,
@@ -303,6 +387,7 @@
         this.drawer = this.querySelector('.smoky-drawer');
         if (!this.burger || !this.drawer) return;
         this.burger.addEventListener('click', () => this.toggle());
+        this.drawer.querySelector('.smoky-drawer__close')?.addEventListener('click', () => this.toggle(false));
         this.addEventListener('keyup', (e) => {
           if (e.key === 'Escape') this.toggle(false);
         });
@@ -314,8 +399,16 @@
       toggle(force) {
         const open = force ?? this.burger.getAttribute('aria-expanded') !== 'true';
         this.burger.setAttribute('aria-expanded', open);
-        this.drawer.hidden = !open;
         document.documentElement.classList.toggle('smoky-drawer-open', open);
+        clearTimeout(this.closeTimer);
+        if (open) {
+          this.drawer.hidden = false;
+          // force a frame so the clip-path transition actually runs
+          requestAnimationFrame(() => requestAnimationFrame(() => this.drawer.classList.add('is-open')));
+        } else {
+          this.drawer.classList.remove('is-open');
+          this.closeTimer = setTimeout(() => (this.drawer.hidden = true), 700);
+        }
       }
     }
     if (!customElements.get('header-smoky')) customElements.define('header-smoky', HeaderSmoky);
