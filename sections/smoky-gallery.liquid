@@ -5,7 +5,7 @@
   collage of rounded photos on the right (up to 5 image blocks).
 {% endcomment %}
 
-<div class="smoky-gal smoky-grained" id="smoky-gal-{{ section.id }}">
+<div class="smoky-gal smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-gal-{{ section.id }}">
   <div class="smoky-gal__side">
     <div>
       <h2 class="smoky-gal__heading">{{ section.settings.heading }}<span class="smoky-gal__heading-dot">.</span></h2>
@@ -178,6 +178,18 @@
       "id": "heading",
       "label": "Заглавие",
       "default": "ГАЛЕРИЯ"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
     }
   ],
   "blocks": [
@@ -198,11 +210,21 @@
     {
       "name": "Smoky галерия",
       "blocks": [
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" },
-        { "type": "image" }
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
       ]
     }
   ]

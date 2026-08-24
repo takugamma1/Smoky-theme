@@ -17,26 +17,61 @@
   <div class="smoky-concepts__viewport" data-smoky-drag-cursor tabindex="0" aria-label="{{ section.settings.heading_accent | escape }}">
     <ul class="smoky-concepts__track">
       {%- for block in section.blocks -%}
+        {%- liquid
+          # product photo resolution: manual cutout PNG > product > collection's first product > collection image
+          assign card_img = blank
+          assign img_style = 'photo'
+          if block.settings.image != blank
+            assign card_img = block.settings.image
+            assign img_style = 'cutout'
+          elsif block.settings.product != blank and block.settings.product.featured_image != blank
+            assign card_img = block.settings.product.featured_image
+          elsif block.settings.collection != blank
+            for product in block.settings.collection.products limit: 4
+              if product.featured_image != blank
+                assign card_img = product.featured_image
+                break
+              endif
+            endfor
+            if card_img == blank and block.settings.collection.featured_image != blank
+              assign card_img = block.settings.collection.featured_image
+            endif
+          endif
+
+          assign card_url = block.settings.link
+          if card_url == blank and block.settings.collection != blank
+            assign card_url = block.settings.collection.url
+          endif
+          if card_url == blank and block.settings.product != blank
+            assign card_url = block.settings.product.url
+          endif
+
+          assign card_title = block.settings.title
+          if card_title == blank and block.settings.collection != blank
+            assign card_title = block.settings.collection.title
+          endif
+        -%}
         <li
           class="smoky-concepts__card"
           style="--tile-bg: {{ block.settings.tile_bg }}; --tile-border: {{ block.settings.tile_border }};"
           {{ block.shopify_attributes }}
         >
-          {%- if block.settings.link != blank -%}
-            <a href="{{ block.settings.link }}" class="smoky-concepts__link" aria-label="{{ block.settings.title | escape }}"></a>
+          {%- if card_url != blank -%}
+            <a href="{{ card_url }}" class="smoky-concepts__link" aria-label="{{ card_title | escape }}"></a>
           {%- endif -%}
           <div class="smoky-concepts__circle" aria-hidden="true">
             <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
               <circle cx="200" cy="200" r="150" fill="var(--tile-border)"></circle>
               <circle class="smoky-concepts__ring" cx="200" cy="200" r="178" fill="none" stroke="var(--tile-border)" stroke-width="2.5" stroke-dasharray="7 7"></circle>
             </svg>
-            {%- if block.settings.image != blank -%}
-              {{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', alt: block.settings.title, class: 'smoky-concepts__img' }}
+            {%- if card_img != blank -%}
+              {%- assign img_class = 'smoky-concepts__img smoky-concepts__img--is-' | append: img_style -%}
+              {{ card_img | image_url: width: 700 | image_tag: loading: 'lazy', alt: card_title, class: img_class }}
             {%- else -%}
               <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" loading="lazy" width="300" height="300" class="smoky-concepts__img smoky-concepts__img--placeholder">
             {%- endif -%}
           </div>
-          <h3 class="smoky-concepts__title">{{ block.settings.title }}</h3>
+          <h3 class="smoky-concepts__title">{{ card_title }}</h3>
           {%- if block.settings.subtitle != blank -%}
             <p class="smoky-concepts__subtitle">{{ block.settings.subtitle }}</p>
           {%- endif -%}
@@ -168,6 +203,17 @@
     transform: scale(1.06) rotate(-4deg);
   }
 
+  /* real product photo: round medallion clipped onto the solid circle */
+  #smoky-concepts-{{ section.id }} .smoky-concepts__img--is-photo {
+    inset: 13%;
+    width: 74%;
+    height: 74%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--tile-border);
+    filter: none;
+  }
+
   #smoky-concepts-{{ section.id }} .smoky-concepts__img--placeholder { inset: 20%; width: 60%; height: 60%; }
 
   #smoky-concepts-{{ section.id }} .smoky-concepts__title {
@@ -249,24 +295,91 @@
   "name": "Smoky категории слайдер",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading_before", "label": "Заглавие — начало", "default": "Нашите" },
-    { "type": "text", "id": "heading_accent", "label": "Заглавие — акцент (розово)", "default": "вкусове" },
-    { "type": "text", "id": "heading_after", "label": "Заглавие — край", "default": "от скарата" },
-    { "type": "text", "id": "card_button_label", "label": "Бутон на картите", "default": "Виж" },
-    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб", "default": false },
-    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб", "default": true }
+    {
+      "type": "text",
+      "id": "heading_before",
+      "label": "Заглавие — начало",
+      "default": "Нашите"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Заглавие — акцент (розово)",
+      "default": "вкусове"
+    },
+    {
+      "type": "text",
+      "id": "heading_after",
+      "label": "Заглавие — край",
+      "default": "от скарата"
+    },
+    {
+      "type": "text",
+      "id": "card_button_label",
+      "label": "Бутон на картите",
+      "default": "Виж"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб",
+      "default": false
+    }
   ],
   "blocks": [
     {
       "type": "card",
       "name": "Карта",
       "settings": [
-        { "type": "text", "id": "title", "label": "Име", "default": "Кебапчета" },
-        { "type": "text", "id": "subtitle", "label": "Подзаглавие" },
-        { "type": "image_picker", "id": "image", "label": "Изрязана снимка (PNG)" },
-        { "type": "color", "id": "tile_bg", "label": "Фон на картата", "default": "#3A2E2A" },
-        { "type": "color", "id": "tile_border", "label": "Рамка и акцент", "default": "#EBDCC3" },
-        { "type": "url", "id": "link", "label": "Линк" }
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Колекция (снимка + линк)"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Продукт за снимката (по избор)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Име",
+          "default": "Кебапчета"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Подзаглавие"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Изрязана снимка PNG (override)"
+        },
+        {
+          "type": "color",
+          "id": "tile_bg",
+          "label": "Фон на картата",
+          "default": "#3A2E2A"
+        },
+        {
+          "type": "color",
+          "id": "tile_border",
+          "label": "Рамка и акцент",
+          "default": "#EBDCC3"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Линк"
+        }
       ]
     }
   ],
@@ -275,12 +388,54 @@
     {
       "name": "Smoky категории слайдер",
       "blocks": [
-        { "type": "card", "settings": { "title": "Кебапчета", "tile_bg": "#4A1230", "tile_border": "#FA0082" } },
-        { "type": "card", "settings": { "title": "Кюфтета", "tile_bg": "#3A2E2A", "tile_border": "#EBDCC3" } },
-        { "type": "card", "settings": { "title": "Стекове", "tile_bg": "#301B14", "tile_border": "#E8956B" } },
-        { "type": "card", "settings": { "title": "Пилешко", "tile_bg": "#3F3A1E", "tile_border": "#E4D96F" } },
-        { "type": "card", "settings": { "title": "Сач", "tile_bg": "#1F3328", "tile_border": "#9BC49A" } },
-        { "type": "card", "settings": { "title": "Гарнитури", "tile_bg": "#403014", "tile_border": "#EFC069" } }
+        {
+          "type": "card",
+          "settings": {
+            "title": "Кебапчета",
+            "tile_bg": "#4A1230",
+            "tile_border": "#FA0082"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Кюфтета",
+            "tile_bg": "#3A2E2A",
+            "tile_border": "#EBDCC3"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Стекове",
+            "tile_bg": "#301B14",
+            "tile_border": "#E8956B"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Пилешко",
+            "tile_bg": "#3F3A1E",
+            "tile_border": "#E4D96F"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Сач",
+            "tile_bg": "#1F3328",
+            "tile_border": "#9BC49A"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Гарнитури",
+            "tile_bg": "#403014",
+            "tile_border": "#EFC069"
+          }
+        }
       ]
     }
   ]

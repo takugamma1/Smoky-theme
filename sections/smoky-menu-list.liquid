@@ -7,7 +7,7 @@
   the design reads in the editor.
 {% endcomment %}
 
-<section class="smoky-menu smoky-grained" id="smoky-menu-{{ section.id }}">
+<section class="smoky-menu smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-menu-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-menu__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
@@ -191,18 +191,61 @@
   "name": "Smoky меню за доставка",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Заглавие", "default": "МЕНЮ ЗА ДОСТАВКА" },
-    { "type": "text", "id": "card_button_label", "label": "Бутон на картите", "default": "Поръчай от тук" }
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Заглавие",
+      "default": "МЕНЮ ЗА ДОСТАВКА"
+    },
+    {
+      "type": "text",
+      "id": "card_button_label",
+      "label": "Бутон на картите",
+      "default": "Поръчай от тук"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
+    }
   ],
   "blocks": [
     {
       "type": "category",
       "name": "Категория (колекция)",
       "settings": [
-        { "type": "collection", "id": "collection", "label": "Колекция" },
-        { "type": "text", "id": "title", "label": "Име (по избор)" },
-        { "type": "color", "id": "accent", "label": "Акцентен цвят", "default": "#FA0082" },
-        { "type": "range", "id": "limit", "label": "Максимум продукти", "min": 3, "max": 20, "step": 1, "default": 10 }
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Колекция"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Име (по избор)"
+        },
+        {
+          "type": "color",
+          "id": "accent",
+          "label": "Акцентен цвят",
+          "default": "#FA0082"
+        },
+        {
+          "type": "range",
+          "id": "limit",
+          "label": "Максимум продукти",
+          "min": 3,
+          "max": 20,
+          "step": 1,
+          "default": 10
+        }
       ]
     }
   ],
@@ -211,8 +254,20 @@
     {
       "name": "Smoky меню за доставка",
       "blocks": [
-        { "type": "category", "settings": { "title": "Скара", "accent": "#FA0082" } },
-        { "type": "category", "settings": { "title": "Гарнитури и салати", "accent": "#282828" } }
+        {
+          "type": "category",
+          "settings": {
+            "title": "Скара",
+            "accent": "#FA0082"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Гарнитури и салати",
+            "accent": "#282828"
+          }
+        }
       ]
     }
   ]

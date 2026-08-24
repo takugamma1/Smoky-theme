@@ -4,7 +4,7 @@
   direction. Each block is one photo.
 {% endcomment %}
 
-<section class="smoky-photomq {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}" id="smoky-photomq-{{ section.id }}">
+<section class="smoky-photomq {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-photomq-{{ section.id }}">
   <div
     data-smoky-marquee
     data-marquee-speed="{{ section.settings.speed }}"
@@ -81,21 +81,53 @@
       "id": "background",
       "label": "Фон",
       "options": [
-        { "value": "cream", "label": "Крем" },
-        { "value": "dark", "label": "Тъмен" }
+        {
+          "value": "cream",
+          "label": "Крем"
+        },
+        {
+          "value": "dark",
+          "label": "Тъмен"
+        }
       ],
       "default": "cream"
     },
-    { "type": "range", "id": "speed", "label": "Скорост (px/сек)", "min": 20, "max": 120, "step": 10, "default": 50 },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Скорост (px/сек)",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "default": 50
+    },
     {
       "type": "select",
       "id": "direction",
       "label": "Посока",
       "options": [
-        { "value": "left", "label": "Наляво" },
-        { "value": "right", "label": "Надясно" }
+        {
+          "value": "left",
+          "label": "Наляво"
+        },
+        {
+          "value": "right",
+          "label": "Надясно"
+        }
       ],
       "default": "right"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
     }
   ],
   "blocks": [
@@ -103,8 +135,16 @@
       "type": "photo",
       "name": "Снимка",
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Снимка" },
-        { "type": "text", "id": "alt", "label": "Алт текст" }
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Снимка"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Алт текст"
+        }
       ]
     }
   ],
@@ -113,12 +153,24 @@
     {
       "name": "Smoky фото маркии",
       "blocks": [
-        { "type": "photo" },
-        { "type": "photo" },
-        { "type": "photo" },
-        { "type": "photo" },
-        { "type": "photo" },
-        { "type": "photo" }
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        }
       ]
     }
   ]

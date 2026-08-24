@@ -19,7 +19,7 @@
   #smoky-stats-{{ section.id }} {
     background: var(--smoky-dark-soft);
     color: var(--smoky-sand);
-    padding-block: clamp(56px, 8vw, 110px);
+    padding-block: clamp(76px, 9vw, 140px);
     {% if section.settings.curve_top %}border-top-left-radius: var(--smoky-radius-big); border-top-right-radius: var(--smoky-radius-big);{% endif %}
     {% if section.settings.curve_bottom %}border-bottom-left-radius: var(--smoky-radius-big); border-bottom-right-radius: var(--smoky-radius-big);{% endif %}
   }
@@ -60,16 +60,36 @@
   "name": "Smoky статистика",
   "tag": "section",
   "settings": [
-    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб", "default": true },
-    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб", "default": false }
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб",
+      "default": false
+    }
   ],
   "blocks": [
     {
       "type": "stat",
       "name": "Статистика",
       "settings": [
-        { "type": "text", "id": "number", "label": "Число (може с наставка: 400+, 100%)", "default": "100%" },
-        { "type": "text", "id": "label", "label": "Етикет", "default": "На жар" }
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Число (може с наставка: 400+, 100%)",
+          "default": "100%"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Етикет",
+          "default": "На жар"
+        }
       ]
     }
   ],
@@ -78,10 +98,34 @@
     {
       "name": "Smoky статистика",
       "blocks": [
-        { "type": "stat", "settings": { "number": "100%", "label": "На истинска жар" } },
-        { "type": "stat", "settings": { "number": "30", "label": "Минути средна доставка" } },
-        { "type": "stat", "settings": { "number": "12+", "label": "Вида скара" } },
-        { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+        {
+          "type": "stat",
+          "settings": {
+            "number": "100%",
+            "label": "На истинска жар"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "30",
+            "label": "Минути средна доставка"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "12+",
+            "label": "Вида скара"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "5000+",
+            "label": "Щастливи гости"
+          }
+        }
       ]
     }
   ]

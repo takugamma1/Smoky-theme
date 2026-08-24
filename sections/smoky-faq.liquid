@@ -5,7 +5,7 @@
   for the animated height; accessible via button + aria-expanded.
 {% endcomment %}
 
-<section class="smoky-faq smoky-grained" id="smoky-faq-{{ section.id }}">
+<section class="smoky-faq smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-faq-{{ section.id }}">
   <div class="smoky-container smoky-container--small">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-faq__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
@@ -166,15 +166,41 @@
   "name": "Smoky ЧЗВ",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Заглавие (по избор)" }
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Заглавие (по избор)"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
+    }
   ],
   "blocks": [
     {
       "type": "qa",
       "name": "Въпрос",
       "settings": [
-        { "type": "text", "id": "question", "label": "Въпрос", "default": "Къде доставяте?" },
-        { "type": "richtext", "id": "answer", "label": "Отговор", "default": "<p>Доставяме в цяла София — бързо, горещо и с усмивка.</p>" }
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Въпрос",
+          "default": "Къде доставяте?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Отговор",
+          "default": "<p>Доставяме в цяла София — бързо, горещо и с усмивка.</p>"
+        }
       ]
     }
   ],
@@ -183,10 +209,34 @@
     {
       "name": "Smoky ЧЗВ",
       "blocks": [
-        { "type": "qa", "settings": { "question": "Къде доставяте?", "answer": "<p>Доставяме в цяла София. Виж точните квартали и времената при завършване на поръчката — а ако твоят район още не е в списъка, пиши ни и ще направим всичко възможно.</p>" } },
-        { "type": "qa", "settings": { "question": "Колко време отнема доставката?", "answer": "<p>Средно около 30–45 минути. Готвим на момента — месото тръгва към жарта чак когато поръчката ти пристигне при нас, затова всяка минута си заслужава.</p>" } },
-        { "type": "qa", "settings": { "question": "Има ли минимална поръчка?", "answer": "<p>Да — минималната стойност за доставка е 20 лв. За по-малки поръчки можеш да вземеш храната си на място от ресторанта.</p>" } },
-        { "type": "qa", "settings": { "question": "Как се плаща?", "answer": "<p>Онлайн с карта или в брой/с карта при доставка — както ти е удобно.</p>" } }
+        {
+          "type": "qa",
+          "settings": {
+            "question": "Къде доставяте?",
+            "answer": "<p>Доставяме в цяла София. Виж точните квартали и времената при завършване на поръчката — а ако твоят район още не е в списъка, пиши ни и ще направим всичко възможно.</p>"
+          }
+        },
+        {
+          "type": "qa",
+          "settings": {
+            "question": "Колко време отнема доставката?",
+            "answer": "<p>Средно около 30–45 минути. Готвим на момента — месото тръгва към жарта чак когато поръчката ти пристигне при нас, затова всяка минута си заслужава.</p>"
+          }
+        },
+        {
+          "type": "qa",
+          "settings": {
+            "question": "Има ли минимална поръчка?",
+            "answer": "<p>Да — минималната стойност за доставка е 20 лв. За по-малки поръчки можеш да вземеш храната си на място от ресторанта.</p>"
+          }
+        },
+        {
+          "type": "qa",
+          "settings": {
+            "question": "Как се плаща?",
+            "answer": "<p>Онлайн с карта или в брой/с карта при доставка — както ти е удобно.</p>"
+          }
+        }
       ]
     }
   ]

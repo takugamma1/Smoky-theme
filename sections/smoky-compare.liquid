@@ -5,7 +5,7 @@
   ✗ list). Blocks: "plus" rows go left, "minus" rows go right.
 {% endcomment %}
 
-<section class="smoky-compare smoky-grained" id="smoky-compare-{{ section.id }}">
+<section class="smoky-compare smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-compare-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     <h2 class="smoky-title smoky-title--small smoky-compare__heading" data-smoky-reveal>
       <span class="smoky-accent">{{ section.settings.heading_accent }}</span>
@@ -214,31 +214,105 @@
   "name": "Smoky сравнение",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading_accent", "label": "Заглавие — акцент", "default": "Защо" },
-    { "type": "checkbox", "id": "heading_logo", "label": "Лого вместо текст в заглавието", "default": true },
-    { "type": "text", "id": "heading_logo_suffix", "label": "Знак след логото", "default": "?" },
-    { "type": "text", "id": "heading_after", "label": "Заглавие — след акцента (ако не е лого)", "default": "Smoky?" },
-    { "type": "checkbox", "id": "us_logo", "label": "Лого вместо име на лявата карта", "default": true },
-    { "type": "text", "id": "us_title", "label": "Лява карта — заглавие", "default": "SMOKY" },
-    { "type": "text", "id": "them_title", "label": "Дясна карта — заглавие", "default": "Обикновената доставка" },
-    { "type": "text", "id": "button_label", "label": "Бутон — текст", "default": "Поръчай сега" },
-    { "type": "url", "id": "button_link", "label": "Бутон — линк" }
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Заглавие — акцент",
+      "default": "Защо"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_logo",
+      "label": "Лого вместо текст в заглавието",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading_logo_suffix",
+      "label": "Знак след логото",
+      "default": "?"
+    },
+    {
+      "type": "text",
+      "id": "heading_after",
+      "label": "Заглавие — след акцента (ако не е лого)",
+      "default": "Smoky?"
+    },
+    {
+      "type": "checkbox",
+      "id": "us_logo",
+      "label": "Лого вместо име на лявата карта",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "us_title",
+      "label": "Лява карта — заглавие",
+      "default": "SMOKY"
+    },
+    {
+      "type": "text",
+      "id": "them_title",
+      "label": "Дясна карта — заглавие",
+      "default": "Обикновената доставка"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Бутон — текст",
+      "default": "Поръчай сега"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Бутон — линк"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
+    }
   ],
   "blocks": [
     {
       "type": "plus",
       "name": "✓ Предимство (ляво)",
       "settings": [
-        { "type": "text", "id": "title", "label": "Заглавие", "default": "Прясно на жар" },
-        { "type": "text", "id": "text", "label": "Описание" }
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Заглавие",
+          "default": "Прясно на жар"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Описание"
+        }
       ]
     },
     {
       "type": "minus",
       "name": "✗ Недостатък (дясно)",
       "settings": [
-        { "type": "text", "id": "title", "label": "Заглавие", "default": "Претоплена храна" },
-        { "type": "text", "id": "text", "label": "Описание" }
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Заглавие",
+          "default": "Претоплена храна"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Описание"
+        }
       ]
     }
   ],
@@ -247,16 +321,76 @@
     {
       "name": "Smoky сравнение",
       "blocks": [
-        { "type": "plus", "settings": { "title": "Прясно смляно месо всеки ден", "text": "Работим само с проверени български доставчици." } },
-        { "type": "plus", "settings": { "title": "На жар, не на плоча", "text": "Истински огън, истински дим, истински вкус." } },
-        { "type": "plus", "settings": { "title": "Собствена доставка", "text": "Пристига горещо, в брандирана опаковка, точно навреме." } },
-        { "type": "plus", "settings": { "title": "Балкански рецепти", "text": "Както на село — без консерванти и без компромиси." } },
-        { "type": "plus", "settings": { "title": "Реални порции", "text": "Ставаш сит. Точка." } },
-        { "type": "minus", "settings": { "title": "Замразени полуфабрикати", "text": "Никой не знае откога са във фризера." } },
-        { "type": "minus", "settings": { "title": "Претоплено във фритюрник", "text": "Вкус на олио вместо на огън." } },
-        { "type": "minus", "settings": { "title": "Куриер на парче", "text": "Пристига хладко и разклатено." } },
-        { "type": "minus", "settings": { "title": "Вкус „под линия“", "text": "Едно и също, отвсякъде." } },
-        { "type": "minus", "settings": { "title": "Порция въздух", "text": "Снимката обещава, кутията разочарова." } }
+        {
+          "type": "plus",
+          "settings": {
+            "title": "Прясно смляно месо всеки ден",
+            "text": "Работим само с проверени български доставчици."
+          }
+        },
+        {
+          "type": "plus",
+          "settings": {
+            "title": "На жар, не на плоча",
+            "text": "Истински огън, истински дим, истински вкус."
+          }
+        },
+        {
+          "type": "plus",
+          "settings": {
+            "title": "Собствена доставка",
+            "text": "Пристига горещо, в брандирана опаковка, точно навреме."
+          }
+        },
+        {
+          "type": "plus",
+          "settings": {
+            "title": "Балкански рецепти",
+            "text": "Както на село — без консерванти и без компромиси."
+          }
+        },
+        {
+          "type": "plus",
+          "settings": {
+            "title": "Реални порции",
+            "text": "Ставаш сит. Точка."
+          }
+        },
+        {
+          "type": "minus",
+          "settings": {
+            "title": "Замразени полуфабрикати",
+            "text": "Никой не знае откога са във фризера."
+          }
+        },
+        {
+          "type": "minus",
+          "settings": {
+            "title": "Претоплено във фритюрник",
+            "text": "Вкус на олио вместо на огън."
+          }
+        },
+        {
+          "type": "minus",
+          "settings": {
+            "title": "Куриер на парче",
+            "text": "Пристига хладко и разклатено."
+          }
+        },
+        {
+          "type": "minus",
+          "settings": {
+            "title": "Вкус „под линия“",
+            "text": "Едно и също, отвсякъде."
+          }
+        },
+        {
+          "type": "minus",
+          "settings": {
+            "title": "Порция въздух",
+            "text": "Снимката обещава, кутията разочарова."
+          }
+        }
       ]
     }
   ]

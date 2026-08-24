@@ -47,7 +47,8 @@
   #smoky-marquee-{{ section.id }} {
     background: {% if section.settings.background == 'dark' %}var(--smoky-dark-soft){% elsif section.settings.background == 'pink' %}var(--smoky-pink){% elsif section.settings.background == 'sand' %}var(--smoky-sand){% else %}var(--smoky-cream){% endif %};
     color: {% if section.settings.background == 'dark' %}var(--smoky-sand){% elsif section.settings.background == 'pink' %}var(--smoky-cream){% else %}var(--smoky-dark){% endif %};
-    padding-block: clamp(18px, 2.4vw, 34px);
+    /* tall enough that the light sections curling over both edges leave a full band visible */
+    padding-block: calc(var(--smoky-radius-big) + clamp(20px, 2.5vw, 36px));
     overflow: clip;
     {% if section.settings.curve_top %}border-top-left-radius: min(var(--smoky-radius-big), 40px); border-top-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
     {% if section.settings.curve_bottom %}border-bottom-left-radius: min(var(--smoky-radius-big), 40px); border-bottom-right-radius: min(var(--smoky-radius-big), 40px);{% endif %}
@@ -124,10 +125,22 @@
       "id": "background",
       "label": "Фон",
       "options": [
-        { "value": "cream", "label": "Крем" },
-        { "value": "sand", "label": "Пясък" },
-        { "value": "pink", "label": "Розово" },
-        { "value": "dark", "label": "Тъмен" }
+        {
+          "value": "cream",
+          "label": "Крем"
+        },
+        {
+          "value": "sand",
+          "label": "Пясък"
+        },
+        {
+          "value": "pink",
+          "label": "Розово"
+        },
+        {
+          "value": "dark",
+          "label": "Тъмен"
+        }
       ],
       "default": "dark"
     },
@@ -136,27 +149,85 @@
       "id": "separator",
       "label": "Разделител",
       "options": [
-        { "value": "none", "label": "Без" },
-        { "value": "dot", "label": "Точка" },
-        { "value": "smoky-pattern-shevitsa", "label": "Шевица" },
-        { "value": "smoky-flame-sticker", "label": "Пламък" },
-        { "value": "smoky-pattern-fork", "label": "Вилица" },
-        { "value": "smoky-pattern-knife", "label": "Нож" }
+        {
+          "value": "none",
+          "label": "Без"
+        },
+        {
+          "value": "dot",
+          "label": "Точка"
+        },
+        {
+          "value": "smoky-pattern-shevitsa",
+          "label": "Шевица"
+        },
+        {
+          "value": "smoky-flame-sticker",
+          "label": "Пламък"
+        },
+        {
+          "value": "smoky-pattern-fork",
+          "label": "Вилица"
+        },
+        {
+          "value": "smoky-pattern-knife",
+          "label": "Нож"
+        }
       ],
       "default": "smoky-pattern-shevitsa"
     },
-    { "type": "range", "id": "sep_repeat", "label": "Брой икони между думите", "min": 1, "max": 5, "step": 1, "default": 3 },
-    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб", "default": true },
-    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб", "default": true },
-    { "type": "range", "id": "speed", "label": "Скорост (px/сек)", "min": 20, "max": 160, "step": 10, "default": 70 },
-    { "type": "range", "id": "size", "label": "Размер на текста (vw)", "min": 2, "max": 8, "step": 1, "default": 4 },
+    {
+      "type": "range",
+      "id": "sep_repeat",
+      "label": "Брой икони между думите",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Скорост (px/сек)",
+      "min": 20,
+      "max": 160,
+      "step": 10,
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "size",
+      "label": "Размер на текста (vw)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
     {
       "type": "select",
       "id": "direction",
       "label": "Посока",
       "options": [
-        { "value": "left", "label": "Наляво" },
-        { "value": "right", "label": "Надясно" }
+        {
+          "value": "left",
+          "label": "Наляво"
+        },
+        {
+          "value": "right",
+          "label": "Надясно"
+        }
       ],
       "default": "left"
     }
@@ -166,16 +237,34 @@
       "type": "word",
       "name": "Дума",
       "settings": [
-        { "type": "text", "id": "text", "label": "Текст", "default": "СКАРА" },
-        { "type": "checkbox", "id": "outline", "label": "Само контур", "default": false }
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Текст",
+          "default": "СКАРА"
+        },
+        {
+          "type": "checkbox",
+          "id": "outline",
+          "label": "Само контур",
+          "default": false
+        }
       ]
     },
     {
       "type": "logo",
       "name": "Лого",
       "settings": [
-        { "type": "image_picker", "id": "image", "label": "Лого" },
-        { "type": "text", "id": "alt", "label": "Алт текст" }
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Лого"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Алт текст"
+        }
       ]
     }
   ],
@@ -184,10 +273,32 @@
     {
       "name": "Smoky маркии лента",
       "blocks": [
-        { "type": "word", "settings": { "text": "СКАРА" } },
-        { "type": "word", "settings": { "text": "ЖАР", "outline": true } },
-        { "type": "word", "settings": { "text": "ДИМ" } },
-        { "type": "word", "settings": { "text": "ВКУС", "outline": true } }
+        {
+          "type": "word",
+          "settings": {
+            "text": "СКАРА"
+          }
+        },
+        {
+          "type": "word",
+          "settings": {
+            "text": "ЖАР",
+            "outline": true
+          }
+        },
+        {
+          "type": "word",
+          "settings": {
+            "text": "ДИМ"
+          }
+        },
+        {
+          "type": "word",
+          "settings": {
+            "text": "ВКУС",
+            "outline": true
+          }
+        }
       ]
     }
   ]

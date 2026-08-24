@@ -4,7 +4,7 @@
   optional lead text and photo panel below.
 {% endcomment %}
 
-<section class="smoky-phero smoky-grained" id="smoky-phero-{{ section.id }}">
+<section class="smoky-phero smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-phero-{{ section.id }}">
   <div class="smoky-container">
     {%- if section.settings.kicker != blank -%}
       <p class="smoky-kicker smoky-phero__kicker" data-smoky-reveal>{{ section.settings.kicker }}</p>
@@ -87,12 +87,50 @@
   "name": "Smoky заглавие стр.",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "kicker", "label": "Малък надпис отгоре" },
-    { "type": "text", "id": "title", "label": "Заглавие", "default": "ЗАГЛАВИЕ" },
-    { "type": "checkbox", "id": "marquee", "label": "Заглавието се движи (маркии)", "default": false },
-    { "type": "textarea", "id": "lead", "label": "Водещ текст" },
-    { "type": "image_picker", "id": "image", "label": "Снимка (по избор)" }
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Малък надпис отгоре"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Заглавие",
+      "default": "ЗАГЛАВИЕ"
+    },
+    {
+      "type": "checkbox",
+      "id": "marquee",
+      "label": "Заглавието се движи (маркии)",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Водещ текст"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Снимка (по избор)"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
+    }
   ],
-  "presets": [{ "name": "Smoky заглавие стр." }]
+  "presets": [
+    {
+      "name": "Smoky заглавие стр."
+    }
+  ]
 }
 {% endschema %}

@@ -25,39 +25,146 @@
     },
     "about_values": {
       "type": "smoky-values",
-      "settings": { "heading": "НАШИТЕ ЦЕННОСТИ", "background": "cream" },
-      "blocks": {
-        "v1": { "type": "value", "settings": { "title": "Истинска жар", "text": "Готвим само на дървени въглища — без плочи, без компромиси.", "mascot": "smoky-mascot-happy", "circle_color": "#FA0082" } },
-        "v2": { "type": "value", "settings": { "title": "Прясно всеки ден", "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.", "mascot": "smoky-mascot-smiling", "circle_color": "#EBDCC3" } },
-        "v3": { "type": "value", "settings": { "title": "От Балкана", "text": "Рецепти, предавани през поколения — с уважение към традицията.", "mascot": "smoky-mascot-front", "circle_color": "#EBDCC3" } },
-        "v4": { "type": "value", "settings": { "title": "С усмивка", "text": "Димо и екипът готвим с кеф — и се познава на вкуса.", "mascot": "smoky-mascot-surprised", "circle_color": "#FA0082" } }
+      "settings": {
+        "heading": "НАШИТЕ ЦЕННОСТИ",
+        "background": "cream",
+        "curve_top": true
       },
-      "block_order": ["v1", "v2", "v3", "v4"]
+      "blocks": {
+        "v1": {
+          "type": "value",
+          "settings": {
+            "title": "Истинска жар",
+            "text": "Готвим само на дървени въглища — без плочи, без компромиси.",
+            "mascot": "smoky-mascot-happy",
+            "circle_color": "#FA0082"
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "title": "Прясно всеки ден",
+            "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
+            "mascot": "smoky-mascot-smiling",
+            "circle_color": "#EBDCC3"
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "title": "От Балкана",
+            "text": "Рецепти, предавани през поколения — с уважение към традицията.",
+            "mascot": "smoky-mascot-front",
+            "circle_color": "#EBDCC3"
+          }
+        },
+        "v4": {
+          "type": "value",
+          "settings": {
+            "title": "С усмивка",
+            "text": "Димо и екипът готвим с кеф — и се познава на вкуса.",
+            "mascot": "smoky-mascot-surprised",
+            "circle_color": "#FA0082"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ]
     },
     "about_photos": {
       "type": "smoky-photo-marquee",
-      "settings": { "background": "cream", "speed": 50, "direction": "right" },
-      "blocks": {
-        "p1": { "type": "photo", "settings": {} },
-        "p2": { "type": "photo", "settings": {} },
-        "p3": { "type": "photo", "settings": {} },
-        "p4": { "type": "photo", "settings": {} },
-        "p5": { "type": "photo", "settings": {} },
-        "p6": { "type": "photo", "settings": {} }
+      "settings": {
+        "background": "cream",
+        "speed": 50,
+        "direction": "right",
+        "curve_bottom": true
       },
-      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+      "blocks": {
+        "p1": {
+          "type": "photo",
+          "settings": {}
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {}
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {}
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {}
+        },
+        "p5": {
+          "type": "photo",
+          "settings": {}
+        },
+        "p6": {
+          "type": "photo",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
+      ]
     },
     "about_stats": {
       "type": "smoky-stats",
       "settings": {},
       "blocks": {
-        "st1": { "type": "stat", "settings": { "number": "8", "label": "Години на жарта" } },
-        "st2": { "type": "stat", "settings": { "number": "14", "label": "Души в екипа" } },
-        "st3": { "type": "stat", "settings": { "number": "12+", "label": "Вида скара" } },
-        "st4": { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+        "st1": {
+          "type": "stat",
+          "settings": {
+            "number": "8",
+            "label": "Години на жарта"
+          }
+        },
+        "st2": {
+          "type": "stat",
+          "settings": {
+            "number": "14",
+            "label": "Души в екипа"
+          }
+        },
+        "st3": {
+          "type": "stat",
+          "settings": {
+            "number": "12+",
+            "label": "Вида скара"
+          }
+        },
+        "st4": {
+          "type": "stat",
+          "settings": {
+            "number": "5000+",
+            "label": "Щастливи гости"
+          }
+        }
       },
-      "block_order": ["st1", "st2", "st3", "st4"]
+      "block_order": [
+        "st1",
+        "st2",
+        "st3",
+        "st4"
+      ]
     }
   },
-  "order": ["about_hero", "about_intro", "about_divider", "about_values", "about_photos", "about_stats"]
+  "order": [
+    "about_hero",
+    "about_intro",
+    "about_divider",
+    "about_values",
+    "about_photos",
+    "about_stats"
+  ]
 }

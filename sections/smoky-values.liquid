@@ -4,7 +4,7 @@
   Used on the About page ("Нашите ценности").
 {% endcomment %}
 
-<section class="smoky-values {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}" id="smoky-values-{{ section.id }}">
+<section class="smoky-values {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-values-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-values__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
@@ -99,16 +99,39 @@
   "name": "Smoky ценности",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Заглавие", "default": "НАШИТЕ ЦЕННОСТИ" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Заглавие",
+      "default": "НАШИТЕ ЦЕННОСТИ"
+    },
     {
       "type": "select",
       "id": "background",
       "label": "Фон",
       "options": [
-        { "value": "cream", "label": "Крем" },
-        { "value": "dark", "label": "Тъмен" }
+        {
+          "value": "cream",
+          "label": "Крем"
+        },
+        {
+          "value": "dark",
+          "label": "Тъмен"
+        }
       ],
       "default": "cream"
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_top",
+      "label": "Заоблен горен ръб (над тъмно)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "curve_bottom",
+      "label": "Заоблен долен ръб (над тъмно)",
+      "default": false
     }
   ],
   "blocks": [
@@ -116,23 +139,57 @@
       "type": "value",
       "name": "Ценност",
       "settings": [
-        { "type": "text", "id": "title", "label": "Заглавие", "default": "Истинска жар" },
-        { "type": "textarea", "id": "text", "label": "Текст", "default": "Готвим само на дървени въглища — без плочи, без компромиси." },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Заглавие",
+          "default": "Истинска жар"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Текст",
+          "default": "Готвим само на дървени въглища — без плочи, без компромиси."
+        },
         {
           "type": "select",
           "id": "mascot",
           "label": "Емоция на Димо",
           "options": [
-            { "value": "smoky-mascot-happy", "label": "Щастлив" },
-            { "value": "smoky-mascot-smiling", "label": "Усмихнат" },
-            { "value": "smoky-mascot-surprised", "label": "Изненадан" },
-            { "value": "smoky-mascot-front", "label": "Фронтален" },
-            { "value": "smoky-mascot-sad", "label": "Тъжен" }
+            {
+              "value": "smoky-mascot-happy",
+              "label": "Щастлив"
+            },
+            {
+              "value": "smoky-mascot-smiling",
+              "label": "Усмихнат"
+            },
+            {
+              "value": "smoky-mascot-surprised",
+              "label": "Изненадан"
+            },
+            {
+              "value": "smoky-mascot-front",
+              "label": "Фронтален"
+            },
+            {
+              "value": "smoky-mascot-sad",
+              "label": "Тъжен"
+            }
           ],
           "default": "smoky-mascot-happy"
         },
-        { "type": "image_picker", "id": "image", "label": "Собствена картинка (по избор)" },
-        { "type": "color", "id": "circle_color", "label": "Цвят на кръга", "default": "#FA0082" }
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Собствена картинка (по избор)"
+        },
+        {
+          "type": "color",
+          "id": "circle_color",
+          "label": "Цвят на кръга",
+          "default": "#FA0082"
+        }
       ]
     }
   ],
@@ -141,10 +198,42 @@
     {
       "name": "Smoky ценности",
       "blocks": [
-        { "type": "value", "settings": { "title": "Истинска жар", "text": "Готвим само на дървени въглища — без плочи, без компромиси.", "mascot": "smoky-mascot-happy", "circle_color": "#FA0082" } },
-        { "type": "value", "settings": { "title": "Прясно всеки ден", "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.", "mascot": "smoky-mascot-smiling", "circle_color": "#EBDCC3" } },
-        { "type": "value", "settings": { "title": "От Балкана", "text": "Рецепти, предавани през поколения — с уважение към традицията.", "mascot": "smoky-mascot-front", "circle_color": "#EBDCC3" } },
-        { "type": "value", "settings": { "title": "С усмивка", "text": "Димо и екипът готвим с кеф — и се познава на вкуса.", "mascot": "smoky-mascot-surprised", "circle_color": "#FA0082" } }
+        {
+          "type": "value",
+          "settings": {
+            "title": "Истинска жар",
+            "text": "Готвим само на дървени въглища — без плочи, без компромиси.",
+            "mascot": "smoky-mascot-happy",
+            "circle_color": "#FA0082"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Прясно всеки ден",
+            "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
+            "mascot": "smoky-mascot-smiling",
+            "circle_color": "#EBDCC3"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "От Балкана",
+            "text": "Рецепти, предавани през поколения — с уважение към традицията.",
+            "mascot": "smoky-mascot-front",
+            "circle_color": "#EBDCC3"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "С усмивка",
+            "text": "Димо и екипът готвим с кеф — и се познава на вкуса.",
+            "mascot": "smoky-mascot-surprised",
+            "circle_color": "#FA0082"
+          }
+        }
       ]
     }
   ]

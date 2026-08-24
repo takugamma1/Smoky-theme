@@ -259,15 +259,20 @@
 
   .smoky-arrow--prev svg { transform: rotate(180deg); }
 
-  /* ---- rounded caps: a light section curling over the dark slab beneath ---- */
-  .smoky-cap-bottom {
-    border-radius: 0 0 var(--smoky-radius-big) var(--smoky-radius-big);
+  /* ---- section curls: light panel with rounded corners overlapping the dark
+     ground beneath/above (the FTC transition — never a flat color edge) ---- */
+  .smoky-curl-top {
+    border-top-left-radius: var(--smoky-radius-big);
+    border-top-right-radius: var(--smoky-radius-big);
+    margin-top: calc(-1 * var(--smoky-radius-big));
     position: relative;
     z-index: 1;
   }
 
-  .smoky-cap-top {
-    border-radius: var(--smoky-radius-big) var(--smoky-radius-big) 0 0;
+  .smoky-curl-bottom {
+    border-bottom-left-radius: var(--smoky-radius-big);
+    border-bottom-right-radius: var(--smoky-radius-big);
+    margin-bottom: calc(-1 * var(--smoky-radius-big));
     position: relative;
     z-index: 1;
   }
