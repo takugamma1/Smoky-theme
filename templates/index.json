@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -53,7 +54,7 @@
             "subtitle": "Класиката, която ни събира",
             "tile_bg": "#4a1230",
             "tile_border": "#fa0082",
-            "link": "shopify://collections/all"
+            "link": "shopify://products/kebabche"
           }
         },
         "card_kyufteta": {
@@ -212,7 +213,10 @@
       ],
       "settings": {
         "heading_accent": "Защо",
+        "heading_logo": true,
+        "heading_logo_suffix": "?",
         "heading_after": "Smoky?",
+        "us_logo": true,
         "us_title": "SMOKY",
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
@@ -260,12 +264,12 @@
       "settings": {
         "background": "dark",
         "separator": "smoky-pattern-shevitsa",
-        "speed": 70,
-        "size": 4,
-        "direction": "left",
         "sep_repeat": 3,
         "curve_top": true,
-        "curve_bottom": true
+        "curve_bottom": true,
+        "speed": 70,
+        "size": 4,
+        "direction": "left"
       }
     },
     "smoky_photo_marquee": {
