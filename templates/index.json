@@ -378,20 +378,6 @@
         "heading": "СТЪПКА"
       }
     },
-    "smoky_best_sellers": {
-      "type": "smoky-best-sellers",
-      "settings": {
-        "heading": "НАЙ-ПРОДАВАНИ",
-        "limit": 3,
-        "show_top": true
-      }
-    },
-    "smoky_gallery": {
-      "type": "smoky-gallery",
-      "settings": {
-        "heading": "ГАЛЕРИЯ"
-      }
-    },
     "smoky_stats": {
       "type": "smoky-stats",
       "blocks": {
@@ -445,8 +431,6 @@
     "smoky_marquee",
     "smoky_photo_marquee",
     "smoky_steps",
-    "smoky_best_sellers",
-    "smoky_gallery",
     "smoky_stats"
   ]
 }
