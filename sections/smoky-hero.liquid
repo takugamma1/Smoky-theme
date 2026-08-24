@@ -7,7 +7,7 @@
   inverted corners. Media is a photo or a muted looping mp4 video.
 {% endcomment %}
 
-<section class="smoky-hero" id="smoky-hero-{{ section.id }}">
+<section class="smoky-hero smoky-grained" id="smoky-hero-{{ section.id }}">
   <div class="smoky-container smoky-hero__container">
     <h1 class="visually-hidden">{{ section.settings.seo_title | default: 'Smoky — балканска скара с доставка' }}</h1>
 
@@ -37,6 +37,13 @@
     </div>
 
     <div class="smoky-hero__media-wrap" data-smoky-reveal data-smoky-reveal-delay="0.1">
+      {%- if section.settings.show_flames -%}
+        <div class="smoky-hero__flames" aria-hidden="true">
+          <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="eager" width="70" height="90" class="smoky-hero__flame smoky-hero__flame--1">
+          <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="eager" width="70" height="90" class="smoky-hero__flame smoky-hero__flame--2">
+          <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="eager" width="70" height="90" class="smoky-hero__flame smoky-hero__flame--3">
+        </div>
+      {%- endif -%}
       <div class="smoky-hero__media">
         {%- if section.settings.video_url != blank -%}
           <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
@@ -51,10 +58,13 @@
         {%- endif -%}
       </div>
 
-      <div class="smoky-hero__h1box" aria-hidden="true">
+      <div class="smoky-hero__h1box smoky-grained" aria-hidden="true">
         <span class="smoky-hero__corner smoky-hero__corner--left"></span>
         <span class="smoky-hero__corner smoky-hero__corner--bottom"></span>
         <span class="smoky-title smoky-title--big smoky-hero__line2">{{ section.settings.line2 }}</span>
+        {%- if section.settings.show_flames -%}
+          <img src="{{ 'smoky-flame-sticker.svg' | asset_url }}" alt="" loading="eager" width="70" height="90" class="smoky-hero__flame smoky-hero__flame--title" aria-hidden="true">
+        {%- endif -%}
       </div>
     </div>
 
@@ -115,12 +125,12 @@
     position: relative;
     display: block;
     overflow: hidden;
-    min-width: 4.2em;
-    height: 0.42em;
+    min-width: 8em;
+    height: 1.5em;
     font-family: var(--smoky-font-body);
     font-weight: 500;
-    font-size: 0.3em;
-    line-height: 1.4;
+    font-size: 0.22em;
+    line-height: 1.5;
     letter-spacing: 0.01em;
     text-transform: none;
   }
@@ -133,9 +143,12 @@
     justify-content: center;
     white-space: nowrap;
     transform: translateY(110%);
-    transition: transform 0.5s var(--smoky-bounce);
+    transition: transform 0.6s var(--smoky-bounce);
   }
 
+  /* first word visible before JS wires the loop */
+  #smoky-hero-{{ section.id }} .smoky-loop-word:first-child { transform: translateY(0); }
+  #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='next'] { transform: translateY(110%); }
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='active'] { transform: translateY(0); }
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='prev'] { transform: translateY(-110%); }
 
@@ -168,10 +181,58 @@
   }
 
   #smoky-hero-{{ section.id }} .smoky-hero__media {
+    position: relative;
+    z-index: 1;
     border-radius: var(--smoky-radius-big);
     overflow: hidden;
     background: var(--smoky-dark-soft);
     aspect-ratio: 16 / 8.2;
+  }
+
+  /* flames peeking from behind the media panel */
+  #smoky-hero-{{ section.id }} .smoky-hero__flames {
+    position: absolute;
+    top: 4px;
+    left: clamp(24px, 6vw, 90px);
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(6px, 1vw, 14px);
+    z-index: 0;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__flame {
+    display: block;
+    width: clamp(34px, 4vw, 62px);
+    height: auto;
+    transform-origin: 50% 100%;
+  }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__flame--1 { transform: translateY(-62%) rotate(-6deg); }
+  #smoky-hero-{{ section.id }} .smoky-hero__flame--2 { width: clamp(46px, 5.4vw, 84px); transform: translateY(-70%); }
+  #smoky-hero-{{ section.id }} .smoky-hero__flame--3 { transform: translateY(-58%) rotate(7deg); }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__flame--title {
+    position: absolute;
+    top: -0.35em;
+    right: clamp(6px, 1vw, 18px);
+    width: clamp(30px, 3.2vw, 52px);
+    transform: rotate(8deg);
+    transform-origin: 50% 100%;
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #smoky-hero-{{ section.id }} .smoky-hero__flame { animation: smoky-flicker-{{ section.id }} 1.7s ease-in-out infinite alternate; }
+    #smoky-hero-{{ section.id }} .smoky-hero__flame--1 { animation-duration: 1.5s; animation-delay: 0.2s; --flame-rot: -6deg; --flame-y: -62%; }
+    #smoky-hero-{{ section.id }} .smoky-hero__flame--2 { animation-duration: 1.9s; --flame-rot: 0deg; --flame-y: -70%; }
+    #smoky-hero-{{ section.id }} .smoky-hero__flame--3 { animation-duration: 1.4s; animation-delay: 0.45s; --flame-rot: 7deg; --flame-y: -58%; }
+    #smoky-hero-{{ section.id }} .smoky-hero__flame--title { animation-duration: 1.6s; animation-delay: 0.1s; --flame-rot: 8deg; --flame-y: 0%; }
+  }
+
+  @keyframes smoky-flicker-{{ section.id }} {
+    0% { transform: translateY(var(--flame-y, 0%)) rotate(var(--flame-rot, 0deg)) scaleY(1) scaleX(1); }
+    45% { transform: translateY(var(--flame-y, 0%)) rotate(calc(var(--flame-rot, 0deg) + 3deg)) scaleY(1.1) scaleX(0.94); }
+    100% { transform: translateY(var(--flame-y, 0%)) rotate(calc(var(--flame-rot, 0deg) - 2deg)) scaleY(0.94) scaleX(1.04); }
   }
 
   #smoky-hero-{{ section.id }} .smoky-hero__media img,
@@ -201,6 +262,7 @@
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 2;
     padding: 0 0 clamp(10px, 1.4vw, 22px) clamp(14px, 2vw, 30px);
     background: var(--smoky-cream);
     border-radius: 0 0 0 var(--smoky-radius-big);
@@ -256,6 +318,7 @@
     { "type": "text", "id": "line2", "label": "Заглавие — ред 2", "default": "СКАРАТА!" },
     { "type": "text", "id": "loop_words", "label": "Въртящи се думи (със запетая)", "default": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!" },
     { "type": "checkbox", "id": "use_mascot", "label": "Стикер с Димо до балончето", "default": true },
+    { "type": "checkbox", "id": "show_flames", "label": "Пламъци около медията", "default": true },
     { "type": "image_picker", "id": "sticker", "label": "Собствен стикер (по избор)" },
     { "type": "image_picker", "id": "image", "label": "Снимка" },
     { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },

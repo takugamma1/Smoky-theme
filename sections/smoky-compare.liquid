@@ -5,7 +5,7 @@
   ✗ list). Blocks: "plus" rows go left, "minus" rows go right.
 {% endcomment %}
 
-<section class="smoky-compare" id="smoky-compare-{{ section.id }}">
+<section class="smoky-compare smoky-grained" id="smoky-compare-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     <h2 class="smoky-title smoky-title--small smoky-compare__heading" data-smoky-reveal>
       <span class="smoky-accent">{{ section.settings.heading_accent }}</span>
@@ -13,7 +13,7 @@
     </h2>
 
     <div class="smoky-compare__row">
-      <div class="smoky-compare__card smoky-compare__card--us" data-smoky-reveal>
+      <div class="smoky-compare__card smoky-compare__card--us smoky-grained" data-smoky-reveal>
         <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
           <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-pink)"></rect>
         </svg>
@@ -46,7 +46,7 @@
         {%- endif -%}
       </div>
 
-      <div class="smoky-compare__card smoky-compare__card--them" data-smoky-reveal data-smoky-reveal-delay="0.12">
+      <div class="smoky-compare__card smoky-compare__card--them smoky-grained" data-smoky-reveal data-smoky-reveal-delay="0.12">
         <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
           <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="rgb(40 40 40 / 0.4)"></rect>
         </svg>

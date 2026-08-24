@@ -4,7 +4,7 @@
   and a label beneath.
 {% endcomment %}
 
-<section class="smoky-stats" id="smoky-stats-{{ section.id }}">
+<section class="smoky-stats smoky-grained--light" id="smoky-stats-{{ section.id }}">
   <div class="smoky-container smoky-stats__row">
     {%- for block in section.blocks -%}
       <div class="smoky-stats__col" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.08 }}"{% endunless %} {{ block.shopify_attributes }}>

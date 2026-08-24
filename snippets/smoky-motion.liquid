@@ -164,6 +164,52 @@
       });
     };
 
+    /* ---- mascot cursor companion: Димо trails the pointer with a springy lerp ---- */
+    const initMascotCursor = () => {
+      if (reduced) return;
+      if (window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches) return;
+      if (document.querySelector('.smoky-cursor-mascot')) return;
+      const el = document.createElement('div');
+      el.className = 'smoky-cursor-mascot';
+      el.innerHTML =
+        '<img class="smoky-cursor-mascot__base" src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" width="54" height="54">' +
+        '<img class="smoky-cursor-mascot__alt" src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" width="54" height="54">';
+      document.body.appendChild(el);
+      withGsap((gsap) => {
+        const qx = gsap.quickTo(el, 'x', { duration: 0.55, ease: 'power3.out' });
+        const qy = gsap.quickTo(el, 'y', { duration: 0.55, ease: 'power3.out' });
+        const qr = gsap.quickTo(el, 'rotation', { duration: 0.5, ease: 'power2.out' });
+        let shown = false;
+        let lastX = 0;
+        let hidden = false;
+        window.addEventListener('mousemove', (e) => {
+          if (!shown) {
+            shown = true;
+            gsap.set(el, { x: e.clientX + 20, y: e.clientY + 24 });
+            gsap.to(el, { scale: 1, duration: 0.5, ease: 'back.out(2.2)' });
+          }
+          qx(e.clientX + 20);
+          qy(e.clientY + 24);
+          qr(gsap.utils.clamp(-16, 16, (e.clientX - lastX) * 1.4));
+          lastX = e.clientX;
+
+          // duck out of the way while the "Влачи" drag bubble owns the cursor
+          const overDrag = !!e.target.closest?.('[data-smoky-drag-cursor]');
+          if (overDrag !== hidden) {
+            hidden = overDrag;
+            gsap.to(el, { scale: hidden ? 0 : 1, duration: 0.35, ease: hidden ? 'power2.in' : 'back.out(2.2)' });
+          }
+
+          // Димо lights up over anything clickable
+          el.classList.toggle('is-hover', !!e.target.closest?.('a, button'));
+        });
+        document.documentElement.addEventListener('mouseleave', () => gsap.to(el, { scale: 0, duration: 0.3 }));
+        document.documentElement.addEventListener('mouseenter', () => {
+          if (!hidden) gsap.to(el, { scale: 1, duration: 0.4, ease: 'back.out(2.2)' });
+        });
+      });
+    };
+
     /* ---- drag cursor bubble ---- */
     const initDragCursor = () => {
       if (reduced || window.matchMedia('(hover: none)').matches) return;
@@ -175,8 +221,8 @@
       bubble.textContent = 'Влачи';
       document.body.appendChild(bubble);
       withGsap((gsap) => {
-        const setX = gsap.quickTo(bubble, 'x', { duration: 0.35, ease: 'power3.out' });
-        const setY = gsap.quickTo(bubble, 'y', { duration: 0.35, ease: 'power3.out' });
+        const setX = gsap.quickTo(bubble, 'x', { duration: 0.5, ease: 'power3.out' });
+        const setY = gsap.quickTo(bubble, 'y', { duration: 0.5, ease: 'power3.out' });
         window.addEventListener('mousemove', (e) => {
           setX(e.clientX);
           setY(e.clientY);
@@ -195,6 +241,7 @@
       initScrubs(scope);
       initLoopWords(scope);
       initDragCursor();
+      initMascotCursor();
     };
 
     onReady(() => initAll(document));

@@ -7,7 +7,7 @@
   the design reads in the editor.
 {% endcomment %}
 
-<section class="smoky-menu" id="smoky-menu-{{ section.id }}">
+<section class="smoky-menu smoky-grained" id="smoky-menu-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-menu__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
@@ -17,7 +17,7 @@
       {%- for block in section.blocks -%}
         {%- if block.type == 'category' -%}
           {%- assign c = block.settings.collection -%}
-          <article class="smoky-menu__card" style="--menu-accent: {{ block.settings.accent }};" data-smoky-reveal {{ block.shopify_attributes }}>
+          <article class="smoky-menu__card smoky-grained" style="--menu-accent: {{ block.settings.accent }};" data-smoky-reveal {{ block.shopify_attributes }}>
             <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
               <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--menu-accent)"></rect>
             </svg>

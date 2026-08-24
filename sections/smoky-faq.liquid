@@ -5,7 +5,7 @@
   for the animated height; accessible via button + aria-expanded.
 {% endcomment %}
 
-<section class="smoky-faq" id="smoky-faq-{{ section.id }}">
+<section class="smoky-faq smoky-grained" id="smoky-faq-{{ section.id }}">
   <div class="smoky-container smoky-container--small">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-faq__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
@@ -13,7 +13,7 @@
 
     <ul class="smoky-faq__list">
       {%- for block in section.blocks -%}
-        <li class="smoky-faq__item" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.04 }}"{% endunless %} {{ block.shopify_attributes }}>
+        <li class="smoky-faq__item smoky-grained" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.04 }}"{% endunless %} {{ block.shopify_attributes }}>
           <button type="button" class="smoky-faq__top" aria-expanded="false" aria-controls="smoky-faq-a-{{ block.id }}">
             <h3>{{ block.settings.question }}</h3>
             <span class="smoky-faq__toggle" aria-hidden="true">

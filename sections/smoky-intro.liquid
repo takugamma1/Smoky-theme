@@ -7,7 +7,7 @@
 
 {%- assign bg = section.settings.background -%}
 <section
-  class="smoky-intro{% if section.settings.curve_bottom %} smoky-intro--curled{% endif %}"
+  class="smoky-intro {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}{% if section.settings.curve_bottom %} smoky-intro--curled{% endif %}"
   id="smoky-intro-{{ section.id }}"
 >
   <div class="smoky-container smoky-intro__row">

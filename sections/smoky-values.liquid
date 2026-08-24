@@ -4,14 +4,14 @@
   Used on the About page ("Нашите ценности").
 {% endcomment %}
 
-<section class="smoky-values" id="smoky-values-{{ section.id }}">
+<section class="smoky-values {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}" id="smoky-values-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-values__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
     {%- endif -%}
     <div class="smoky-values__grid">
       {%- for block in section.blocks -%}
-        <article class="smoky-values__card" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
+        <article class="smoky-values__card smoky-grained" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
           <span class="smoky-values__circle" style="--circle-bg: {{ block.settings.circle_color }};">
             {%- if block.settings.image != blank -%}
               {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: '' }}

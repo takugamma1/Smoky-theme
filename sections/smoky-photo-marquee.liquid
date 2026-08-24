@@ -4,7 +4,7 @@
   direction. Each block is one photo.
 {% endcomment %}
 
-<section class="smoky-photomq" id="smoky-photomq-{{ section.id }}">
+<section class="smoky-photomq {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}" id="smoky-photomq-{{ section.id }}">
   <div
     data-smoky-marquee
     data-marquee-speed="{{ section.settings.speed }}"

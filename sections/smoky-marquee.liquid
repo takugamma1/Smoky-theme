@@ -5,7 +5,7 @@
   Use for "СКАРА • ЖАР • ДИМ • ВКУС" strips or partner logos.
 {% endcomment %}
 
-<section class="smoky-marquee" id="smoky-marquee-{{ section.id }}">
+<section class="smoky-marquee {% if section.settings.background == 'dark' %}smoky-grained--light{% else %}smoky-grained{% endif %}" id="smoky-marquee-{{ section.id }}">
   <div
     data-smoky-marquee
     data-marquee-speed="{{ section.settings.speed }}"
