@@ -1,10 +1,12 @@
 {% comment %}
-  Smoky steps — "how to order" slider on a giant pink starburst background.
-  Big "СТЪПКА" title + a small dark starburst badge showing the current step
-  number (spins on change). Slides are text-only; arrows + drag to navigate.
+  Smoky steps — the FTC "STAP" pattern: a giant soft starburst filling the
+  section, huge title with the numbered star badge overlapping its corner,
+  ONE step text visible at a time (crossfade + lift between steps), round
+  arrows at the section edges, dot pagination underneath.
 {% endcomment %}
 
-{%- assign star_points = '100.0,0.0 109.2,18.5 122.3,2.5 127.1,22.6 143.4,9.9 143.6,30.6 162.3,21.8 158.0,42.0 178.2,37.7 169.4,56.4 190.1,56.6 177.4,72.9 197.5,77.7 181.5,90.8 200.0,100.0 181.5,109.2 197.5,122.3 177.4,127.1 190.1,143.4 169.4,143.6 178.2,162.3 158.0,158.0 162.3,178.2 143.6,169.4 143.4,190.1 127.1,177.4 122.3,197.5 109.2,181.5 100.0,200.0 90.8,181.5 77.7,197.5 72.9,177.4 56.6,190.1 56.4,169.4 37.7,178.2 42.0,158.0 21.8,162.3 30.6,143.6 9.9,143.4 22.6,127.1 2.5,122.3 18.5,109.2 0.0,100.0 18.5,90.8 2.5,77.7 22.6,72.9 9.9,56.6 30.6,56.4 21.8,37.7 42.0,42.0 37.7,21.8 56.4,30.6 56.6,9.9 72.9,22.6 77.7,2.5 90.8,18.5' -%}
+{%- assign star_points = '100.0,0.0 119.4,15.2 143.4,9.9 154.2,32.0 178.2,37.7 178.4,62.3 197.5,77.7 187.0,100.0 197.5,122.3 178.4,137.7 178.2,162.3 154.2,168.0 143.4,190.1 119.4,184.8 100.0,200.0 80.6,184.8 56.6,190.1 45.8,168.0 21.8,162.3 21.6,137.7 2.5,122.3 13.0,100.0 2.5,77.7 21.6,62.3 21.8,37.7 45.8,32.0 56.6,9.9 80.6,15.2' -%}
+{%- assign badge_points = '100.0,0.0 109.2,18.5 122.3,2.5 127.1,22.6 143.4,9.9 143.6,30.6 162.3,21.8 158.0,42.0 178.2,37.7 169.4,56.4 190.1,56.6 177.4,72.9 197.5,77.7 181.5,90.8 200.0,100.0 181.5,109.2 197.5,122.3 177.4,127.1 190.1,143.4 169.4,143.6 178.2,162.3 158.0,158.0 162.3,178.2 143.6,169.4 143.4,190.1 127.1,177.4 122.3,197.5 109.2,181.5 100.0,200.0 90.8,181.5 77.7,197.5 72.9,177.4 56.6,190.1 56.4,169.4 37.7,178.2 42.0,158.0 21.8,162.3 30.6,143.6 9.9,143.4 22.6,127.1 2.5,122.3 18.5,109.2 0.0,100.0 18.5,90.8 2.5,77.7 22.6,72.9 9.9,56.6 30.6,56.4 21.8,37.7 42.0,42.0 37.7,21.8 56.4,30.6 56.6,9.9 72.9,22.6 77.7,2.5 90.8,18.5' -%}
 
 <section class="smoky-steps smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-steps-{{ section.id }}">
   <svg class="smoky-steps__bigstar" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
@@ -17,12 +19,25 @@
     <polygon points="{{ star_points }}" fill="var(--smoky-pink)" filter="url(#steps-grain-{{ section.id }})"></polygon>
   </svg>
 
+  <button type="button" class="smoky-arrow smoky-arrow--prev smoky-steps__edge smoky-steps__edge--left" data-dir="-1" aria-label="Назад">
+    <span class="smoky-arrow__shadow"></span>
+    <span class="smoky-arrow__fill">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </button>
+  <button type="button" class="smoky-arrow smoky-steps__edge smoky-steps__edge--right" data-dir="1" aria-label="Напред">
+    <span class="smoky-arrow__shadow"></span>
+    <span class="smoky-arrow__fill">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </button>
+
   <div class="smoky-container smoky-steps__inner">
     <div class="smoky-steps__head" data-smoky-reveal>
-      <h2 class="smoky-title smoky-title--big smoky-steps__title">{{ section.settings.heading }}</h2>
+      <h2 class="smoky-title smoky-steps__title">{{ section.settings.heading }}</h2>
       <span class="smoky-steps__badge">
         <svg viewBox="0 0 200 200" aria-hidden="true">
-          <polygon points="{{ star_points }}" fill="var(--smoky-dark)"></polygon>
+          <polygon points="{{ badge_points }}" fill="var(--smoky-dark)"></polygon>
         </svg>
         <span class="smoky-steps__number">1.</span>
       </span>
@@ -31,35 +46,26 @@
     <div class="smoky-steps__viewport" data-smoky-drag-cursor tabindex="0">
       <ul class="smoky-steps__track">
         {%- for block in section.blocks -%}
-          <li class="smoky-steps__slide" data-step="{{ forloop.index }}" {{ block.shopify_attributes }}>
+          <li class="smoky-steps__slide{% if forloop.first %} is-active{% endif %}" data-step="{{ forloop.index }}" {{ block.shopify_attributes }}>
             <h3>{{ block.settings.text }}</h3>
           </li>
         {%- endfor -%}
       </ul>
     </div>
 
+    <div class="smoky-steps__dots" role="tablist" aria-label="Стъпки">
+      {%- for block in section.blocks -%}
+        <button type="button" class="smoky-steps__dot{% if forloop.first %} is-active{% endif %}" data-goto="{{ forloop.index0 }}" aria-label="Стъпка {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+
     <div class="smoky-shevitsa-row smoky-steps__ornament" aria-hidden="true">
-      <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
+      <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
     </div>
 
     <span class="smoky-steps__mascot" data-smoky-scrub-rotate="18" aria-hidden="true">
       <img src="{{ 'smoky-mascot-surprised.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
     </span>
-
-    <div class="smoky-steps__controls">
-      <button type="button" class="smoky-arrow smoky-arrow--prev" data-dir="-1" aria-label="Назад">
-        <span class="smoky-arrow__shadow"></span>
-        <span class="smoky-arrow__fill">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </button>
-      <button type="button" class="smoky-arrow" data-dir="1" aria-label="Напред">
-        <span class="smoky-arrow__shadow"></span>
-        <span class="smoky-arrow__fill">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </button>
-    </div>
   </div>
 </section>
 
@@ -74,10 +80,10 @@
 
   #smoky-steps-{{ section.id }} .smoky-steps__bigstar {
     position: absolute;
-    inset: clamp(24px, 4vw, 64px) min(4vw, 56px);
-    width: calc(100% - min(8vw, 112px));
-    height: calc(100% - clamp(48px, 8vw, 128px));
-    filter: drop-shadow(0 12px 0 rgb(40 40 40 / 0.16));
+    inset: clamp(12px, 2vw, 32px) min(3vw, 44px);
+    width: calc(100% - min(6vw, 88px));
+    height: calc(100% - clamp(24px, 4vw, 64px));
+    filter: drop-shadow(0 12px 0 rgb(40 40 40 / 0.14));
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__inner { position: relative; }
@@ -86,17 +92,23 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 0.2em;
   }
 
-  #smoky-steps-{{ section.id }} .smoky-steps__title { text-align: center; }
+  #smoky-steps-{{ section.id }} .smoky-steps__title {
+    text-align: center;
+    font-size: clamp(3.4rem, 9vw, 10rem);
+    line-height: 0.9;
+  }
 
+  /* numbered star badge biting into the title's top-right corner */
   #smoky-steps-{{ section.id }} .smoky-steps__badge {
     position: relative;
-    width: clamp(56px, 6.5vw, 104px);
-    height: clamp(56px, 6.5vw, 104px);
+    width: clamp(60px, 7vw, 116px);
+    height: clamp(60px, 7vw, 116px);
     flex: 0 0 auto;
-    margin-top: -0.4em;
+    margin-top: calc(clamp(60px, 7vw, 116px) * -0.34);
+    margin-left: calc(clamp(60px, 7vw, 116px) * -0.38);
+    z-index: 1;
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__badge svg {
@@ -117,11 +129,11 @@
     color: var(--smoky-cream);
     font-family: var(--smoky-font-heading);
     font-weight: 800;
-    font-size: clamp(1.3rem, 1.9vw, 2rem);
+    font-size: clamp(1.4rem, 2.1vw, 2.3rem);
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__viewport {
-    margin-top: clamp(32px, 4.5vw, 64px);
+    margin-top: clamp(28px, 4vw, 56px);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -138,33 +150,69 @@
     width: max-content;
   }
 
+  /* one step visible at a time: neighbours fade out, active lifts in */
   #smoky-steps-{{ section.id }} .smoky-steps__slide {
-    width: min(720px, 84vw);
+    width: min(760px, 86vw);
     scroll-snap-align: center;
     padding-inline: clamp(16px, 3vw, 48px);
     text-align: center;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.45s var(--smoky-ease), transform 0.5s var(--smoky-bounce);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__slide.is-active {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__slide h3 {
-    margin: 0;
+    margin: 0 auto;
+    max-width: 34ch;
     font-family: var(--smoky-font-body);
     font-weight: 500;
-    font-size: clamp(1.25rem, 2.2vw, 2rem);
+    font-size: clamp(1.35rem, 2.4vw, 2.25rem);
     line-height: 1.4;
     color: var(--smoky-dark);
   }
 
-  #smoky-steps-{{ section.id }} .smoky-steps__controls {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin-top: clamp(20px, 2.6vw, 34px);
+  /* arrows pinned to the section edges, at title height */
+  #smoky-steps-{{ section.id }} .smoky-steps__edge {
+    position: absolute;
+    top: 42%;
+    z-index: 2;
   }
 
+  #smoky-steps-{{ section.id }} .smoky-steps__edge--left { left: clamp(10px, 3.5vw, 56px); }
+  #smoky-steps-{{ section.id }} .smoky-steps__edge--right { right: clamp(10px, 3.5vw, 56px); }
+
+  /* dot pagination */
+  #smoky-steps-{{ section.id }} .smoky-steps__dots {
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 1.2vw, 16px);
+    margin-top: clamp(26px, 3.4vw, 44px);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__dot {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    border: 2px solid var(--smoky-dark);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.3s var(--smoky-bounce);
+  }
+
+  #smoky-steps-{{ section.id }} .smoky-steps__dot:hover { transform: scale(1.25); }
+  #smoky-steps-{{ section.id }} .smoky-steps__dot.is-active { background: var(--smoky-dark); }
+
   #smoky-steps-{{ section.id }} .smoky-steps__ornament {
-    margin-top: clamp(24px, 3vw, 40px);
+    margin-top: clamp(18px, 2.2vw, 28px);
     color: var(--smoky-dark);
-    font-size: clamp(0.85rem, 1vw, 1.05rem);
+    font-size: clamp(0.7rem, 0.85vw, 0.9rem);
+    opacity: 0.85;
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__mascot {
@@ -181,6 +229,13 @@
     height: auto;
     display: block;
   }
+
+  @media screen and (max-width: 749px) {
+    #smoky-steps-{{ section.id }} .smoky-steps__edge { top: auto; bottom: clamp(56px, 12vw, 84px); }
+    #smoky-steps-{{ section.id }} .smoky-steps__edge--left { left: 18px; }
+    #smoky-steps-{{ section.id }} .smoky-steps__edge--right { right: 18px; }
+    #smoky-steps-{{ section.id }} .smoky-steps__mascot { display: none; }
+  }
 </style>
 
 <script>
@@ -189,6 +244,7 @@
     if (!root) return;
     const viewport = root.querySelector('.smoky-steps__viewport');
     const slides = [...root.querySelectorAll('.smoky-steps__slide')];
+    const dots = [...root.querySelectorAll('.smoky-steps__dot')];
     const badge = root.querySelector('.smoky-steps__badge');
     const number = root.querySelector('.smoky-steps__number');
     if (!viewport || !slides.length) return;
@@ -199,10 +255,19 @@
       });
     });
 
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const target = slides[parseInt(dot.dataset.goto, 10)];
+        if (target) viewport.scrollTo({ left: target.offsetLeft - (viewport.clientWidth - target.offsetWidth) / 2, behavior: 'smooth' });
+      });
+    });
+
     let current = '1';
     const sync = () => {
       const mid = viewport.scrollLeft + viewport.clientWidth / 2;
       const active = slides.find((s) => s.offsetLeft <= mid && mid < s.offsetLeft + s.offsetWidth) || slides[0];
+      slides.forEach((s) => s.classList.toggle('is-active', s === active));
+      dots.forEach((d, i) => d.classList.toggle('is-active', String(i + 1) === active.dataset.step));
       if (active.dataset.step !== current) {
         current = active.dataset.step;
         number.textContent = current + '.';
