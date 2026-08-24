@@ -23,16 +23,14 @@
       </div>
       <div class="smoky-footer__row smoky-footer__row--bottom" data-smoky-reveal data-smoky-reveal-delay="0.1">
         {%- if section.settings.phone != blank -%}
-          <a href="tel:{{ section.settings.phone | remove: ' ' }}" class="smoky-footer__bubble smoky-footer__bubble--sand">
+          <a href="tel:{{ section.settings.phone | remove: ' ' }}" class="smoky-footer__bubble smoky-footer__bubble--sand smoky-footer__bubble--has-mascot">
             <span class="smoky-roll"><span>{{ section.settings.phone }}</span><span class="smoky-roll__dup">{{ section.settings.phone }}</span></span>
+            <span class="smoky-footer__mascot" data-smoky-scrub-rotate="12" aria-hidden="true">
+              <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
+            </span>
           </a>
         {%- endif -%}
         <h2 class="smoky-title smoky-title--big">{{ section.settings.title2 }}</h2>
-        <span class="smoky-footer__mascot" data-smoky-scrub-rotate="14" aria-hidden="true">
-          <span class="smoky-footer__mascot-circle">
-            <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
-          </span>
-        </span>
       </div>
     </div>
 
@@ -149,25 +147,22 @@
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon::after { display: none; }
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon svg { width: 40%; height: 40%; }
 
+  /* Димо каца на телефонното балонче: лицето му е върху пясъчния фон
+     (видимо), а розовите пламъци стърчат над него в тъмното */
+  #smoky-footer-{{ section.id }} .smoky-footer__bubble--has-mascot {
+    padding-right: calc(clamp(1.2em, 2vw, 2em) + clamp(56px, 5.5vw, 92px));
+  }
+
   #smoky-footer-{{ section.id }} .smoky-footer__mascot {
-    width: clamp(84px, 8vw, 128px);
+    position: absolute;
+    right: clamp(6px, 0.8vw, 16px);
+    top: calc(clamp(72px, 7vw, 112px) * -0.5);
+    width: clamp(72px, 7vw, 112px);
     filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.4));
+    pointer-events: none;
   }
 
-  /* Димо е тъмен — трябва му светъл кръг, за да се вижда на тъмния футър */
-  #smoky-footer-{{ section.id }} .smoky-footer__mascot-circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 2px solid var(--smoky-pink);
-    background: var(--smoky-sand);
-    overflow: hidden;
-  }
-
-  #smoky-footer-{{ section.id }} .smoky-footer__mascot img { width: 74%; height: auto; display: block; }
+  #smoky-footer-{{ section.id }} .smoky-footer__mascot img { width: 100%; height: auto; display: block; }
 
   #smoky-footer-{{ section.id }} .smoky-footer__ornament {
     margin-top: clamp(48px, 6vw, 80px);

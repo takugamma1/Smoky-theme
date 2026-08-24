@@ -339,32 +339,5 @@
 
   .smoky-marquee-track > * { flex: 0 0 auto; }
 
-  /* ---- drag-cursor bubble ---- */
-  .smoky-cursor-bubble {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 3000;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 5em;
-    height: 5em;
-    border: var(--smoky-border);
-    border-radius: 50%;
-    background: var(--smoky-pink);
-    color: var(--smoky-cream);
-    font-family: var(--smoky-font-heading);
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transform: translate(-50%, -50%) scale(0);
-  }
-
-  @media (hover: none) {
-    .smoky-cursor-bubble { display: none; }
-  }
 </style>
 <script>document.documentElement.classList.add('smoky-js');</script>

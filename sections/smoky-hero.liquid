@@ -112,19 +112,24 @@
   }
 
   /* looping greeting bubble — fixed-scale, independent from the giant title em */
+  /* the greeting pill: bordered + hard offset shadow, mascot hanging off its edge */
   #smoky-hero-{{ section.id }} .smoky-hero__bubble {
     position: relative;
     display: inline-flex;
     align-items: center;
     flex: 0 1 auto;
     min-width: 0;
-    height: clamp(48px, 5.4vw, 82px);
-    margin-right: clamp(28px, 3vw, 48px);
-    padding: 0 clamp(18px, 2vw, 38px);
+    height: clamp(52px, 5.8vw, 88px);
+    margin-right: clamp(44px, 4.2vw, 72px);
+    padding: 0 clamp(48px, 4.4vw, 76px) 0 clamp(22px, 2.2vw, 40px);
     border: var(--smoky-border);
     border-radius: 999px;
     background: var(--smoky-sand);
+    box-shadow: 0 0.28em 0 rgb(40 40 40 / 0.28);
+    transition: transform var(--smoky-anim-bounce);
   }
+
+  #smoky-hero-{{ section.id }} .smoky-hero__bubble:hover { transform: translateY(-0.18em) rotate(-1.5deg); }
 
   #smoky-hero-{{ section.id }} .smoky-hero__bubble-words {
     position: relative;
@@ -134,7 +139,8 @@
     height: 1.5em;
     font-family: var(--smoky-font-body);
     font-weight: 500;
-    font-size: clamp(0.95rem, 1.4vw, 1.4rem);
+    font-style: italic;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
     line-height: 1.5;
     letter-spacing: 0.01em;
     text-transform: none;
@@ -157,25 +163,24 @@
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='active'] { transform: translateY(0); }
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='prev'] { transform: translateY(-110%); }
 
+  /* Димо floats free off the pill edge — no circle backer */
   #smoky-hero-{{ section.id }} .smoky-hero__sticker {
     position: absolute;
-    right: clamp(-44px, -3vw, -30px);
+    right: clamp(-52px, -3.6vw, -34px);
     top: 50%;
-    width: clamp(60px, 6.6vw, 96px);
-    height: clamp(60px, 6.6vw, 96px);
-    margin-top: calc(clamp(60px, 6.6vw, 96px) / -2);
-    border-radius: 50%;
-    border: var(--smoky-border);
-    background: var(--smoky-pink);
+    width: clamp(76px, 8vw, 122px);
+    height: clamp(76px, 8vw, 122px);
+    margin-top: calc(clamp(76px, 8vw, 122px) / -2 - 0.35em);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    overflow: hidden;
+    filter: drop-shadow(0 6px 8px rgb(40 40 40 / 0.32));
+    pointer-events: none;
   }
 
   #smoky-hero-{{ section.id }} .smoky-hero__sticker img {
-    width: 78%;
-    height: 78%;
+    width: 100%;
+    height: auto;
     object-fit: contain;
   }
 
