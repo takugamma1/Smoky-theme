@@ -34,9 +34,9 @@
       </div>
     </div>
 
-    <div class="smoky-shevitsa-row smoky-footer__ornament" aria-hidden="true">
-      <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
-    </div>
+    <svg class="smoky-footer__divider" aria-hidden="true">
+      <line x1="4" y1="5" x2="99%" y2="5" stroke="var(--smoky-pink)" stroke-width="6" stroke-linecap="round" stroke-dasharray="0.4 19"></line>
+    </svg>
 
     <div class="smoky-footer__columns">
       {%- for i in (1..3) -%}
@@ -164,10 +164,12 @@
 
   #smoky-footer-{{ section.id }} .smoky-footer__mascot img { width: 100%; height: auto; display: block; }
 
-  #smoky-footer-{{ section.id }} .smoky-footer__ornament {
-    margin-top: clamp(48px, 6vw, 80px);
-    color: var(--smoky-pink);
-    font-size: clamp(0.85rem, 1vw, 1.05rem);
+  /* organic-dot divider (knife-card dots), inset from the screen edges */
+  #smoky-footer-{{ section.id }} .smoky-footer__divider {
+    display: block;
+    width: min(720px, 76%);
+    height: 10px;
+    margin: clamp(48px, 6vw, 80px) auto 0;
   }
 
   #smoky-footer-{{ section.id }} .smoky-footer__columns {
