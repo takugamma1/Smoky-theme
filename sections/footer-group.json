@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "footer",
   "name": "t:names.footer",
@@ -9,10 +18,17 @@
         "title2": "ЗВЪННИ НИ!",
         "email": "hello@smoky.bg",
         "phone": "+359 88 888 8888",
+        "instagram": "https://www.instagram.com/",
+        "menu_1": "main-menu",
+        "menu_2": "footer",
+        "menu_3": "customer-account-main-menu",
         "tagline": "Балканска скара с доставка. На жар, с дим и с любов.",
-        "copyright": "Smoky. Всички права запазени."
+        "copyright": "Smoky. Всички права запазени.",
+        "menu_legal": "main-menu"
       }
     }
   },
-  "order": ["smoky_footer"]
+  "order": [
+    "smoky_footer"
+  ]
 }
