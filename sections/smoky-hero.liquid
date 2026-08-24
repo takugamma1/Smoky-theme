@@ -7,7 +7,7 @@
   inverted corners. Media is a photo or a muted looping mp4 video.
 {% endcomment %}
 
-<section class="smoky-hero smoky-grained" id="smoky-hero-{{ section.id }}">
+<section class="smoky-hero" id="smoky-hero-{{ section.id }}">
   <div class="smoky-container smoky-hero__container">
     <h1 class="visually-hidden">{{ section.settings.seo_title | default: 'Smoky — балканска скара с доставка' }}</h1>
 
@@ -58,7 +58,7 @@
         {%- endif -%}
       </div>
 
-      <div class="smoky-hero__h1box smoky-grained" aria-hidden="true">
+      <div class="smoky-hero__h1box" aria-hidden="true">
         <span class="smoky-hero__corner smoky-hero__corner--left"></span>
         <span class="smoky-hero__corner smoky-hero__corner--bottom"></span>
         <span class="smoky-title smoky-title--big smoky-hero__line2">{{ section.settings.line2 }}</span>
@@ -103,19 +103,20 @@
   #smoky-hero-{{ section.id }} .smoky-hero__line1 {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.15em;
+    flex-wrap: nowrap;
+    gap: clamp(16px, 2vw, 32px);
     color: var(--smoky-dark);
   }
 
-  /* looping greeting bubble */
+  /* looping greeting bubble — fixed-scale, independent from the giant title em */
   #smoky-hero-{{ section.id }} .smoky-hero__bubble {
     position: relative;
     display: inline-flex;
     align-items: center;
-    height: 0.92em;
-    margin-left: 0.12em;
-    padding: 0 0.85em;
+    flex: 0 1 auto;
+    height: clamp(52px, 6vw, 86px);
+    margin-right: clamp(28px, 3vw, 48px);
+    padding: 0 clamp(22px, 2.4vw, 42px);
     border: var(--smoky-border);
     border-radius: 999px;
     background: var(--smoky-sand);
@@ -125,11 +126,11 @@
     position: relative;
     display: block;
     overflow: hidden;
-    min-width: 8em;
+    min-width: 9em;
     height: 1.5em;
     font-family: var(--smoky-font-body);
     font-weight: 500;
-    font-size: 0.22em;
+    font-size: clamp(0.95rem, 1.4vw, 1.4rem);
     line-height: 1.5;
     letter-spacing: 0.01em;
     text-transform: none;
@@ -154,11 +155,11 @@
 
   #smoky-hero-{{ section.id }} .smoky-hero__sticker {
     position: absolute;
-    right: -0.42em;
+    right: clamp(-44px, -3vw, -30px);
     top: 50%;
-    width: 1.05em;
-    height: 1.05em;
-    margin-top: -0.525em;
+    width: clamp(60px, 6.6vw, 96px);
+    height: clamp(60px, 6.6vw, 96px);
+    margin-top: calc(clamp(60px, 6.6vw, 96px) / -2);
     border-radius: 50%;
     border: var(--smoky-border);
     background: var(--smoky-pink);
@@ -213,10 +214,10 @@
 
   #smoky-hero-{{ section.id }} .smoky-hero__flame--title {
     position: absolute;
-    top: -0.35em;
-    right: clamp(6px, 1vw, 18px);
-    width: clamp(30px, 3.2vw, 52px);
-    transform: rotate(8deg);
+    top: calc(clamp(26px, 2.8vw, 44px) * -0.72);
+    right: clamp(-14px, -1vw, -6px);
+    width: clamp(26px, 2.8vw, 44px);
+    transform: rotate(10deg);
     transform-origin: 50% 100%;
     z-index: 2;
   }
@@ -304,7 +305,9 @@
 
     #smoky-hero-{{ section.id }} .smoky-hero__media { aspect-ratio: 4 / 5; }
 
-    #smoky-hero-{{ section.id }} .smoky-hero__bubble-words { min-width: 3.6em; }
+    #smoky-hero-{{ section.id }} .smoky-hero__line1 { flex-wrap: wrap; row-gap: 14px; }
+
+    #smoky-hero-{{ section.id }} .smoky-hero__bubble-words { min-width: 7.5em; }
   }
 </style>
 
