@@ -104,16 +104,20 @@
     background-image: var(--smoky-grain-dark);
     background-size: 220px;
     color: var(--smoky-dark);
+    border: none;
     border-left: 2px solid var(--smoky-dark);
-    border-radius: var(--smoky-radius) 0 0 var(--smoky-radius);
+    /* no rounded corners on a full-height panel: they expose the dark backdrop as wedges */
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
   }
 
   #cart-drawer .cart-drawer__inner { position: relative; }
 
   #cart-drawer .smoky-cart__frame {
-    inset: 10px;
-    width: calc(100% - 20px);
-    height: calc(100% - 20px);
+    inset: 14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
     z-index: 6;
   }
 
