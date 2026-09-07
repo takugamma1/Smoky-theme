@@ -1,24 +1,123 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "section_6UEi69": {
+      "type": "section",
+      "blocks": {
+        "jumbo_text_MDXDBp": {
+          "type": "jumbo-text",
+          "name": "t:names.jumbo_text",
+          "settings": {
+            "text": "МЕНЮ",
+            "font": "heading",
+            "alignment": "center",
+            "line_height": "0.8",
+            "letter_spacing": "-0.03em",
+            "case": "none",
+            "text_effect": "none",
+            "animation_repeat": false,
+            "text_color": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "jumbo_text_MDXDBp"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "#E9E4D8",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 100,
+        "padding-block-end": 0
+      }
+    },
     "menu_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "title": "МЕНЮ",
-        "center": true,
+        "title": "",
         "curve_top": false,
         "curve_bottom": false
       }
     },
+    "menu_products": {
+      "type": "smoky-menu-products",
+      "blocks": {
+        "cat_skara": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Скара"
+          }
+        },
+        "cat_sach": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Сач и плата"
+          }
+        },
+        "cat_garnituri": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Гарнитури и салати"
+          }
+        },
+        "cat_deserti": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Десерти и напитки"
+          }
+        }
+      },
+      "block_order": [
+        "cat_skara",
+        "cat_sach",
+        "cat_garnituri",
+        "cat_deserti"
+      ],
+      "settings": {
+        "heading": "",
+        "button_label": "Поръчай",
+        "limit": 12,
+        "curve_top": false,
+        "curve_bottom": true
+      }
+    },
     "menu_marquee": {
       "type": "smoky-marquee",
-      "settings": {
-        "background": "pink",
-        "separator": "smoky-pattern-shevitsa",
-        "speed": 70,
-        "size": 3,
-        "direction": "left",
-        "sep_repeat": 3
-      },
       "blocks": {
         "w1": {
           "type": "word",
@@ -54,15 +153,18 @@
         "w2",
         "w3",
         "w4"
-      ]
+      ],
+      "settings": {
+        "background": "pink",
+        "separator": "smoky-pattern-shevitsa",
+        "sep_repeat": 3,
+        "speed": 70,
+        "size": 3,
+        "direction": "left"
+      }
     },
     "menu_faq": {
       "type": "smoky-faq",
-      "settings": {
-        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА",
-        "curve_top": true,
-        "curve_bottom": false
-      },
       "blocks": {
         "q1": {
           "type": "qa",
@@ -98,56 +200,16 @@
         "q2",
         "q3",
         "q4"
-      ]
-    },
-    "menu_products": {
-      "type": "smoky-menu-products",
+      ],
       "settings": {
-        "heading": "",
-        "button_label": "Поръчай",
-        "limit": 12,
-        "curve_top": false,
-        "curve_bottom": true
-      },
-      "blocks": {
-        "cat_skara": {
-          "type": "category",
-          "settings": {
-            "title": "Скара",
-            "collection": ""
-          }
-        },
-        "cat_sach": {
-          "type": "category",
-          "settings": {
-            "title": "Сач и плата",
-            "collection": ""
-          }
-        },
-        "cat_garnituri": {
-          "type": "category",
-          "settings": {
-            "title": "Гарнитури и салати",
-            "collection": ""
-          }
-        },
-        "cat_deserti": {
-          "type": "category",
-          "settings": {
-            "title": "Десерти и напитки",
-            "collection": ""
-          }
-        }
-      },
-      "block_order": [
-        "cat_skara",
-        "cat_sach",
-        "cat_garnituri",
-        "cat_deserti"
-      ]
+        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА",
+        "curve_top": true,
+        "curve_bottom": false
+      }
     }
   },
   "order": [
+    "section_6UEi69",
     "menu_hero",
     "menu_products",
     "menu_marquee",
