@@ -90,21 +90,21 @@
         "cat_sach": {
           "type": "category",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": "Сач и плата"
           }
         },
         "cat_garnituri": {
           "type": "category",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": "Гарнитури и салати"
           }
         },
         "cat_deserti": {
           "type": "category",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": "Десерти и напитки"
           }
         }
