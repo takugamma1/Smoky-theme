@@ -3,7 +3,7 @@
     "menu_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "title": "",
+        "title": "МЕНЮ",
         "center": true,
         "curve_top": false,
         "curve_bottom": false
