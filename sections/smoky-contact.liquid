@@ -1,0 +1,325 @@
+{% comment %}
+  Smoky contact — the funnel-card language applied to the contact page:
+  dark info card (arch badge, kicker/title/copy, dotted fact list with
+  email / phone / address / hours) next to the pink form card (mascot on
+  the corner, cream pill inputs with hard shadows, dark submit pill).
+  Uses Shopify's native contact form (name, email, phone, message).
+{%- endcomment %}
+
+<section class="smoky-contact smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-contact-{{ section.id }}">
+  <div class="smoky-container smoky-container--medium smoky-contact__grid">
+
+    <div class="smoky-contact__card smoky-contact__card--info" data-smoky-reveal>
+      <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+        <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-pink)"></rect>
+      </svg>
+      <span class="smoky-contact__badge" aria-hidden="true">
+        <img src="{{ 'smoky-badge-cream.svg' | asset_url }}" alt="" loading="lazy" width="88" height="132">
+      </span>
+      {%- if section.settings.kicker != blank -%}<span class="smoky-kicker smoky-contact__kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+      <h2 class="smoky-contact__title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p class="smoky-contact__text">{{ section.settings.text }}</p>{%- endif -%}
+      <dl class="smoky-contact__facts">
+        {%- if section.settings.email != blank -%}
+          <div><dt>Имейл</dt><dd><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></dd></div>
+        {%- endif -%}
+        {%- if section.settings.phone != blank -%}
+          <div><dt>Телефон</dt><dd><a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a></dd></div>
+        {%- endif -%}
+        {%- if section.settings.address != blank -%}
+          <div><dt>Адрес</dt><dd>{{ section.settings.address }}</dd></div>
+        {%- endif -%}
+        {%- if section.settings.hours != blank -%}
+          <div><dt>Работно време</dt><dd>{{ section.settings.hours }}</dd></div>
+        {%- endif -%}
+      </dl>
+      {%- if section.settings.map_link != blank -%}
+        <a href="{{ section.settings.map_link }}" target="_blank" rel="noopener" class="smoky-btn smoky-contact__mapbtn">
+          <span class="smoky-btn__shadow"></span>
+          <span class="smoky-btn__content">
+            <span class="smoky-roll"><span>{{ section.settings.map_button }}</span><span class="smoky-roll__dup">{{ section.settings.map_button }}</span></span>
+          </span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="smoky-contact__card smoky-contact__card--form" data-smoky-reveal data-smoky-reveal-delay="0.12">
+      <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+        <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-cream)"></rect>
+      </svg>
+      <span class="smoky-contact__mascot" aria-hidden="true">
+        <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" loading="lazy" width="140" height="140">
+      </span>
+      {%- if section.settings.form_kicker != blank -%}<span class="smoky-kicker smoky-contact__kicker">{{ section.settings.form_kicker }}</span>{%- endif -%}
+      <h2 class="smoky-contact__title">{{ section.settings.form_heading }}</h2>
+
+      {%- assign form_id = 'SmokyContact-' | append: section.id -%}
+      {%- form 'contact', id: form_id, class: 'smoky-contact__form' -%}
+        {%- if form.errors -%}
+          <div class="smoky-contact__note smoky-contact__note--error" tabindex="-1" autofocus>
+            {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+          </div>
+        {%- endif -%}
+        {%- if form.posted_successfully? -%}
+          <div class="smoky-contact__note smoky-contact__note--ok" tabindex="-1" autofocus>
+            {{ section.settings.success_text }}
+          </div>
+        {%- endif -%}
+
+        <div class="smoky-contact__row">
+          <div class="smoky-contact__field">
+            <label for="{{ form_id }}-name">Име</label>
+            <input type="text" id="{{ form_id }}-name" name="contact[name]" autocomplete="name" placeholder="Как да те наричаме?" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+          <div class="smoky-contact__field">
+            <label for="{{ form_id }}-phone">Телефон</label>
+            <input type="tel" id="{{ form_id }}-phone" name="contact[phone]" autocomplete="tel" placeholder="+359 …" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+          </div>
+        </div>
+        <div class="smoky-contact__field">
+          <label for="{{ form_id }}-email">Имейл *</label>
+          <input type="email" id="{{ form_id }}-email" name="contact[email]" autocomplete="email" required placeholder="ти@пример.bg" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+        <div class="smoky-contact__field">
+          <label for="{{ form_id }}-body">Съобщение *</label>
+          <textarea id="{{ form_id }}-body" name="contact[body]" rows="5" required placeholder="{{ section.settings.message_placeholder | escape }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+        </div>
+
+        <button type="submit" class="smoky-btn smoky-btn--dark smoky-contact__submit">
+          <span class="smoky-btn__shadow"></span>
+          <span class="smoky-btn__content">
+            <span class="smoky-roll"><span>{{ section.settings.submit_label }}</span><span class="smoky-roll__dup">{{ section.settings.submit_label }}</span></span>
+          </span>
+        </button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-contact-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-block: clamp(32px, 4vw, 64px) clamp(64px, 9vw, 130px);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(20px, 3vw, 44px);
+    align-items: stretch;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(10px, 1.2vw, 16px);
+    padding: clamp(32px, 4vw, 56px) clamp(24px, 3vw, 44px) clamp(28px, 3.4vw, 44px);
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    box-shadow: 0 0.45em 0 var(--smoky-shadow-color);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__card--info { background: var(--smoky-dark-soft); color: var(--smoky-sand); }
+  #smoky-contact-{{ section.id }} .smoky-contact__card--form { background: var(--smoky-pink); color: var(--smoky-cream); }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__kicker { opacity: 0.85; }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__title {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(2rem, 3.4vw, 3.4rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    max-width: 9em;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__text {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+    line-height: 1.55;
+    max-width: 34ch;
+  }
+
+  /* stickers */
+  #smoky-contact-{{ section.id }} .smoky-contact__badge {
+    position: absolute;
+    right: clamp(18px, 2.4vw, 36px);
+    top: clamp(-26px, -2vw, -14px);
+    width: clamp(64px, 6.2vw, 92px);
+    transform: rotate(-6deg);
+    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.4));
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__mascot {
+    position: absolute;
+    right: clamp(14px, 2vw, 30px);
+    top: clamp(-30px, -2.4vw, -18px);
+    width: clamp(88px, 9vw, 140px);
+    transform: rotate(8deg);
+    filter: drop-shadow(0 8px 12px rgb(40 40 40 / 0.35));
+    pointer-events: none;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__badge img,
+  #smoky-contact-{{ section.id }} .smoky-contact__mascot img { width: 100%; height: auto; display: block; }
+
+  /* facts */
+  #smoky-contact-{{ section.id }} .smoky-contact__facts {
+    display: grid;
+    gap: 10px;
+    margin: 6px 0 0;
+    width: 100%;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__facts div {
+    display: grid;
+    grid-template-columns: 9em 1fr;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 2px dotted rgb(235 220 195 / 0.35);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__facts dt {
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--smoky-pink);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__facts dd {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    line-height: 1.45;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__facts a { color: inherit; text-decoration: none; }
+  #smoky-contact-{{ section.id }} .smoky-contact__facts a:hover { color: var(--smoky-pink); }
+  #smoky-contact-{{ section.id }} .smoky-contact__mapbtn { margin-top: auto; padding-top: clamp(12px, 1.4vw, 20px); }
+
+  /* form */
+  #smoky-contact-{{ section.id }} .smoky-contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.4vw, 18px);
+    width: 100%;
+    margin-top: clamp(6px, 1vw, 12px);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 1.4vw, 18px);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field label {
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-left: 18px;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field input,
+  #smoky-contact-{{ section.id }} .smoky-contact__field textarea {
+    width: 100%;
+    padding: 14px 20px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 1rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 0 rgb(40 40 40 / 0.35);
+    transition: transform var(--smoky-anim-bounce), box-shadow 0.25s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field textarea {
+    border-radius: 24px;
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field input::placeholder,
+  #smoky-contact-{{ section.id }} .smoky-contact__field textarea::placeholder { color: rgb(40 40 40 / 0.45); }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__field input:focus,
+  #smoky-contact-{{ section.id }} .smoky-contact__field textarea:focus {
+    outline: none;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 var(--smoky-dark);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__submit {
+    align-self: flex-start;
+    margin-top: clamp(6px, 1vw, 12px);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__note {
+    padding: 12px 20px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    font-family: var(--smoky-font-body);
+    font-size: 0.95rem;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    box-shadow: 0 4px 0 rgb(40 40 40 / 0.35);
+  }
+
+  #smoky-contact-{{ section.id }} .smoky-contact__note--ok { background: var(--smoky-dark); color: var(--smoky-sand); }
+
+  @media screen and (max-width: 849px) {
+    #smoky-contact-{{ section.id }} .smoky-contact__grid { grid-template-columns: 1fr; gap: 44px; }
+    #smoky-contact-{{ section.id }} .smoky-contact__facts div { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  @media screen and (max-width: 549px) {
+    #smoky-contact-{{ section.id }} .smoky-contact__row { grid-template-columns: 1fr; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky контакт",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "Информация (тъмна карта)" },
+    { "type": "text", "id": "kicker", "label": "Малък надпис", "default": "Контакт" },
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "ПИШИ НИ" },
+    { "type": "textarea", "id": "text", "label": "Текст", "default": "Въпрос за поръчка, кетъринг за събитие или просто искаш да кажеш здрасти на Димо — тук сме." },
+    { "type": "text", "id": "email", "label": "Имейл", "default": "hello@smoky.bg" },
+    { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 88 888 8888" },
+    { "type": "text", "id": "address", "label": "Адрес", "default": "ул. Скара 1, София" },
+    { "type": "text", "id": "hours", "label": "Работно време", "default": "Пон–Нед 11:00–23:00" },
+    { "type": "text", "id": "map_button", "label": "Бутон карта", "default": "Виж на картата" },
+    { "type": "url", "id": "map_link", "label": "Линк към картата" },
+    { "type": "header", "content": "Форма (розова карта)" },
+    { "type": "text", "id": "form_kicker", "label": "Малък надпис", "default": "Съобщение" },
+    { "type": "text", "id": "form_heading", "label": "Заглавие", "default": "КАЖИ НИ КАКВО ТИ ТРЯБВА" },
+    { "type": "text", "id": "message_placeholder", "label": "Placeholder на съобщението", "default": "Разкажи ни — повод, брой хора, дата, или просто въпрос." },
+    { "type": "text", "id": "submit_label", "label": "Бутон за изпращане", "default": "Изпрати" },
+    { "type": "text", "id": "success_text", "label": "Текст при успех", "default": "Получихме го! Ще ти отговорим до един работен ден." },
+    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
+    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": true }
+  ],
+  "presets": [{ "name": "Smoky контакт" }]
+}
+{% endschema %}
