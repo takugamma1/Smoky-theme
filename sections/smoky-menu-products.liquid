@@ -12,14 +12,13 @@
 
 {%- if section.settings.show_cart -%}
   <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="Кошница">
-    <svg class="smoky-flamecart__shape" viewBox="0 0 120 124" aria-hidden="true">
-      <!-- flame body rising off the circle, tongues leaning right -->
-      <path d="M18 78 C16 60 26 52 30 40 C34 48 40 46 42 36 C50 46 56 38 58 20 C62 34 70 34 72 18 C78 32 86 28 88 16 C92 32 100 38 98 52 C102 54 108 48 110 42 C114 56 114 72 108 84 C104 100 84 116 60 116 C36 116 20 100 18 78 Z" fill="var(--smoky-pink)"/>
-      <circle cx="60" cy="78" r="42" fill="var(--smoky-pink)"/>
+    <svg class="smoky-flamecart__shape" viewBox="0 0 1250 1250" aria-hidden="true">
+      <!-- flame-circle traced from the brand icon: round body, tall centre tongue leaning right, left + right tongues, two small licks -->
+      <path fill="var(--smoky-pink)" d="M240 640 C210 600 180 540 180 470 C230 490 260 540 300 540 C280 470 300 320 500 260 C470 330 480 420 600 440 C560 350 560 200 610 90 C750 150 860 260 850 470 C900 420 960 340 1050 315 C1010 380 1040 560 1060 650 C1090 620 1110 630 1125 640 C1120 700 1090 760 1090 800 A470 470 0 1 1 150 800 C150 740 190 690 240 640 Z"/>
       <!-- cart glyph -->
-      <path d="M34 60 h10 l7 28 h31 l6 -20 h-40" fill="none" stroke="var(--smoky-cream)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="56" cy="99" r="5" fill="var(--smoky-cream)"/>
-      <circle cx="77" cy="99" r="5" fill="var(--smoky-cream)"/>
+      <path d="M400 690 h90 l60 250 h250 l55 -180 h-340" fill="none" stroke="var(--smoky-cream)" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="600" cy="1010" r="42" fill="var(--smoky-cream)"/>
+      <circle cx="770" cy="1010" r="42" fill="var(--smoky-cream)"/>
     </svg>
     <span class="smoky-flamecart__count{% if cart.item_count == 0 %} is-empty{% endif %}" data-smoky-cart-count>{{ cart.item_count }}</span>
   </a>
