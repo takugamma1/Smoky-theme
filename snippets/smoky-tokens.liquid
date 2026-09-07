@@ -112,6 +112,31 @@
     margin: 0;
   }
 
+  /* Horizon squeezes the page (margin-right = drawer width) on wide viewports and
+     opens the drawer NON-modally there — the dark strip was the body background
+     showing where the page had been pushed aside, and the header/cart painted over
+     the low-z drawer. Keep the page in place, float the card above everything,
+     dim behind it, and never let a dark body gap show. */
+  body { background: var(--smoky-cream); }
+
+  .page-wrapper--drawer-open { margin-right: 0 !important; }
+
+  #cart-drawer .theme-drawer__dialog { z-index: 400 !important; }
+
+  @media screen and (min-width: 990px) {
+    body:has(theme-drawer#cart-drawer[open])::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 350;
+      background: rgb(40 40 40 / 0.38);
+      pointer-events: none;
+      animation: smoky-scrim-in 0.4s ease;
+    }
+
+    @keyframes smoky-scrim-in { from { opacity: 0; } }
+  }
+
   /* desktop: a floating ticket card instead of a full-height slab — inset from the
      edges, rounded, dark border + hard shadow, popping in with the brand bounce */
   @media screen and (min-width: 750px) {
@@ -534,4 +559,18 @@
   .smoky-marquee-track > * { flex: 0 0 auto; }
 
 </style>
-<script>document.documentElement.classList.add('smoky-js');</script>
+<script>
+  document.documentElement.classList.add('smoky-js');
+  // desktop cart drawer is non-modal: close it when clicking anywhere outside it
+  document.addEventListener('click', (e) => {
+    const drawer = document.querySelector('theme-drawer#cart-drawer[open]');
+    if (!drawer) return;
+    const panel = drawer.querySelector('dialog');
+    if (panel?.contains(e.target) || e.target.closest?.('[data-smoky-cart]')) return;
+    if (typeof drawer.close === 'function') {
+      e.preventDefault();
+      e.stopPropagation();
+      drawer.close();
+    }
+  }, true);
+</script>
