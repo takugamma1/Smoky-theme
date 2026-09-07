@@ -9,18 +9,6 @@
  */
 {
   "sections": {
-    "menu_hero": {
-      "type": "smoky-page-hero",
-      "disabled": true,
-      "settings": {
-        "kicker": "Горещо до вратата",
-        "title": "МЕНЮ ЗА ДОСТАВКА",
-        "marquee": false,
-        "lead": "Всичко се готви на момента, на истинска жар. Избери, поръчай онлайн — ние палим огъня.",
-        "curve_top": false,
-        "curve_bottom": false
-      }
-    },
     "section_yW8pbH": {
       "type": "section",
       "blocks": {
@@ -70,13 +58,12 @@
         "border_opacity": 100,
         "border_color": "",
         "border_radius": 0,
-        "padding-block-start": 0,
+        "padding-block-start": 100,
         "padding-block-end": 0
       }
     }
   },
   "order": [
-    "menu_hero",
     "section_yW8pbH"
   ]
 }
