@@ -10,6 +10,18 @@
 {%- assign blob_b = 'M38.1,-46.9C50.9,-38.9,63.6,-28.3,68.7,-14.5C73.8,-0.7,71.3,16.3,63.2,30.1C55.1,43.9,41.4,54.5,26.3,60.8C11.2,67.1,-5.3,69.1,-20.9,64.9C-36.5,60.7,-51.2,50.3,-59.9,36.4C-68.6,22.5,-71.3,5.1,-67.6,-10.3C-63.9,-25.7,-53.8,-39.1,-41.1,-47.4C-28.4,-55.7,-14.2,-58.9,-0.2,-58.7C13.8,-58.5,27.6,-54.9,38.1,-46.9Z' -%}
 {%- assign blob_c = 'M31.4,-38.3C41.9,-30.4,52.1,-21.5,56.6,-9.7C61.1,2.1,59.9,16.8,52.8,27.6C45.7,38.4,32.7,45.3,19.2,50.2C5.7,55.1,-8.3,58,-21.1,54.4C-33.9,50.8,-45.5,40.7,-52.1,27.9C-58.7,15.1,-60.3,-0.4,-56,-13.6C-51.7,-26.8,-41.5,-37.7,-29.8,-45.4C-18.1,-53.1,-4.9,-57.6,5.6,-64.3C16.1,-71,20.9,-46.2,31.4,-38.3Z' -%}
 
+{%- if section.settings.show_cart -%}
+  <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="Кошница">
+    <svg class="smoky-flamecart__shape" viewBox="0 0 100 112" aria-hidden="true">
+      <path d="M14 56 C12 40 22 38 24 26 C30 36 34 30 38 16 C42 32 48 28 50 10 C54 30 60 26 64 18 C66 34 74 34 78 24 C80 38 86 44 86 56 Z" fill="var(--smoky-pink)" stroke="var(--smoky-dark)" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="66" r="42" fill="var(--smoky-pink)" stroke="var(--smoky-dark)" stroke-width="3"/>
+      <path d="M36 58 h28 l-3 24 h-22 z" fill="none" stroke="var(--smoky-cream)" stroke-width="3.5" stroke-linejoin="round"/>
+      <path d="M42 58 v-5 a8 8 0 0 1 16 0 v5" fill="none" stroke="var(--smoky-cream)" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <span class="smoky-flamecart__count{% if cart.item_count == 0 %} is-empty{% endif %}" data-smoky-cart-count>{{ cart.item_count }}</span>
+  </a>
+{%- endif -%}
+
 <section class="smoky-mp smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-mp-{{ section.id }}">
   <div class="smoky-container">
     {%- if section.settings.heading != blank -%}
@@ -65,12 +77,27 @@
                     {%- if desc != blank -%}<p class="smoky-mp__desc">{{ desc }}</p>{%- endif -%}
                     <div class="smoky-mp__row">
                       <span class="smoky-mp__price">{{ product.price | money }}</span>
-                      <a href="{{ product.url }}" class="smoky-btn smoky-mp__btn">
-                        <span class="smoky-btn__shadow"></span>
-                        <span class="smoky-btn__content">
-                          <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
-                        </span>
-                      </a>
+                      {%- assign v = product.selected_or_first_available_variant -%}
+                      {%- if product.available and product.has_only_default_variant and v != blank -%}
+                        <form class="smoky-mp__add" data-smoky-add data-product-id="{{ product.id }}">
+                          <input type="hidden" name="id" value="{{ v.id }}">
+                          <input type="hidden" name="quantity" value="1">
+                          <button type="submit" class="smoky-btn smoky-mp__btn">
+                            <span class="smoky-btn__shadow"></span>
+                            <span class="smoky-btn__content">
+                              <span class="smoky-roll" data-label><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
+                              <span class="smoky-mp__added" data-added hidden>{{ section.settings.added_label }}</span>
+                            </span>
+                          </button>
+                        </form>
+                      {%- else -%}
+                        <a href="{{ product.url }}" class="smoky-btn smoky-mp__btn">
+                          <span class="smoky-btn__shadow"></span>
+                          <span class="smoky-btn__content">
+                            <span class="smoky-roll"><span>{% if product.available %}{{ section.settings.choose_label }}{% else %}Изчерпано{% endif %}</span><span class="smoky-roll__dup">{% if product.available %}{{ section.settings.choose_label }}{% else %}Изчерпано{% endif %}</span></span>
+                          </span>
+                        </a>
+                      {%- endif -%}
                     </div>
                   </div>
                 </article>
@@ -279,6 +306,59 @@
 
   #smoky-mp-{{ section.id }} .smoky-mp__btn { font-size: 0.8rem; }
 
+  /* ---- flame cart (menu page only): hangs off the nav's right corner ---- */
+  .smoky-flamecart {
+    position: fixed;
+    top: clamp(40px, 4vw, 56px);
+    right: calc((100vw - min(1150px, 92vw)) / 2 - 22px);
+    z-index: 101;
+    width: clamp(64px, 5.4vw, 78px);
+    display: block;
+    filter: drop-shadow(0 6px 0 rgb(40 40 40 / 0.28));
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-flamecart:hover { transform: translateY(-4px) rotate(-4deg); }
+  .smoky-flamecart.is-bumping { animation: smoky-cart-bump 0.6s var(--smoky-bounce); }
+  .smoky-flamecart__shape { width: 100%; height: auto; display: block; }
+
+  .smoky-flamecart__count {
+    position: absolute;
+    right: -4px;
+    bottom: 2px;
+    min-width: 26px;
+    height: 26px;
+    padding-inline: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--smoky-cream);
+    border-radius: 999px;
+    background: var(--smoky-dark);
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: 0.85rem;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-flamecart__count.is-empty { transform: scale(0); }
+
+  @keyframes smoky-cart-bump {
+    0% { transform: scale(1) rotate(0); }
+    35% { transform: scale(1.22) rotate(-8deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  @media screen and (max-width: 749px) {
+    .smoky-flamecart { top: auto; bottom: 18px; right: 16px; width: 66px; }
+  }
+
+  #smoky-mp-{{ section.id }} .smoky-mp__add { display: inline-block; }
+  #smoky-mp-{{ section.id }} .smoky-mp__added { white-space: nowrap; }
+  #smoky-mp-{{ section.id }} .smoky-mp__btn.is-added .smoky-btn__content { background: var(--smoky-dark); color: var(--smoky-sand); }
+  #smoky-mp-{{ section.id }} .smoky-mp__btn.is-busy { opacity: 0.7; pointer-events: none; }
+
   @media screen and (max-width: 989px) {
     #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
@@ -315,6 +395,100 @@
   })();
 </script>
 
+<script type="module">
+  import { CartLinesUpdateEvent } from '@shopify/events';
+
+  (() => {
+    const root = document.getElementById('smoky-mp-{{ section.id }}');
+    if (!root) return;
+    const cartBtn = document.querySelector('[data-smoky-cart]');
+    const drawer = () => document.querySelector('cart-drawer-component')?.closest('theme-drawer');
+
+    const setCount = (n) => {
+      document.querySelectorAll('[data-smoky-cart-count]').forEach((el) => {
+        el.textContent = n;
+        el.classList.toggle('is-empty', !n);
+      });
+      if (cartBtn) {
+        cartBtn.classList.remove('is-bumping');
+        void cartBtn.offsetWidth;
+        cartBtn.classList.add('is-bumping');
+      }
+    };
+
+    cartBtn?.addEventListener('click', (e) => {
+      const d = drawer();
+      if (d && typeof d.open === 'function') {
+        e.preventDefault();
+        d.open();
+      }
+    });
+
+    root.querySelectorAll('[data-smoky-add]').forEach((form) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button');
+        if (btn.classList.contains('is-busy')) return;
+        btn.classList.add('is-busy');
+
+        const formData = new FormData(form);
+        const sectionIds = [...document.querySelectorAll('cart-items-component')]
+          .map((el) => el.dataset.sectionId)
+          .filter(Boolean);
+        if (sectionIds.length) formData.append('sections', sectionIds.join(','));
+
+        const deferred = CartLinesUpdateEvent.createPromise();
+        form.dispatchEvent(
+          new CartLinesUpdateEvent({
+            action: 'add',
+            context: 'product',
+            lines: [{ merchandiseId: formData.get('id'), quantity: 1 }],
+            promise: deferred.promise,
+          })
+        );
+
+        try {
+          const res = await fetch(window.Theme?.routes?.cart_add_url || '/cart/add.js', {
+            method: 'POST',
+            headers: { Accept: 'application/javascript', 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+          }).then((r) => r.json());
+          if (res.status) throw new Error(res.description || res.message || 'add failed');
+
+          const ajaxCart = await fetch('/cart.js', { headers: { Accept: 'application/json' } }).then((r) => r.json());
+          deferred.resolve({
+            cart: CartLinesUpdateEvent.createCartFromAjaxResponse(ajaxCart),
+            detail: {
+              items: ajaxCart.items,
+              source: 'smoky-menu-products',
+              sourceId: form.dataset.productId,
+              itemCount: 1,
+              productId: form.dataset.productId,
+              sections: res.sections,
+              didError: false,
+            },
+          });
+          setCount(ajaxCart.item_count);
+
+          btn.classList.add('is-added');
+          form.querySelector('[data-label]').hidden = true;
+          form.querySelector('[data-added]').hidden = false;
+          setTimeout(() => {
+            btn.classList.remove('is-added');
+            form.querySelector('[data-label]').hidden = false;
+            form.querySelector('[data-added]').hidden = true;
+          }, 1800);
+        } catch (err) {
+          deferred.reject(err);
+          console.warn('[smoky] add to cart failed', err);
+        } finally {
+          btn.classList.remove('is-busy');
+        }
+      });
+    });
+  })();
+</script>
+
 {% schema %}
 {
   "name": "Smoky меню продукти",
@@ -322,6 +496,9 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Заглавие (по избор)" },
     { "type": "text", "id": "button_label", "label": "Бутон на продуктите", "default": "Поръчай" },
+    { "type": "text", "id": "added_label", "label": "Текст след добавяне", "default": "Добавено ✓" },
+    { "type": "text", "id": "choose_label", "label": "Бутон при варианти", "default": "Избери" },
+    { "type": "checkbox", "id": "show_cart", "label": "Плаваща кошница с пламъци", "default": true },
     { "type": "range", "id": "limit", "label": "Максимум продукти на категория", "min": 3, "max": 24, "step": 1, "default": 12 },
     { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
     { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": true }
