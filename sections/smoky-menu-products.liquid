@@ -12,11 +12,14 @@
 
 {%- if section.settings.show_cart -%}
   <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="Кошница">
-    <svg class="smoky-flamecart__shape" viewBox="0 0 100 112" aria-hidden="true">
-      <path d="M14 56 C12 40 22 38 24 26 C30 36 34 30 38 16 C42 32 48 28 50 10 C54 30 60 26 64 18 C66 34 74 34 78 24 C80 38 86 44 86 56 Z" fill="var(--smoky-pink)" stroke="var(--smoky-dark)" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="50" cy="66" r="42" fill="var(--smoky-pink)" stroke="var(--smoky-dark)" stroke-width="3"/>
-      <path d="M36 58 h28 l-3 24 h-22 z" fill="none" stroke="var(--smoky-cream)" stroke-width="3.5" stroke-linejoin="round"/>
-      <path d="M42 58 v-5 a8 8 0 0 1 16 0 v5" fill="none" stroke="var(--smoky-cream)" stroke-width="3.5" stroke-linecap="round"/>
+    <svg class="smoky-flamecart__shape" viewBox="0 0 120 124" aria-hidden="true">
+      <!-- flame body rising off the circle, tongues leaning right -->
+      <path d="M18 78 C16 60 26 52 30 40 C34 48 40 46 42 36 C50 46 56 38 58 20 C62 34 70 34 72 18 C78 32 86 28 88 16 C92 32 100 38 98 52 C102 54 108 48 110 42 C114 56 114 72 108 84 C104 100 84 116 60 116 C36 116 20 100 18 78 Z" fill="var(--smoky-pink)"/>
+      <circle cx="60" cy="78" r="42" fill="var(--smoky-pink)"/>
+      <!-- cart glyph -->
+      <path d="M34 60 h10 l7 28 h31 l6 -20 h-40" fill="none" stroke="var(--smoky-cream)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="56" cy="99" r="5" fill="var(--smoky-cream)"/>
+      <circle cx="77" cy="99" r="5" fill="var(--smoky-cream)"/>
     </svg>
     <span class="smoky-flamecart__count{% if cart.item_count == 0 %} is-empty{% endif %}" data-smoky-cart-count>{{ cart.item_count }}</span>
   </a>
@@ -309,12 +312,13 @@
   /* ---- flame cart (menu page only): hangs off the nav's right corner ---- */
   .smoky-flamecart {
     position: fixed;
-    top: clamp(40px, 4vw, 56px);
-    right: calc((100vw - min(1150px, 92vw)) / 2 - 22px);
+    /* vertically centred on the nav band, sitting to the RIGHT of the bar with a gap */
+    top: clamp(26px, 2.4vw, 36px);
+    right: max(10px, calc((100vw - min(1150px, 92vw)) / 2 - 92px));
     z-index: 101;
-    width: clamp(64px, 5.4vw, 78px);
+    width: 74px;
     display: block;
-    filter: drop-shadow(0 6px 0 rgb(40 40 40 / 0.28));
+    filter: drop-shadow(0 5px 8px rgb(40 40 40 / 0.28));
     transition: transform var(--smoky-anim-bounce);
   }
 
@@ -324,8 +328,8 @@
 
   .smoky-flamecart__count {
     position: absolute;
-    right: -4px;
-    bottom: 2px;
+    right: -6px;
+    top: -4px;
     min-width: 26px;
     height: 26px;
     padding-inline: 7px;
