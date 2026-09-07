@@ -1,20 +1,56 @@
 {% comment %}
-  Smoky page hero — inner-page header: one giant condensed title (optional
-  photo panel below). Tight bottom padding so whatever follows (e.g. the
-  menu filter pills) sits directly under the jumbo text.
-{% endcomment %}
+  Smoky page hero — inner-page header in two layouts:
+  - plain: one giant condensed title (optional photo panel below)
+  - notch: the FTC inner-page header — the title sits centered in a cream
+    box carved into the top edge of a full-width photo/video panel, with
+    inverted corners melting the box into the rounded frame.
+  Tight bottom padding so whatever follows sits directly under the hero.
+{%- endcomment %}
 
-<section class="smoky-phero smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-phero-{{ section.id }}">
-  <div class="smoky-container">
-    <h1 class="smoky-title smoky-title--big smoky-phero__title{% if section.settings.center %} smoky-phero__title--center{% endif %}" data-smoky-reveal>{{ section.settings.title }}</h1>
-  </div>
+{%- assign has_media = false -%}
+{%- if section.settings.image != blank or section.settings.video_url != blank -%}{%- assign has_media = true -%}{%- endif -%}
+{%- assign notch = false -%}
+{%- if section.settings.layout == 'notch' -%}{%- assign notch = true -%}{%- endif -%}
 
-  {%- if section.settings.image != blank -%}
+<section class="smoky-phero smoky-grained{% if notch %} smoky-phero--notch{% endif %}{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-phero-{{ section.id }}">
+  {%- if notch -%}
     <div class="smoky-container">
-      <div class="smoky-phero__media" data-smoky-reveal data-smoky-reveal-delay="0.1">
-        {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+      <div class="smoky-phero__stage" data-smoky-reveal>
+        <div class="smoky-phero__media">
+          {%- if section.settings.video_url != blank -%}
+            <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
+              <source src="{{ section.settings.video_url }}" type="video/mp4">
+            </video>
+          {%- elsif section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+          {%- else -%}
+            <div class="smoky-phero__placeholder"><img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="" loading="eager" width="600" height="200"></div>
+          {%- endif -%}
+        </div>
+        <div class="smoky-phero__box">
+          <span class="smoky-phero__corner smoky-phero__corner--left" aria-hidden="true"></span>
+          <span class="smoky-phero__corner smoky-phero__corner--right" aria-hidden="true"></span>
+          <h1 class="smoky-title smoky-title--big smoky-phero__title smoky-phero__title--boxed">{{ section.settings.title }}</h1>
+        </div>
       </div>
     </div>
+  {%- else -%}
+    <div class="smoky-container">
+      <h1 class="smoky-title smoky-title--big smoky-phero__title{% if section.settings.center %} smoky-phero__title--center{% endif %}" data-smoky-reveal>{{ section.settings.title }}</h1>
+    </div>
+    {%- if has_media -%}
+      <div class="smoky-container">
+        <div class="smoky-phero__media smoky-phero__media--below" data-smoky-reveal data-smoky-reveal-delay="0.1">
+          {%- if section.settings.video_url != blank -%}
+            <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
+              <source src="{{ section.settings.video_url }}" type="video/mp4">
+            </video>
+          {%- else -%}
+            {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
   {%- endif -%}
 </section>
 
@@ -27,25 +63,85 @@
     overflow: clip;
   }
 
+  #smoky-phero-{{ section.id }}.smoky-phero--notch { padding-top: clamp(96px, 11vw, 140px); }
+
   #smoky-phero-{{ section.id }} .smoky-phero__title--center { text-align: center; }
 
+  /* ---- media panel ---- */
   #smoky-phero-{{ section.id }} .smoky-phero__media {
-    margin-top: clamp(24px, 3vw, 44px);
+    position: relative;
+    z-index: 1;
     border-radius: var(--smoky-radius-big);
     overflow: hidden;
-    aspect-ratio: 16 / 7.5;
+    background: var(--smoky-dark-soft);
+    aspect-ratio: 16 / 8;
   }
 
-  #smoky-phero-{{ section.id }} .smoky-phero__media img {
+  #smoky-phero-{{ section.id }} .smoky-phero__media--below { margin-top: clamp(24px, 3vw, 44px); aspect-ratio: 16 / 7.5; }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__media img,
+  #smoky-phero-{{ section.id }} .smoky-phero__media video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
+  #smoky-phero-{{ section.id }} .smoky-phero__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__placeholder img { width: 40%; height: auto; opacity: 0.8; object-fit: contain; }
+
+  /* ---- notched title box, centered on the media's top edge ---- */
+  #smoky-phero-{{ section.id }} .smoky-phero__stage { position: relative; }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__box {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    max-width: 82%;
+    padding: 0 clamp(20px, 3vw, 52px) clamp(12px, 1.8vw, 28px);
+    background: var(--smoky-cream);
+    border-radius: 0 0 var(--smoky-radius-big) var(--smoky-radius-big);
+    text-align: center;
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__title--boxed {
+    font-size: clamp(2.6rem, 8.6vw, 10rem);
+    line-height: 0.88;
+    margin-top: -0.06em;
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__corner {
+    position: absolute;
+    top: 0;
+    width: var(--smoky-radius-big);
+    height: var(--smoky-radius-big);
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--left {
+    left: calc(-1 * var(--smoky-radius-big) + 1px);
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--right {
+    right: calc(-1 * var(--smoky-radius-big) + 1px);
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
+  }
+
   @media screen and (max-width: 749px) {
     #smoky-phero-{{ section.id }} { padding-top: 108px; }
-    #smoky-phero-{{ section.id }} .smoky-phero__media { aspect-ratio: 4 / 3; }
+    #smoky-phero-{{ section.id }}.smoky-phero--notch { padding-top: 96px; }
+    #smoky-phero-{{ section.id }} .smoky-phero__media { aspect-ratio: 4 / 4.4; }
+    #smoky-phero-{{ section.id }} .smoky-phero__media--below { aspect-ratio: 4 / 3; }
+    #smoky-phero-{{ section.id }} .smoky-phero__box { max-width: 88%; padding: 0 14px 10px; }
   }
 </style>
 
@@ -55,8 +151,19 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "title", "label": "Заглавие", "default": "ЗАГЛАВИЕ" },
-    { "type": "checkbox", "id": "center", "label": "Центрирано заглавие", "default": false },
-    { "type": "image_picker", "id": "image", "label": "Снимка (по избор)" },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Оформление",
+      "options": [
+        { "value": "plain", "label": "Само заглавие" },
+        { "value": "notch", "label": "Заглавие в изрез върху снимка/видео" }
+      ],
+      "default": "plain"
+    },
+    { "type": "checkbox", "id": "center", "label": "Центрирано заглавие (само заглавие)", "default": false },
+    { "type": "image_picker", "id": "image", "label": "Снимка" },
+    { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },
     { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
     { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": false }
   ],

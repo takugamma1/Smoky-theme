@@ -1,22 +1,14 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "story_hero": {
       "type": "smoky-page-hero",
       "settings": {
         "title": "СКАРАТА НА ЖИВО",
-        "center": true,
+        "center": false,
         "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
         "curve_top": false,
-        "curve_bottom": false
+        "curve_bottom": false,
+        "layout": "notch"
       }
     },
     "story_intro": {
