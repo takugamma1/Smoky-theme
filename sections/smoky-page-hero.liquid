@@ -27,9 +27,18 @@
             <div class="smoky-phero__placeholder"><img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="" loading="eager" width="600" height="200"></div>
           {%- endif -%}
         </div>
-        <div class="smoky-phero__box">
-          <span class="smoky-phero__corner smoky-phero__corner--left" aria-hidden="true"></span>
-          <span class="smoky-phero__corner smoky-phero__corner--right" aria-hidden="true"></span>
+        {%- assign align = section.settings.notch_align | default: 'center' -%}
+        <div class="smoky-phero__box smoky-phero__box--{{ align }}">
+          {%- if align == 'center' -%}
+            <span class="smoky-phero__corner smoky-phero__corner--tl" aria-hidden="true"></span>
+            <span class="smoky-phero__corner smoky-phero__corner--tr" aria-hidden="true"></span>
+          {%- elsif align == 'left' -%}
+            <span class="smoky-phero__corner smoky-phero__corner--tr" aria-hidden="true"></span>
+            <span class="smoky-phero__corner smoky-phero__corner--bl" aria-hidden="true"></span>
+          {%- else -%}
+            <span class="smoky-phero__corner smoky-phero__corner--tl" aria-hidden="true"></span>
+            <span class="smoky-phero__corner smoky-phero__corner--br" aria-hidden="true"></span>
+          {%- endif -%}
           <h1 class="smoky-title smoky-title--big smoky-phero__title smoky-phero__title--boxed">{{ section.settings.title }}</h1>
         </div>
       </div>
@@ -119,21 +128,55 @@
     margin-top: -0.06em;
   }
 
+  /* left / right aligned box: hugs one side of the panel, one bottom corner rounded */
+  #smoky-phero-{{ section.id }} .smoky-phero__box--left {
+    left: 0;
+    transform: none;
+    text-align: left;
+    border-radius: 0 0 var(--smoky-radius-big) 0;
+    padding-left: 0;
+    max-width: 78%;
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__box--right {
+    left: auto;
+    right: 0;
+    transform: none;
+    text-align: right;
+    border-radius: 0 0 0 var(--smoky-radius-big);
+    padding-right: 0;
+    max-width: 78%;
+  }
+
   #smoky-phero-{{ section.id }} .smoky-phero__corner {
     position: absolute;
-    top: 0;
     width: var(--smoky-radius-big);
     height: var(--smoky-radius-big);
   }
 
-  #smoky-phero-{{ section.id }} .smoky-phero__corner--left {
+  /* cutouts: tl/tr sit beside the box on the panel's top edge, bl/br sit under it on the side edge */
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--tl {
+    top: 0;
     left: calc(-1 * var(--smoky-radius-big) + 1px);
     background: radial-gradient(circle at 0 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
   }
 
-  #smoky-phero-{{ section.id }} .smoky-phero__corner--right {
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--tr {
+    top: 0;
     right: calc(-1 * var(--smoky-radius-big) + 1px);
     background: radial-gradient(circle at 100% 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--bl {
+    left: 0;
+    bottom: calc(-1 * var(--smoky-radius-big) + 1px);
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
+  }
+
+  #smoky-phero-{{ section.id }} .smoky-phero__corner--br {
+    right: 0;
+    bottom: calc(-1 * var(--smoky-radius-big) + 1px);
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--smoky-radius-big) - 1px), var(--smoky-cream) var(--smoky-radius-big));
   }
 
   @media screen and (max-width: 749px) {
@@ -142,6 +185,8 @@
     #smoky-phero-{{ section.id }} .smoky-phero__media { aspect-ratio: 4 / 4.4; }
     #smoky-phero-{{ section.id }} .smoky-phero__media--below { aspect-ratio: 4 / 3; }
     #smoky-phero-{{ section.id }} .smoky-phero__box { max-width: 88%; padding: 0 14px 10px; }
+    #smoky-phero-{{ section.id }} .smoky-phero__box--left { padding-left: 0; padding-right: 14px; }
+    #smoky-phero-{{ section.id }} .smoky-phero__box--right { padding-right: 0; padding-left: 14px; }
   }
 </style>
 
@@ -160,6 +205,17 @@
         { "value": "notch", "label": "Заглавие в изрез върху снимка/видео" }
       ],
       "default": "plain"
+    },
+    {
+      "type": "select",
+      "id": "notch_align",
+      "label": "Позиция на изреза",
+      "options": [
+        { "value": "center", "label": "В средата" },
+        { "value": "left", "label": "Вляво" },
+        { "value": "right", "label": "Вдясно" }
+      ],
+      "default": "center"
     },
     { "type": "checkbox", "id": "center", "label": "Центрирано заглавие (само заглавие)", "default": false },
     { "type": "image_picker", "id": "image", "label": "Снимка" },

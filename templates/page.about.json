@@ -6,17 +6,18 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "about_hero": {
       "type": "smoky-page-hero",
       "settings": {
         "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
-        "center": true,
+        "center": false,
         "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
         "curve_top": false,
-        "curve_bottom": false
+        "curve_bottom": false,
+        "layout": "notch",
+        "notch_align": "left"
       }
     },
     "about_intro": {
