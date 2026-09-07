@@ -1,23 +1,73 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "menu_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "kicker": "Горещо до вратата",
-        "title": "МЕНЮ ЗА ДОСТАВКА",
+        "kicker": "",
+        "title": "",
         "marquee": false,
-        "lead": "Всичко се готви на момента, на истинска жар. Избери, поръчай онлайн — ние палим огъня."
+        "lead": "",
+        "curve_top": false,
+        "curve_bottom": false
+      }
+    },
+    "menu_products": {
+      "type": "smoky-menu-products",
+      "blocks": {
+        "cat_skara": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Скара"
+          }
+        },
+        "cat_sach": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Сач и плата"
+          }
+        },
+        "cat_garnituri": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Гарнитури и салати"
+          }
+        },
+        "cat_deserti": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": "Десерти и напитки"
+          }
+        }
+      },
+      "block_order": [
+        "cat_skara",
+        "cat_sach",
+        "cat_garnituri",
+        "cat_deserti"
+      ],
+      "settings": {
+        "heading": "",
+        "button_label": "Поръчай",
+        "limit": 12,
+        "curve_top": false,
+        "curve_bottom": true
       }
     },
     "menu_marquee": {
       "type": "smoky-marquee",
-      "settings": {
-        "background": "pink",
-        "separator": "smoky-pattern-shevitsa",
-        "speed": 70,
-        "size": 3,
-        "direction": "left"
-      },
       "blocks": {
         "w1": {
           "type": "word",
@@ -53,13 +103,18 @@
         "w2",
         "w3",
         "w4"
-      ]
+      ],
+      "settings": {
+        "background": "pink",
+        "separator": "smoky-pattern-shevitsa",
+        "sep_repeat": 3,
+        "speed": 70,
+        "size": 3,
+        "direction": "left"
+      }
     },
     "menu_faq": {
       "type": "smoky-faq",
-      "settings": {
-        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА"
-      },
       "blocks": {
         "q1": {
           "type": "qa",
@@ -95,47 +150,12 @@
         "q2",
         "q3",
         "q4"
-      ]
-    },
-    "menu_products": {
-      "type": "smoky-menu-products",
+      ],
       "settings": {
-        "heading": "",
-        "button_label": "Поръчай",
-        "limit": 12
-      },
-      "blocks": {
-        "cat_skara": {
-          "type": "category",
-          "settings": {
-            "title": "Скара"
-          }
-        },
-        "cat_sach": {
-          "type": "category",
-          "settings": {
-            "title": "Сач и плата"
-          }
-        },
-        "cat_garnituri": {
-          "type": "category",
-          "settings": {
-            "title": "Гарнитури и салати"
-          }
-        },
-        "cat_deserti": {
-          "type": "category",
-          "settings": {
-            "title": "Десерти и напитки"
-          }
-        }
-      },
-      "block_order": [
-        "cat_skara",
-        "cat_sach",
-        "cat_garnituri",
-        "cat_deserti"
-      ]
+        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА",
+        "curve_top": true,
+        "curve_bottom": false
+      }
     }
   },
   "order": [
