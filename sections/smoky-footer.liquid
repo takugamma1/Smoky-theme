@@ -80,9 +80,10 @@
     background: var(--smoky-dark-soft);
     color: var(--smoky-sand);
     border-radius: var(--smoky-radius-big) var(--smoky-radius-big) 0 0;
-    margin-top: calc(-1 * var(--smoky-radius-big));
+    /* no negative margin: a light section curling down (z-index 1) must stay
+       above the footer, otherwise the two curls stack to 2x radius and swallow content */
     position: relative;
-    z-index: 1;
+    z-index: 0;
     padding-block: clamp(64px, 9vw, 130px) clamp(24px, 3vw, 40px);
     overflow: clip;
   }

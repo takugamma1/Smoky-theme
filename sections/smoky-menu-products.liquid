@@ -123,7 +123,8 @@
   #smoky-mp-{{ section.id }} {
     background: var(--smoky-cream);
     color: var(--smoky-dark);
-    padding-block: clamp(10px, 1.4vw, 22px) clamp(64px, 8vw, 120px);
+    /* bottom padding always clears the curl radius plus whatever curls up over it */
+    padding-block: clamp(10px, 1.4vw, 22px) calc(var(--smoky-radius-big) * 2 + clamp(32px, 4vw, 64px));
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__heading {
