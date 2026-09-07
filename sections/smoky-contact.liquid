@@ -123,8 +123,7 @@
   }
 
   #smoky-contact-{{ section.id }} .smoky-contact__card--info { background: var(--smoky-dark-soft); color: var(--smoky-sand); }
-  /* dark type on the pink card — cream on neon pink was hard to read */
-  #smoky-contact-{{ section.id }} .smoky-contact__card--form { background: var(--smoky-pink); color: var(--smoky-dark); }
+  #smoky-contact-{{ section.id }} .smoky-contact__card--form { background: var(--smoky-pink); color: var(--smoky-cream); }
 
   #smoky-contact-{{ section.id }} .smoky-contact__kicker { opacity: 0.85; }
 
@@ -135,7 +134,7 @@
     font-size: clamp(2rem, 3.4vw, 3.4rem);
     line-height: 0.95;
     text-transform: uppercase;
-    max-width: 11em;
+    max-width: 9em;
   }
 
   #smoky-contact-{{ section.id }} .smoky-contact__text {
@@ -156,13 +155,12 @@
     filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.4));
   }
 
-  /* mascot peeks from the bottom-right corner, clear of the title and fields */
   #smoky-contact-{{ section.id }} .smoky-contact__mascot {
     position: absolute;
-    right: clamp(10px, 1.6vw, 24px);
-    bottom: clamp(-22px, -1.8vw, -12px);
-    width: clamp(84px, 8.5vw, 132px);
-    transform: rotate(-8deg);
+    right: clamp(14px, 2vw, 30px);
+    top: clamp(-30px, -2.4vw, -18px);
+    width: clamp(88px, 9vw, 140px);
+    transform: rotate(8deg);
     filter: drop-shadow(0 8px 12px rgb(40 40 40 / 0.35));
     pointer-events: none;
   }
@@ -273,7 +271,6 @@
   #smoky-contact-{{ section.id }} .smoky-contact__submit {
     align-self: flex-start;
     margin-top: clamp(6px, 1vw, 12px);
-    margin-right: clamp(100px, 10vw, 150px);
   }
 
   #smoky-contact-{{ section.id }} .smoky-contact__note {
