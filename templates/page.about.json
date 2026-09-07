@@ -6,12 +6,17 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "about_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО"
+        "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
+        "center": true,
+        "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
+        "curve_top": false,
+        "curve_bottom": false
       }
     },
     "about_intro": {
@@ -22,7 +27,9 @@
         "button_label": "",
         "button_link": "",
         "sticker_asset": "smoky-stamp-smoky",
-        "background": "cream"
+        "background": "cream",
+        "curve_bottom": true,
+        "curve_top": false
       }
     },
     "about_divider": {
@@ -77,7 +84,9 @@
       ],
       "settings": {
         "heading": "НАШИТЕ ЦЕННОСТИ",
-        "background": "cream"
+        "background": "cream",
+        "curve_top": true,
+        "curve_bottom": false
       }
     },
     "about_photos": {
@@ -131,7 +140,9 @@
       "settings": {
         "background": "cream",
         "speed": 50,
-        "direction": "right"
+        "direction": "right",
+        "curve_top": true,
+        "curve_bottom": true
       }
     },
     "about_stats": {
