@@ -1,0 +1,123 @@
+{
+  "sections": {
+    "story_hero": {
+      "type": "smoky-page-hero",
+      "settings": { "title": "СКАРАТА НА ЖИВО", "center": false }
+    },
+    "story_intro": {
+      "type": "smoky-intro",
+      "settings": {
+        "heading": "НИЩО НЕ НИ Е В ПОВЕЧЕ",
+        "text": "<p>Рожден ден в двора, фирмено парти, сватба на село или просто гладен вторник вечер — Smoky идва с <strong>жарта, месото и Димо</strong>. Или ти идваш при нас, до огъня.</p><p>Тук ще видиш как изглежда една вечер на скарата — и двата пътя да си я вземеш.</p>",
+        "sticker_asset": "smoky-flame-sticker",
+        "background": "cream",
+        "curve_top": false,
+        "curve_bottom": false
+      }
+    },
+    "story_blocks": {
+      "type": "smoky-story",
+      "settings": { "curve_top": false, "curve_bottom": false },
+      "blocks": {
+        "b1": {
+          "type": "textsplit",
+          "settings": {
+            "kicker": "Как готвим",
+            "heading": "НА ЖАР, ПРЕД ОЧИТЕ ТИ",
+            "text": "<p>Дървени въглища, чугунена скара и ръце, които знаят кога кебапчето е готово. Нищо не се готви предварително — <strong>месото отива на жарта, когато ти седнеш</strong> или когато поръчката ти звънне при нас.</p>",
+            "side": "auto",
+            "boxed": true,
+            "button_label": "Виж менюто",
+            "button_link": "/pages/menu",
+            "button_style": "pink"
+          }
+        },
+        "b2": {
+          "type": "media",
+          "settings": {}
+        },
+        "b3": {
+          "type": "textsplit",
+          "settings": {
+            "kicker": "На място",
+            "heading": "МАСА ДО ОГЪНЯ",
+            "text": "<p>Дълги дървени маси, топъл хляб на печката и миризма на дим, която те намира още от ъгъла. Ела с компания — <strong>сачът е за споделяне</strong>.</p>",
+            "side": "auto",
+            "boxed": false,
+            "button_label": "Резервирай маса",
+            "button_link": "",
+            "button_style": "dark"
+          }
+        },
+        "b4": {
+          "type": "textsplit",
+          "settings": {
+            "kicker": "Събития",
+            "heading": "СКАРА ЗА ТВОЯ ПОВОД",
+            "text": "<p>Идваме с мобилната скара и екип на твоето място — двор, офис, поляна. <strong>Без опашки, без чинии за миене</strong>, само гладни и после доволни хора.</p>",
+            "side": "auto",
+            "boxed": true,
+            "button_label": "Пиши ни",
+            "button_link": "/pages/contact",
+            "button_style": "pink"
+          }
+        },
+        "b5": {
+          "type": "media",
+          "settings": {}
+        }
+      },
+      "block_order": ["b1", "b2", "b3", "b4", "b5"]
+    },
+    "story_photos": {
+      "type": "smoky-photo-marquee",
+      "settings": { "background": "cream", "speed": 50, "direction": "right", "curve_top": false, "curve_bottom": true },
+      "blocks": {
+        "p1": { "type": "photo", "settings": {} },
+        "p2": { "type": "photo", "settings": {} },
+        "p3": { "type": "photo", "settings": {} },
+        "p4": { "type": "photo", "settings": {} },
+        "p5": { "type": "photo", "settings": {} },
+        "p6": { "type": "photo", "settings": {} }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+    },
+    "story_stats": {
+      "type": "smoky-stats",
+      "settings": {},
+      "blocks": {
+        "st1": { "type": "stat", "settings": { "number": "100%", "label": "На истинска жар" } },
+        "st2": { "type": "stat", "settings": { "number": "30", "label": "Минути до вратата" } },
+        "st3": { "type": "stat", "settings": { "number": "60", "label": "Места до огъня" } },
+        "st4": { "type": "stat", "settings": { "number": "5000+", "label": "Щастливи гости" } }
+      },
+      "block_order": ["st1", "st2", "st3", "st4"]
+    },
+    "story_funnel": {
+      "type": "smoky-funnel",
+      "settings": {
+        "heading": "ОГЛАДНЯ ЛИ?",
+        "text": "Два пътя до скарата — горещо до вратата ти или на маса при нас, до жарта.",
+        "order_kicker": "Доставка",
+        "order_title": "ПОРЪЧАЙ ОНЛАЙН",
+        "order_text": "Избираш от менюто, ние палим жарта. Средно 30–45 минути до твоята врата, в брандирана термо опаковка.",
+        "order_button": "Към менюто",
+        "order_link": "/pages/menu",
+        "visit_kicker": "Ресторантът",
+        "visit_title": "ЕЛА НА МЯСТО",
+        "visit_text": "Скарата е най-вкусна до огъня. Ела да я усетиш на живо — с топъл хляб, студена бира и Димо на бара.",
+        "address": "ул. Скара 1, София",
+        "hours": "Пон–Нед 11:00–23:00",
+        "map_button": "Виж на картата",
+        "map_link": "https://maps.google.com/",
+        "reserve_button": "Резервирай маса",
+        "reserve_link": "",
+        "phone_label": "Или просто звънни:",
+        "phone": "+359 88 888 8888",
+        "curve_top": true,
+        "curve_bottom": true
+      }
+    }
+  },
+  "order": ["story_hero", "story_intro", "story_blocks", "story_photos", "story_stats", "story_funnel"]
+}

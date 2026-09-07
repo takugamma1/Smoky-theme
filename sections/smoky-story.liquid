@@ -1,0 +1,293 @@
+{% comment %}
+  Smoky story builder — the FTC "builder blocks" pattern:
+  - textsplit: photo (dark border, rounded, dotted inner frame) on one side,
+    condensed heading + copy + optional button on the other; sides alternate
+    automatically, optional boxed sand background behind the row
+  - media: a row of up to three portrait photos (or muted looping mp4s),
+    rounded with dark borders — the gallery beat between text blocks
+  Blocks can be mixed freely and reordered in the editor.
+{%- endcomment %}
+
+<section class="smoky-story smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-story-{{ section.id }}">
+  {%- assign split_i = 0 -%}
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'textsplit' -%}
+        {%- assign split_i = split_i | plus: 1 -%}
+        {%- assign side = block.settings.side -%}
+        {%- if side == 'auto' -%}
+          {%- assign odd = split_i | modulo: 2 -%}
+          {%- if odd == 1 -%}{%- assign side = 'left' -%}{%- else -%}{%- assign side = 'right' -%}{%- endif -%}
+        {%- endif -%}
+        <div class="smoky-story__split smoky-story__split--{{ side }}{% if block.settings.boxed %} smoky-story__split--boxed{% endif %}" {{ block.shopify_attributes }}>
+          <div class="smoky-container smoky-story__split-inner">
+            {%- if block.settings.boxed -%}<span class="smoky-story__box smoky-grained" aria-hidden="true"></span>{%- endif -%}
+            <figure class="smoky-story__figure" data-smoky-reveal>
+              {%- if block.settings.video_url != blank -%}
+                <video autoplay muted loop playsinline preload="metadata" {% if block.settings.image != blank %}poster="{{ block.settings.image | image_url: width: 1200 }}"{% endif %}>
+                  <source src="{{ block.settings.video_url }}" type="video/mp4">
+                </video>
+              {%- elsif block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 46vw, 92vw' }}
+              {%- else -%}
+                <span class="smoky-story__ph"><img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="300" height="140"></span>
+              {%- endif -%}
+              <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+                <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="20" stroke="var(--smoky-cream)"></rect>
+              </svg>
+            </figure>
+            <div class="smoky-story__text" data-smoky-reveal data-smoky-reveal-delay="0.1">
+              {%- if block.settings.kicker != blank -%}<p class="smoky-kicker smoky-story__kicker">{{ block.settings.kicker }}</p>{%- endif -%}
+              <h2 class="smoky-title smoky-title--small">{{ block.settings.heading }}</h2>
+              <div class="smoky-story__copy">{{ block.settings.text }}</div>
+              {%- if block.settings.button_label != blank -%}
+                <a href="{{ block.settings.button_link | default: '#' }}" class="smoky-btn{% if block.settings.button_style == 'dark' %} smoky-btn--dark{% endif %}">
+                  <span class="smoky-btn__shadow"></span>
+                  <span class="smoky-btn__content">
+                    <span class="smoky-roll"><span>{{ block.settings.button_label }}</span><span class="smoky-roll__dup">{{ block.settings.button_label }}</span></span>
+                  </span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+
+      {%- when 'media' -%}
+        {%- assign count = 0 -%}
+        {%- if block.settings.image_1 != blank or block.settings.video_1 != blank -%}{%- assign count = count | plus: 1 -%}{%- endif -%}
+        {%- if block.settings.image_2 != blank or block.settings.video_2 != blank -%}{%- assign count = count | plus: 1 -%}{%- endif -%}
+        {%- if block.settings.image_3 != blank or block.settings.video_3 != blank -%}{%- assign count = count | plus: 1 -%}{%- endif -%}
+        {%- if count == 0 -%}{%- assign count = 3 -%}{%- endif -%}
+        <div class="smoky-story__media smoky-story__media--{{ count }}" {{ block.shopify_attributes }}>
+          <div class="smoky-container smoky-story__media-row">
+            {%- for i in (1..3) -%}
+              {%- assign img_key = 'image_' | append: i -%}
+              {%- assign vid_key = 'video_' | append: i -%}
+              {%- assign img = block.settings[img_key] -%}
+              {%- assign vid = block.settings[vid_key] -%}
+              {%- if img != blank or vid != blank or count == 3 -%}
+                {%- if img != blank or vid != blank or block.settings.image_1 == blank -%}
+                  <figure class="smoky-story__tile" data-smoky-reveal data-smoky-reveal-delay="{{ forloop.index0 | times: 0.08 }}">
+                    {%- if vid != blank -%}
+                      <video autoplay muted loop playsinline preload="metadata" {% if img != blank %}poster="{{ img | image_url: width: 900 }}"{% endif %}>
+                        <source src="{{ vid }}" type="video/mp4">
+                      </video>
+                    {%- elsif img != blank -%}
+                      {{ img | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400, 700, 1000', sizes: '(min-width: 990px) 30vw, 92vw' }}
+                    {%- else -%}
+                      <span class="smoky-story__ph"><img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="300" height="140"></span>
+                    {%- endif -%}
+                  </figure>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+</section>
+
+<style>
+  #smoky-story-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding-block: clamp(32px, 4vw, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7vw, 120px);
+  }
+
+  /* ---- text / image split ---- */
+  #smoky-story-{{ section.id }} .smoky-story__split-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(28px, 5vw, 88px);
+    align-items: center;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__split--right .smoky-story__figure { order: 2; }
+  #smoky-story-{{ section.id }} .smoky-story__split--right .smoky-story__text { order: 1; }
+
+  /* boxed variant: sand slab behind the whole row */
+  #smoky-story-{{ section.id }} .smoky-story__split--boxed .smoky-story__split-inner {
+    padding: clamp(28px, 4vw, 64px) clamp(24px, 4vw, 64px);
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__box {
+    position: absolute;
+    inset: 0;
+    background: var(--smoky-sand);
+    border-radius: var(--smoky-radius);
+    z-index: 0;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__figure,
+  #smoky-story-{{ section.id }} .smoky-story__text { position: relative; z-index: 1; }
+
+  #smoky-story-{{ section.id }} .smoky-story__figure {
+    margin: 0;
+    aspect-ratio: 4 / 3.2;
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    overflow: hidden;
+    background: var(--smoky-dark-soft);
+    box-shadow: 0 0.45em 0 var(--smoky-shadow-color);
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__figure img,
+  #smoky-story-{{ section.id }} .smoky-story__figure video,
+  #smoky-story-{{ section.id }} .smoky-story__tile img,
+  #smoky-story-{{ section.id }} .smoky-story__tile video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__figure .smoky-dotted-frame { inset: 10px; width: calc(100% - 20px); height: calc(100% - 20px); }
+  #smoky-story-{{ section.id }} .smoky-story__figure .smoky-dotted-frame rect { stroke-width: 5; stroke-dasharray: 0.4 15; opacity: 0.9; }
+
+  #smoky-story-{{ section.id }} .smoky-story__ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__ph img {
+    width: 42%;
+    height: auto;
+    opacity: 0.45;
+    object-fit: contain;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__kicker {
+    margin: 0 0 0.8em;
+    color: var(--smoky-pink);
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__text .smoky-title { margin-bottom: clamp(14px, 1.6vw, 22px); }
+
+  #smoky-story-{{ section.id }} .smoky-story__copy {
+    font-family: var(--smoky-font-body);
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    line-height: 1.6;
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__copy p { margin: 0 0 1em; }
+  #smoky-story-{{ section.id }} .smoky-story__copy p:last-child { margin-bottom: 0; }
+  #smoky-story-{{ section.id }} .smoky-story__copy strong { color: var(--smoky-pink); font-weight: 600; }
+  #smoky-story-{{ section.id }} .smoky-story__copy a { color: var(--smoky-pink); }
+  #smoky-story-{{ section.id }} .smoky-story__text .smoky-btn { margin-top: clamp(18px, 2vw, 28px); }
+
+  /* ---- media row ---- */
+  #smoky-story-{{ section.id }} .smoky-story__media-row {
+    display: grid;
+    gap: clamp(14px, 1.8vw, 28px);
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__media--3 .smoky-story__media-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #smoky-story-{{ section.id }} .smoky-story__media--2 .smoky-story__media-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #smoky-story-{{ section.id }} .smoky-story__media--1 .smoky-story__media-row { grid-template-columns: 1fr; }
+
+  #smoky-story-{{ section.id }} .smoky-story__tile {
+    margin: 0;
+    aspect-ratio: 2 / 3;
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    overflow: hidden;
+    background: var(--smoky-sand);
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #smoky-story-{{ section.id }} .smoky-story__media--1 .smoky-story__tile { aspect-ratio: 16 / 8; }
+  #smoky-story-{{ section.id }} .smoky-story__media--2 .smoky-story__tile { aspect-ratio: 4 / 3; }
+  #smoky-story-{{ section.id }} .smoky-story__tile:nth-child(2) { transform: translateY(clamp(14px, 2vw, 32px)); }
+  #smoky-story-{{ section.id }} .smoky-story__tile:hover { transform: translateY(-6px) rotate(-1deg); }
+  #smoky-story-{{ section.id }} .smoky-story__tile:nth-child(2):hover { transform: translateY(clamp(8px, 1.4vw, 26px)) rotate(1deg); }
+
+  @media screen and (max-width: 899px) {
+    #smoky-story-{{ section.id }} .smoky-story__split-inner { grid-template-columns: 1fr; }
+    #smoky-story-{{ section.id }} .smoky-story__split--right .smoky-story__figure { order: 0; }
+    #smoky-story-{{ section.id }} .smoky-story__split--right .smoky-story__text { order: 1; }
+  }
+
+  @media screen and (max-width: 649px) {
+    #smoky-story-{{ section.id }} .smoky-story__media--3 .smoky-story__media-row,
+    #smoky-story-{{ section.id }} .smoky-story__media--2 .smoky-story__media-row { grid-template-columns: 1fr 1fr; }
+    #smoky-story-{{ section.id }} .smoky-story__media--3 .smoky-story__tile:nth-child(3) { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky история (блокове)",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
+    { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "textsplit",
+      "name": "Текст + снимка",
+      "settings": [
+        { "type": "text", "id": "kicker", "label": "Малък надпис" },
+        { "type": "text", "id": "heading", "label": "Заглавие", "default": "ИСТИНСКА ЖАР" },
+        { "type": "richtext", "id": "text", "label": "Текст", "default": "<p>Готвим на дървени въглища, на открит огън — точно както на село. Димът е част от рецептата.</p>" },
+        { "type": "image_picker", "id": "image", "label": "Снимка" },
+        { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },
+        {
+          "type": "select",
+          "id": "side",
+          "label": "Снимката е",
+          "options": [
+            { "value": "auto", "label": "Автоматично (редува се)" },
+            { "value": "left", "label": "Вляво" },
+            { "value": "right", "label": "Вдясно" }
+          ],
+          "default": "auto"
+        },
+        { "type": "checkbox", "id": "boxed", "label": "Пясъчен фон зад реда", "default": false },
+        { "type": "text", "id": "button_label", "label": "Бутон — текст" },
+        { "type": "url", "id": "button_link", "label": "Бутон — линк" },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Бутон — стил",
+          "options": [
+            { "value": "pink", "label": "Розов" },
+            { "value": "dark", "label": "Тъмен" }
+          ],
+          "default": "pink"
+        }
+      ]
+    },
+    {
+      "type": "media",
+      "name": "Галерия (до 3 снимки)",
+      "settings": [
+        { "type": "image_picker", "id": "image_1", "label": "Снимка 1" },
+        { "type": "url", "id": "video_1", "label": "Видео 1 (mp4 URL)" },
+        { "type": "image_picker", "id": "image_2", "label": "Снимка 2" },
+        { "type": "url", "id": "video_2", "label": "Видео 2 (mp4 URL)" },
+        { "type": "image_picker", "id": "image_3", "label": "Снимка 3" },
+        { "type": "url", "id": "video_3", "label": "Видео 3 (mp4 URL)" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Smoky история (блокове)",
+      "blocks": [
+        { "type": "textsplit", "settings": { "heading": "ИСТИНСКА ЖАР", "text": "<p>Готвим на дървени въглища, на открит огън — точно както на село. Димът е част от рецептата, а не декор.</p>", "boxed": true } },
+        { "type": "media" },
+        { "type": "textsplit", "settings": { "heading": "ПРЯСНО ВСЕКИ ДЕН", "text": "<p>Месото се мели сутрин, хлябът се пече на обяд, лютеницата е домашна. Нищо не престоява.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
