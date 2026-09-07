@@ -12,7 +12,7 @@
 {%- assign notch = false -%}
 {%- if section.settings.layout == 'notch' -%}{%- assign notch = true -%}{%- endif -%}
 
-<section class="smoky-phero smoky-grained{% if notch %} smoky-phero--notch{% endif %}{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-phero-{{ section.id }}">
+<section class="smoky-phero{% if notch %} smoky-phero--notch{% endif %}{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-phero-{{ section.id }}">
   {%- if notch -%}
     <div class="smoky-container">
       <div class="smoky-phero__stage" data-smoky-reveal>
