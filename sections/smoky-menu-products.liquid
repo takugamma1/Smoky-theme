@@ -63,7 +63,7 @@
               {%- for product in c.products limit: section.settings.limit -%}
                 {%- assign v = forloop.index0 | modulo: 4 | plus: 1 -%}
                 <article class="smoky-mp__card smoky-mp__card--v{{ v }}" data-smoky-reveal>
-                  <a href="{{ product.url }}" class="smoky-mp__media" aria-label="{{ product.title | escape }}">
+                  {%- if section.settings.link_products -%}<a href="{{ product.url }}" class="smoky-mp__media" aria-label="{{ product.title | escape }}">{%- else -%}<div class="smoky-mp__media">{%- endif -%}
                     <svg class="smoky-mp__blob smoky-mp__blob--pink" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_a }}" fill="var(--smoky-pink)"/></svg>
                     <svg class="smoky-mp__blob smoky-mp__blob--dark" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_c }}" fill="var(--smoky-dark)"/></svg>
                     <svg class="smoky-mp__blob smoky-mp__blob--dot" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_b }}" fill="var(--smoky-dark)"/></svg>
@@ -72,9 +72,9 @@
                     {%- else -%}
                       <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="300" height="300" class="smoky-mp__img smoky-mp__img--ph">
                     {%- endif -%}
-                  </a>
+                  {%- if section.settings.link_products -%}</a>{%- else -%}</div>{%- endif -%}
                   <div class="smoky-mp__info">
-                    <h3 class="smoky-mp__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+                    <h3 class="smoky-mp__name">{%- if section.settings.link_products -%}<a href="{{ product.url }}">{{ product.title }}</a>{%- else -%}{{ product.title }}{%- endif -%}</h3>
                     {%- assign desc = product.description | strip_html | truncate: 80 -%}
                     {%- if desc != blank -%}<p class="smoky-mp__desc">{{ desc }}</p>{%- endif -%}
                     <div class="smoky-mp__row">
@@ -502,6 +502,7 @@
     { "type": "text", "id": "added_label", "label": "Текст след добавяне", "default": "Добавено ✓" },
     { "type": "text", "id": "choose_label", "label": "Бутон при варианти", "default": "Избери" },
     { "type": "checkbox", "id": "show_cart", "label": "Плаваща кошница с пламъци", "default": true },
+    { "type": "checkbox", "id": "link_products", "label": "Снимката и името водят към продукта", "default": false },
     { "type": "range", "id": "limit", "label": "Максимум продукти на категория", "min": 3, "max": 24, "step": 1, "default": 12 },
     { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
     { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": true }
