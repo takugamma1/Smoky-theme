@@ -83,7 +83,7 @@
         "cat_skara": {
           "type": "category",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": "Скара"
           }
         },
