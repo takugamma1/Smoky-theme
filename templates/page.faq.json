@@ -3,10 +3,7 @@
     "faq_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "kicker": "FAQ",
-        "title": "ЧЕСТО ЗАДАВАНИ ВЪПРОСИ",
-        "marquee": false,
-        "lead": "Всичко, което искаш да знаеш за поръчките, доставката и скарата — на едно място."
+        "title": "ЧЕСТО ЗАДАВАНИ ВЪПРОСИ"
       }
     },
     "faq_delivery": {

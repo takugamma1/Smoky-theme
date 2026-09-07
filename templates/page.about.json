@@ -11,10 +11,7 @@
     "about_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "kicker": "За нас",
-        "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
-        "marquee": true,
-        "lead": "Скарата е нашият език на любов. Виж се, усети се, вкуси се."
+        "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО"
       }
     },
     "about_intro": {
