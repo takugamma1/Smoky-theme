@@ -115,104 +115,11 @@
         "curve_top": false,
         "curve_bottom": true
       }
-    },
-    "menu_marquee": {
-      "type": "smoky-marquee",
-      "blocks": {
-        "w1": {
-          "type": "word",
-          "settings": {
-            "text": "ПРЯСНО",
-            "outline": false
-          }
-        },
-        "w2": {
-          "type": "word",
-          "settings": {
-            "text": "НА ЖАР",
-            "outline": true
-          }
-        },
-        "w3": {
-          "type": "word",
-          "settings": {
-            "text": "ГОРЕЩО",
-            "outline": false
-          }
-        },
-        "w4": {
-          "type": "word",
-          "settings": {
-            "text": "ДО 45 МИН",
-            "outline": true
-          }
-        }
-      },
-      "block_order": [
-        "w1",
-        "w2",
-        "w3",
-        "w4"
-      ],
-      "settings": {
-        "background": "pink",
-        "separator": "smoky-pattern-shevitsa",
-        "sep_repeat": 3,
-        "speed": 70,
-        "size": 3,
-        "direction": "left"
-      }
-    },
-    "menu_faq": {
-      "type": "smoky-faq",
-      "blocks": {
-        "q1": {
-          "type": "qa",
-          "settings": {
-            "question": "Къде доставяте?",
-            "answer": "<p>Доставяме в цяла София. Точните квартали и времена виждаш при завършване на поръчката.</p>"
-          }
-        },
-        "q2": {
-          "type": "qa",
-          "settings": {
-            "question": "Колко време отнема доставката?",
-            "answer": "<p>Средно 30–45 минути — готвим на момента и тръгваме веднага.</p>"
-          }
-        },
-        "q3": {
-          "type": "qa",
-          "settings": {
-            "question": "Има ли минимална поръчка?",
-            "answer": "<p>Да — 20 лв. за доставка. По-малки поръчки можеш да вземеш на място.</p>"
-          }
-        },
-        "q4": {
-          "type": "qa",
-          "settings": {
-            "question": "Как се плаща?",
-            "answer": "<p>Онлайн с карта или при доставка — в брой или с карта.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "q1",
-        "q2",
-        "q3",
-        "q4"
-      ],
-      "settings": {
-        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА",
-        "curve_top": true,
-        "curve_bottom": false
-      }
     }
   },
   "order": [
     "section_6UEi69",
     "menu_hero",
-    "menu_products",
-    "menu_marquee",
-    "menu_faq"
+    "menu_products"
   ]
 }
