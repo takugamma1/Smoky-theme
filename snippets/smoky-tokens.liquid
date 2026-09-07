@@ -112,6 +112,54 @@
     margin: 0;
   }
 
+  /* desktop: a floating ticket card instead of a full-height slab — inset from the
+     edges, rounded, dark border + hard shadow, popping in with the brand bounce */
+  @media screen and (min-width: 750px) {
+    #cart-drawer .theme-drawer__dialog,
+    #cart-drawer .theme-drawer__dialog[open] {
+      top: 18px;
+      bottom: 18px;
+      right: 18px;
+      height: auto;
+      max-height: calc(100dvh - 36px);
+      border: 2px solid var(--smoky-dark);
+      border-radius: var(--smoky-radius);
+      box-shadow: 0 10px 0 var(--smoky-shadow-color);
+      transform-origin: 100% 20%;
+      overflow: hidden;
+    }
+
+    #cart-drawer .theme-drawer__dialog--opening {
+      animation: smoky-cart-in 0.6s var(--smoky-bounce);
+    }
+
+    #cart-drawer .theme-drawer__dialog--closing {
+      animation: smoky-cart-out 0.32s var(--smoky-ease) forwards;
+    }
+
+    #cart-drawer .theme-drawer__dialog-instant { animation: none; }
+
+    @keyframes smoky-cart-in {
+      from { transform: translateX(calc(100% + 60px)) rotate(5deg); opacity: 0.6; }
+      to { transform: none; opacity: 1; }
+    }
+
+    @keyframes smoky-cart-out {
+      to { transform: translateX(calc(100% + 60px)) rotate(3deg); opacity: 0.6; }
+    }
+
+    #cart-drawer .smoky-cart__frame {
+      inset: 12px;
+      width: calc(100% - 24px);
+      height: calc(100% - 24px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #cart-drawer .theme-drawer__dialog--opening,
+    #cart-drawer .theme-drawer__dialog--closing { animation: none; }
+  }
+
   #cart-drawer .cart-drawer__inner { position: relative; }
 
   #cart-drawer .smoky-cart__frame {
