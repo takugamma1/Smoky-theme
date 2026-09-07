@@ -1,69 +1,147 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "section_yW8pbH": {
-      "type": "section",
+    "menu_hero": {
+      "type": "smoky-page-hero",
+      "settings": {
+        "kicker": "Горещо до вратата",
+        "title": "МЕНЮ ЗА ДОСТАВКА",
+        "marquee": false,
+        "lead": "Всичко се готви на момента, на истинска жар. Избери, поръчай онлайн — ние палим огъня."
+      }
+    },
+    "menu_marquee": {
+      "type": "smoky-marquee",
+      "settings": {
+        "background": "pink",
+        "separator": "smoky-pattern-shevitsa",
+        "speed": 70,
+        "size": 3,
+        "direction": "left"
+      },
       "blocks": {
-        "jumbo_text_KrngDn": {
-          "type": "jumbo-text",
-          "name": "t:names.jumbo_text",
+        "w1": {
+          "type": "word",
           "settings": {
-            "text": "МЕНЮ",
-            "font": "heading",
-            "alignment": "left",
-            "line_height": "0.8",
-            "letter_spacing": "-0.03em",
-            "case": "none",
-            "text_effect": "none",
-            "animation_repeat": false,
-            "text_color": ""
-          },
-          "blocks": {}
+            "text": "ПРЯСНО",
+            "outline": false
+          }
+        },
+        "w2": {
+          "type": "word",
+          "settings": {
+            "text": "НА ЖАР",
+            "outline": true
+          }
+        },
+        "w3": {
+          "type": "word",
+          "settings": {
+            "text": "ГОРЕЩО",
+            "outline": false
+          }
+        },
+        "w4": {
+          "type": "word",
+          "settings": {
+            "text": "ДО 45 МИН",
+            "outline": true
+          }
         }
       },
       "block_order": [
-        "jumbo_text_KrngDn"
-      ],
-      "name": "t:names.custom_section",
+        "w1",
+        "w2",
+        "w3",
+        "w4"
+      ]
+    },
+    "menu_faq": {
+      "type": "smoky-faq",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "small",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "background_color": "{{ settings.color_palette.foreground }}",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_color": "",
-        "border_radius": 0,
-        "padding-block-start": 100,
-        "padding-block-end": 0
-      }
+        "heading": "ВЪПРОСИ ЗА ДОСТАВКАТА"
+      },
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "Къде доставяте?",
+            "answer": "<p>Доставяме в цяла София. Точните квартали и времена виждаш при завършване на поръчката.</p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "Колко време отнема доставката?",
+            "answer": "<p>Средно 30–45 минути — готвим на момента и тръгваме веднага.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "Има ли минимална поръчка?",
+            "answer": "<p>Да — 20 лв. за доставка. По-малки поръчки можеш да вземеш на място.</p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "Как се плаща?",
+            "answer": "<p>Онлайн с карта или при доставка — в брой или с карта.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ]
+    },
+    "menu_products": {
+      "type": "smoky-menu-products",
+      "settings": {
+        "heading": "",
+        "button_label": "Поръчай",
+        "limit": 12
+      },
+      "blocks": {
+        "cat_skara": {
+          "type": "category",
+          "settings": {
+            "title": "Скара"
+          }
+        },
+        "cat_sach": {
+          "type": "category",
+          "settings": {
+            "title": "Сач и плата"
+          }
+        },
+        "cat_garnituri": {
+          "type": "category",
+          "settings": {
+            "title": "Гарнитури и салати"
+          }
+        },
+        "cat_deserti": {
+          "type": "category",
+          "settings": {
+            "title": "Десерти и напитки"
+          }
+        }
+      },
+      "block_order": [
+        "cat_skara",
+        "cat_sach",
+        "cat_garnituri",
+        "cat_deserti"
+      ]
     }
   },
   "order": [
-    "section_yW8pbH"
+    "menu_hero",
+    "menu_products",
+    "menu_marquee",
+    "menu_faq"
   ]
 }
