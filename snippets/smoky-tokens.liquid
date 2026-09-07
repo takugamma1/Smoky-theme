@@ -97,6 +97,150 @@
     font-size: clamp(0.8rem, 1vw, 0.95rem);
   }
 
+  /* ---- cart drawer in brand clothes: cream paper, dark edge, pink dot frame,
+     condensed headings, pill controls, pink checkout, wordmark at the bottom ---- */
+  #cart-drawer .theme-drawer__dialog {
+    background: var(--smoky-cream);
+    background-image: var(--smoky-grain-dark);
+    background-size: 220px;
+    color: var(--smoky-dark);
+    border-left: 2px solid var(--smoky-dark);
+    border-radius: var(--smoky-radius) 0 0 var(--smoky-radius);
+  }
+
+  #cart-drawer .cart-drawer__inner { position: relative; }
+
+  #cart-drawer .smoky-cart__frame {
+    inset: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    z-index: 6;
+  }
+
+  #cart-drawer .smoky-cart__frame rect { stroke-width: 5; stroke-dasharray: 0.4 14; }
+
+  #cart-drawer .theme-drawer__title {
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(1.7rem, 2.4vw, 2.3rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--smoky-dark);
+  }
+
+  #cart-drawer .theme-drawer__badge {
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    border: 2px solid var(--smoky-dark);
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+  }
+
+  #cart-drawer .theme-drawer__close-button {
+    width: 44px;
+    height: 44px;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #cart-drawer .theme-drawer__close-button:hover { transform: translateY(-3px) rotate(90deg); }
+
+  #cart-drawer .cart-drawer__content,
+  #cart-drawer .cart-drawer__summary { background: transparent; }
+
+  #cart-drawer .cart-items__title,
+  #cart-drawer .cart-items__title a {
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--smoky-dark);
+    text-decoration: none;
+  }
+
+  #cart-drawer .cart-items__price,
+  #cart-drawer .cart-totals__total {
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    color: var(--smoky-dark);
+  }
+
+  #cart-drawer .cart-items__media-container img,
+  #cart-drawer .cart-items__media img {
+    border: var(--smoky-border);
+    border-radius: 16px;
+  }
+
+  #cart-drawer .cart-items__table-row {
+    border-bottom: 2px dotted rgb(40 40 40 / 0.3) !important;
+  }
+
+  #cart-drawer quantity-selector-component,
+  #cart-drawer .cart-items__quantity-controls,
+  #cart-drawer .quantity-selector {
+    border: var(--smoky-border) !important;
+    border-radius: 999px !important;
+    background: var(--smoky-cream) !important;
+    color: var(--smoky-dark);
+    overflow: hidden;
+  }
+
+  #cart-drawer .cart-items__remove,
+  #cart-drawer .cart-items__remove .button-text {
+    color: var(--smoky-pink);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+  }
+
+  #cart-drawer .cart-drawer__summary {
+    border-top: 2px dotted rgb(40 40 40 / 0.3);
+    mask-image: none;
+  }
+
+  #cart-drawer .cart__checkout-button.button,
+  #cart-drawer .cart-items__empty-button.button {
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    border: var(--smoky-border);
+    border-radius: 999px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: 0 5px 0 var(--smoky-shadow-color);
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #cart-drawer .cart__checkout-button.button:hover,
+  #cart-drawer .cart-items__empty-button.button:hover { transform: translateY(-3px); }
+
+  #cart-drawer .cart-discount__input,
+  #cart-drawer .cart-note textarea {
+    border: var(--smoky-border) !important;
+    border-radius: 999px !important;
+    background: var(--smoky-cream) !important;
+  }
+
+  #cart-drawer .smoky-cart__brand {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 28px 18px;
+  }
+
+  #cart-drawer .smoky-cart__dots { width: 60%; height: 8px; display: block; }
+  #cart-drawer .smoky-cart__brand img { width: auto; height: 26px; display: block; opacity: 0.9; }
+
   /* ---- mascot cursor companion (desktop, fine pointers only) ---- */
   .smoky-cursor-mascot {
     position: fixed;

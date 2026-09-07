@@ -63,6 +63,9 @@
           class="cart-drawer__inner{% if cart.empty? %} cart-drawer--empty{% endif %}"
           data-hydration-key="cart-drawer-inner"
         >
+          <svg class="smoky-dotted-frame smoky-cart__frame" aria-hidden="true" preserveAspectRatio="none">
+            <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="26" stroke="var(--smoky-pink)"></rect>
+          </svg>
           {%- if cart.empty? -%}
             <div class="theme-drawer__header">
               <button
@@ -93,7 +96,7 @@
                 </span>
               {% endif %}
             {% endcapture %}
-            {% assign cart_drawer_title = 'content.cart_title' | t %}
+            {% assign cart_drawer_title = 'Кошница' %}
             {% render 'theme-drawer-header',
               title: cart_drawer_title,
               drawer_id: 'cart-drawer',
@@ -125,6 +128,10 @@
             is_drawer: true,
             section_id: 'cart-drawer-section'
           %}
+          <div class="smoky-cart__brand" aria-hidden="true">
+            <svg class="smoky-cart__dots"><line x1="4" y1="4" x2="99%" y2="4" stroke="var(--smoky-pink)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.4 15"></line></svg>
+            <img src="{{ 'smoky-wordmark.svg' | asset_url }}" alt="" width="600" height="200" loading="lazy">
+          </div>
         </div>
       </cart-drawer-component>
     </dialog>
