@@ -45,6 +45,7 @@
           "type": "card",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Кебапчета",
             "subtitle": "Класиката, която ни събира",
             "link": "shopify://products/kebabche"
@@ -54,6 +55,7 @@
           "type": "card",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Кюфтета",
             "subtitle": "По селски, с лук и кимион",
             "link": "shopify://collections/all"
@@ -63,6 +65,7 @@
           "type": "card",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Стекове",
             "subtitle": "Врат, флейка, вешалица",
             "link": "shopify://collections/all"
@@ -72,6 +75,7 @@
           "type": "card",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Пилешко",
             "subtitle": "Мариновано и на въглища",
             "link": "shopify://collections/all"
@@ -81,17 +85,9 @@
           "type": "card",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Сач",
             "subtitle": "Цвърчащ, за компания",
-            "link": "shopify://collections/all"
-          }
-        },
-        "card_garnituri": {
-          "type": "card",
-          "settings": {
-            "collection": "",
-            "title": "Гарнитури",
-            "subtitle": "Картофки, лютеница, топъл хляб",
             "link": "shopify://collections/all"
           }
         }
@@ -101,8 +97,7 @@
         "card_kyufteta",
         "card_stekove",
         "card_pileshko",
-        "card_sach",
-        "card_garnituri"
+        "card_sach"
       ],
       "settings": {
         "heading_before": "Нашите",
