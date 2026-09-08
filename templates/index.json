@@ -42,8 +42,6 @@
           "settings": {
             "title": "Кебапчета",
             "subtitle": "Класиката, която ни събира",
-            "tile_bg": "#4a1230",
-            "tile_border": "#fa0082",
             "link": "shopify://products/kebabche"
           }
         },
@@ -52,8 +50,6 @@
           "settings": {
             "title": "Кюфтета",
             "subtitle": "По селски, с лук и кимион",
-            "tile_bg": "#3a2e2a",
-            "tile_border": "#ebdcc3",
             "link": "shopify://collections/all"
           }
         },
@@ -62,8 +58,6 @@
           "settings": {
             "title": "Стекове",
             "subtitle": "Врат, флейка, вешалица",
-            "tile_bg": "#301b14",
-            "tile_border": "#e8956b",
             "link": "shopify://collections/all"
           }
         },
@@ -72,8 +66,6 @@
           "settings": {
             "title": "Пилешко",
             "subtitle": "Мариновано и на въглища",
-            "tile_bg": "#3f3a1e",
-            "tile_border": "#e4d96f",
             "link": "shopify://collections/all"
           }
         },
@@ -82,8 +74,6 @@
           "settings": {
             "title": "Сач",
             "subtitle": "Цвърчащ, за компания",
-            "tile_bg": "#1f3328",
-            "tile_border": "#9bc49a",
             "link": "shopify://collections/all"
           }
         },
@@ -92,8 +82,6 @@
           "settings": {
             "title": "Гарнитури",
             "subtitle": "Картофки, лютеница, топъл хляб",
-            "tile_bg": "#403014",
-            "tile_border": "#efc069",
             "link": "shopify://collections/all"
           }
         }
