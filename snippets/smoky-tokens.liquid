@@ -564,6 +564,18 @@
 </style>
 <script>
   document.documentElement.classList.add('smoky-js');
+  // logo = "go to the start of the homepage": when already on the homepage, a link to the
+  // same URL just reloads and restores the scroll position — scroll to the top instead
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('.smoky-nav__logo, .smoky-footer__home, .smoky-drawer__home, .smoky-cart__brand a');
+    if (!a) return;
+    const target = new URL(a.getAttribute('href'), location.href);
+    const same = target.pathname.replace(/\/$/, '') === location.pathname.replace(/\/$/, '');
+    if (!same) return;
+    e.preventDefault();
+    document.querySelector('theme-drawer#cart-drawer[open]')?.close?.();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
   // desktop cart drawer is non-modal: close it when clicking anywhere outside it
   document.addEventListener('click', (e) => {
     const drawer = document.querySelector('theme-drawer#cart-drawer[open]');
