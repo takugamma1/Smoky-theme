@@ -1,0 +1,492 @@
+{% comment %}
+  Smoky product page — the dish on a blob stage (photo whole over pink +
+  dark blobs, thumbnail switcher) next to a dot-framed sand card: collection
+  kicker, condensed title, pink price, description, variant selects when
+  needed, quantity pill, "Поръчай" (AJAX add, drives Horizon's cart drawer)
+  and "Към менюто" (resolves to the real menu page). Related dishes below.
+{%- endcomment %}
+
+{%- assign blob_a = 'M44.6,-57.2C57.7,-46.8,68.2,-32.6,72.4,-16.5C76.6,-0.4,74.5,17.6,66.3,32.1C58,46.7,43.6,57.8,27.8,64.3C12,70.8,-5.2,72.7,-21.4,68.3C-37.6,63.9,-52.8,53.1,-62.7,38.5C-72.6,23.9,-77.2,5.4,-73.2,-10.6C-69.2,-26.6,-56.6,-40.1,-42.6,-50.4C-28.6,-60.7,-14.3,-67.8,1,-69.1C16.3,-70.4,31.5,-67.6,44.6,-57.2Z' -%}
+{%- assign blob_b = 'M38.1,-46.9C50.9,-38.9,63.6,-28.3,68.7,-14.5C73.8,-0.7,71.3,16.3,63.2,30.1C55.1,43.9,41.4,54.5,26.3,60.8C11.2,67.1,-5.3,69.1,-20.9,64.9C-36.5,60.7,-51.2,50.3,-59.9,36.4C-68.6,22.5,-71.3,5.1,-67.6,-10.3C-63.9,-25.7,-53.8,-39.1,-41.1,-47.4C-28.4,-55.7,-14.2,-58.9,-0.2,-58.7C13.8,-58.5,27.6,-54.9,38.1,-46.9Z' -%}
+{%- assign blob_c = 'M31.4,-38.3C41.9,-30.4,52.1,-21.5,56.6,-9.7C61.1,2.1,59.9,16.8,52.8,27.6C45.7,38.4,32.7,45.3,19.2,50.2C5.7,55.1,-8.3,58,-21.1,54.4C-33.9,50.8,-45.5,40.7,-52.1,27.9C-58.7,15.1,-60.3,-0.4,-56,-13.6C-51.7,-26.8,-41.5,-37.7,-29.8,-45.4C-18.1,-53.1,-4.9,-57.6,5.6,-64.3C16.1,-71,20.9,-46.2,31.4,-38.3Z' -%}
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- assign col = product.collections.first -%}
+
+<section class="smoky-product smoky-grained" id="smoky-product-{{ section.id }}">
+  <div class="smoky-container smoky-product__grid">
+
+    <div class="smoky-product__stage" data-smoky-reveal>
+      <div class="smoky-product__media">
+        <svg class="smoky-product__blob smoky-product__blob--pink" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_a }}" fill="var(--smoky-pink)"/></svg>
+        <svg class="smoky-product__blob smoky-product__blob--dark" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_c }}" fill="var(--smoky-dark)"/></svg>
+        <svg class="smoky-product__blob smoky-product__blob--dot" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_b }}" fill="var(--smoky-dark)"/></svg>
+        {%- if product.featured_image -%}
+          {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200', sizes: '(min-width: 990px) 46vw, 92vw', class: 'smoky-product__img', id: 'smoky-product-img-' | append: section.id }}
+        {%- else -%}
+          <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" width="300" height="140" class="smoky-product__img smoky-product__img--ph">
+        {%- endif -%}
+      </div>
+      {%- if product.images.size > 1 -%}
+        <div class="smoky-product__thumbs" role="list">
+          {%- for image in product.images limit: 6 -%}
+            <button type="button" class="smoky-product__thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ image | image_url: width: 1200 }}" aria-label="Снимка {{ forloop.index }}">
+              {{ image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="smoky-product__card" data-smoky-reveal data-smoky-reveal-delay="0.1">
+      <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
+        <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-pink)"></rect>
+      </svg>
+      <span class="smoky-product__badge" aria-hidden="true">
+        <img src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" width="120" height="120" loading="lazy">
+      </span>
+
+      {%- if col != blank -%}
+        <a href="{{ col.url }}" class="smoky-kicker smoky-product__kicker">{{ col.title }}</a>
+      {%- endif -%}
+      <h1 class="smoky-title smoky-title--small smoky-product__title">{{ product.title }}</h1>
+      <p class="smoky-product__price" data-price>{{ v.price | money }}</p>
+
+      {%- if product.description != blank -%}
+        <div class="smoky-product__desc">{{ product.description }}</div>
+      {%- endif -%}
+
+      <form class="smoky-product__form" data-smoky-product-form data-product-id="{{ product.id }}">
+        <input type="hidden" name="id" value="{{ v.id }}" data-variant-id>
+
+        {%- unless product.has_only_default_variant -%}
+          <div class="smoky-product__options">
+            {%- for option in product.options_with_values -%}
+              <label class="smoky-product__option">
+                <span>{{ option.name }}</span>
+                <select data-option-index="{{ forloop.index0 }}">
+                  {%- for value in option.values -%}
+                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
+                  {%- endfor -%}
+                </select>
+              </label>
+            {%- endfor -%}
+          </div>
+          <script type="application/json" data-variants>{{ product.variants | json }}</script>
+        {%- endunless -%}
+
+        <div class="smoky-product__row">
+          <div class="smoky-product__qty">
+            <button type="button" data-qty="-1" aria-label="По-малко">−</button>
+            <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Количество">
+            <button type="button" data-qty="1" aria-label="Повече">+</button>
+          </div>
+          <button type="submit" class="smoky-btn smoky-product__add"{% unless v.available %} disabled{% endunless %}>
+            <span class="smoky-btn__shadow"></span>
+            <span class="smoky-btn__content">
+              <span class="smoky-roll" data-label><span>{% if v.available %}{{ section.settings.add_label }}{% else %}Изчерпано{% endif %}</span><span class="smoky-roll__dup">{% if v.available %}{{ section.settings.add_label }}{% else %}Изчерпано{% endif %}</span></span>
+              <span data-added hidden>{{ section.settings.added_label }}</span>
+            </span>
+          </button>
+        </div>
+        <p class="smoky-product__error" data-error hidden></p>
+      </form>
+
+      <div class="smoky-product__actions">
+        <a href="{% render 'smoky-url', link: section.settings.menu_link, kind: 'menu' %}" class="smoky-btn smoky-btn--dark">
+          <span class="smoky-btn__shadow"></span>
+          <span class="smoky-btn__content"><span class="smoky-roll"><span>{{ section.settings.menu_label }}</span><span class="smoky-roll__dup">{{ section.settings.menu_label }}</span></span></span>
+        </a>
+        {%- if section.settings.note != blank -%}
+          <p class="smoky-product__note">{{ section.settings.note }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if col != blank and col.products.size > 1 -%}
+    <div class="smoky-container smoky-product__related">
+      <h2 class="smoky-title smoky-title--small">{{ section.settings.related_heading }}</h2>
+      <div class="smoky-product__related-grid">
+        {%- assign shown = 0 -%}
+        {%- for p in col.products -%}
+          {%- if p.id != product.id and shown < 3 -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {%- assign rv = shown | modulo: 4 | plus: 1 -%}
+            <a href="{{ p.url }}" class="smoky-product__rel smoky-product__rel--v{{ rv }}" data-smoky-reveal data-smoky-reveal-delay="{{ shown | times: 0.08 }}">
+              <span class="smoky-product__rel-media">
+                <svg class="smoky-product__blob smoky-product__blob--pink" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_a }}" fill="var(--smoky-pink)"/></svg>
+                <svg class="smoky-product__blob smoky-product__blob--dark" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_c }}" fill="var(--smoky-dark)"/></svg>
+                {%- if p.featured_image -%}
+                  {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title, class: 'smoky-product__img' }}
+                {%- endif -%}
+              </span>
+              <span class="smoky-product__rel-name">{{ p.title }}</span>
+              <span class="smoky-product__rel-price">{{ p.price | money }}</span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  #smoky-product-{{ section.id }} {
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    padding: clamp(120px, 15vw, 180px) 0 clamp(64px, 9vw, 130px);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+
+  /* ---- blob stage ---- */
+  #smoky-product-{{ section.id }} .smoky-product__media {
+    position: relative;
+    aspect-ratio: 1;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__blob { position: absolute; display: block; }
+  #smoky-product-{{ section.id }} .smoky-product__blob--pink { width: 86%; height: 86%; left: 6%; top: 4%; transform: rotate(-12deg); }
+  #smoky-product-{{ section.id }} .smoky-product__blob--dark { width: 28%; height: 28%; right: 2%; bottom: 10%; transform: rotate(22deg); }
+  #smoky-product-{{ section.id }} .smoky-product__blob--dot { width: 12%; height: 12%; left: 4%; bottom: 16%; }
+
+  #smoky-product-{{ section.id }} .smoky-product__img {
+    position: absolute;
+    z-index: 1;
+    left: 5%;
+    top: 5%;
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+    filter: drop-shadow(0 18px 22px rgb(40 40 40 / 0.28));
+    transition: opacity 0.25s ease;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__img--ph { width: 50%; height: 40%; left: 25%; top: 30%; opacity: 0.5; filter: none; }
+
+  #smoky-product-{{ section.id }} .smoky-product__thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: clamp(10px, 1.4vw, 18px);
+    padding-inline: 6%;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__thumb {
+    width: clamp(56px, 6vw, 76px);
+    height: clamp(56px, 6vw, 76px);
+    padding: 0;
+    border: var(--smoky-border);
+    border-radius: 14px;
+    background: var(--smoky-sand);
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: transform var(--smoky-anim-bounce), opacity 0.2s ease;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #smoky-product-{{ section.id }} .smoky-product__thumb.is-active,
+  #smoky-product-{{ section.id }} .smoky-product__thumb:hover { opacity: 1; transform: translateY(-3px); }
+  #smoky-product-{{ section.id }} .smoky-product__thumb.is-active { box-shadow: 0 4px 0 var(--smoky-pink); }
+
+  /* ---- info card ---- */
+  #smoky-product-{{ section.id }} .smoky-product__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(10px, 1.2vw, 16px);
+    padding: clamp(36px, 4vw, 56px) clamp(24px, 3vw, 44px) clamp(28px, 3vw, 40px);
+    background: var(--smoky-sand);
+    border: var(--smoky-border);
+    border-radius: var(--smoky-radius);
+    box-shadow: 0 0.45em 0 var(--smoky-shadow-color);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__badge {
+    position: absolute;
+    top: -22px;
+    right: clamp(18px, 3vw, 40px);
+    width: clamp(84px, 8vw, 120px);
+    transform: rotate(8deg);
+    filter: drop-shadow(0 8px 12px rgb(40 40 40 / 0.3));
+    pointer-events: none;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__badge img { width: 100%; height: auto; display: block; }
+
+  #smoky-product-{{ section.id }} .smoky-product__kicker { color: var(--smoky-pink); text-decoration: none; }
+  #smoky-product-{{ section.id }} .smoky-product__title { max-width: 12em; }
+
+  #smoky-product-{{ section.id }} .smoky-product__price {
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+    color: var(--smoky-pink);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__desc {
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.98rem, 1.15vw, 1.1rem);
+    line-height: 1.55;
+    max-width: 46ch;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__desc p { margin: 0 0 0.8em; }
+  #smoky-product-{{ section.id }} .smoky-product__desc p:last-child { margin-bottom: 0; }
+
+  #smoky-product-{{ section.id }} .smoky-product__form { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+
+  #smoky-product-{{ section.id }} .smoky-product__options { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  #smoky-product-{{ section.id }} .smoky-product__option {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__option select {
+    height: 48px;
+    padding: 0 40px 0 18px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23282828' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center / 16px;
+    appearance: none;
+    font: 500 1rem var(--smoky-font-body);
+    color: var(--smoky-dark);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+  #smoky-product-{{ section.id }} .smoky-product__qty {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-cream);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    overflow: hidden;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__qty button {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: none;
+    font: 700 1.3rem var(--smoky-font-heading);
+    color: var(--smoky-dark);
+    cursor: pointer;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__qty button:hover { color: var(--smoky-pink); }
+
+  #smoky-product-{{ section.id }} .smoky-product__qty input {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: none;
+    text-align: center;
+    font: 800 1.1rem var(--smoky-font-heading);
+    color: var(--smoky-dark);
+    -moz-appearance: textfield;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__qty input::-webkit-outer-spin-button,
+  #smoky-product-{{ section.id }} .smoky-product__qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  #smoky-product-{{ section.id }} .smoky-product__add[disabled] { opacity: 0.55; pointer-events: none; }
+  #smoky-product-{{ section.id }} .smoky-product__add.is-added .smoky-btn__content { background: var(--smoky-dark); color: var(--smoky-sand); }
+  #smoky-product-{{ section.id }} .smoky-product__add.is-busy { opacity: 0.7; pointer-events: none; }
+
+  #smoky-product-{{ section.id }} .smoky-product__error {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-size: 0.9rem;
+    color: #BD2018;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 2px dotted rgb(40 40 40 / 0.3);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__note {
+    margin: 0;
+    font-family: var(--smoky-font-body);
+    font-size: 0.92rem;
+    opacity: 0.8;
+    max-width: 30ch;
+  }
+
+  /* ---- related ---- */
+  #smoky-product-{{ section.id }} .smoky-product__related { margin-top: clamp(56px, 8vw, 110px); }
+  #smoky-product-{{ section.id }} .smoky-product__related .smoky-title { margin-bottom: clamp(20px, 2.6vw, 36px); }
+
+  #smoky-product-{{ section.id }} .smoky-product__related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 3vw, 44px);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__rel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--smoky-dark);
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__rel-media { position: relative; display: block; width: 100%; aspect-ratio: 1; }
+  #smoky-product-{{ section.id }} .smoky-product__rel--v2 .smoky-product__blob--pink { left: auto; right: 4%; transform: rotate(24deg); }
+  #smoky-product-{{ section.id }} .smoky-product__rel--v2 .smoky-product__blob--dark { right: auto; left: 4%; top: 10%; bottom: auto; transform: rotate(-30deg); }
+  #smoky-product-{{ section.id }} .smoky-product__rel--v3 .smoky-product__blob--pink { top: auto; bottom: 4%; transform: rotate(40deg); }
+  #smoky-product-{{ section.id }} .smoky-product__rel--v3 .smoky-product__blob--dark { bottom: auto; top: 4%; transform: rotate(10deg); }
+  #smoky-product-{{ section.id }} .smoky-product__rel .smoky-product__img { transition: transform 0.55s var(--smoky-bounce); }
+  #smoky-product-{{ section.id }} .smoky-product__rel:hover .smoky-product__img { transform: scale(1.05) rotate(-2deg); }
+
+  #smoky-product-{{ section.id }} .smoky-product__rel-name {
+    margin-top: 12px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  #smoky-product-{{ section.id }} .smoky-product__rel-price {
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    color: var(--smoky-pink);
+  }
+
+  @media screen and (max-width: 899px) {
+    #smoky-product-{{ section.id }} .smoky-product__grid { grid-template-columns: 1fr; }
+    #smoky-product-{{ section.id }} .smoky-product__related-grid { grid-template-columns: 1fr 1fr; }
+    #smoky-product-{{ section.id }} .smoky-product__rel:nth-child(3) { display: none; }
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-product-{{ section.id }} { padding-top: 108px; }
+  }
+</style>
+
+<script type="module">
+  import { CartLinesUpdateEvent } from '@shopify/events';
+
+  (() => {
+    const root = document.getElementById('smoky-product-{{ section.id }}');
+    if (!root) return;
+
+    // thumbnails → main image
+    const main = root.querySelector('#smoky-product-img-{{ section.id }}');
+    root.querySelectorAll('.smoky-product__thumb').forEach((t) => {
+      t.addEventListener('click', () => {
+        if (!main) return;
+        root.querySelectorAll('.smoky-product__thumb').forEach((x) => x.classList.toggle('is-active', x === t));
+        main.style.opacity = '0';
+        setTimeout(() => { main.src = t.dataset.src; main.srcset = ''; main.style.opacity = '1'; }, 180);
+      });
+    });
+
+    const form = root.querySelector('[data-smoky-product-form]');
+    if (!form) return;
+    const idInput = form.querySelector('[data-variant-id]');
+    const price = root.querySelector('[data-price]');
+    const addBtn = form.querySelector('.smoky-product__add');
+    const variantsEl = form.querySelector('[data-variants]');
+    const variants = variantsEl ? JSON.parse(variantsEl.textContent) : null;
+    const money = (cents) => (cents / 100).toLocaleString('bg-BG', { minimumFractionDigits: 2 }) + ' {{ cart.currency.symbol }}';
+
+    // variant selects → matching variant
+    if (variants) {
+      const selects = [...form.querySelectorAll('[data-option-index]')];
+      const sync = () => {
+        const chosen = selects.map((s) => s.value);
+        const match = variants.find((vv) => chosen.every((val, i) => vv.options[i] === val));
+        if (!match) return;
+        idInput.value = match.id;
+        if (price) price.textContent = money(match.price);
+        const label = form.querySelector('[data-label]');
+        const txt = match.available ? '{{ section.settings.add_label | escape }}' : 'Изчерпано';
+        label.querySelectorAll('span').forEach((sp) => (sp.textContent = txt));
+        addBtn.toggleAttribute('disabled', !match.available);
+      };
+      selects.forEach((s) => s.addEventListener('change', sync));
+    }
+
+    // quantity pill
+    const qty = form.querySelector('input[name="quantity"]');
+    form.querySelectorAll('[data-qty]').forEach((b) => {
+      b.addEventListener('click', () => { qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) + parseInt(b.dataset.qty, 10)); });
+    });
+
+    // add to cart (same flow as the menu page → Horizon's drawer refreshes + opens)
+    const errorEl = form.querySelector('[data-error]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (addBtn.classList.contains('is-busy')) return;
+      addBtn.classList.add('is-busy');
+      errorEl.hidden = true;
+      const formData = new FormData(form);
+      const sectionIds = [...document.querySelectorAll('cart-items-component')].map((el) => el.dataset.sectionId).filter(Boolean);
+      if (sectionIds.length) formData.append('sections', sectionIds.join(','));
+      const count = parseInt(formData.get('quantity'), 10) || 1;
+      const deferred = CartLinesUpdateEvent.createPromise();
+      form.dispatchEvent(new CartLinesUpdateEvent({ action: 'add', context: 'product', lines: [{ merchandiseId: formData.get('id'), quantity: count }], promise: deferred.promise }));
+      try {
+        const res = await fetch(window.Theme?.routes?.cart_add_url || '/cart/add.js', { method: 'POST', headers: { Accept: 'application/javascript', 'X-Requested-With': 'XMLHttpRequest' }, body: formData }).then((r) => r.json());
+        if (res.status) throw new Error(res.description || res.message || 'Неуспешно добавяне');
+        const ajaxCart = await fetch('/cart.js', { headers: { Accept: 'application/json' } }).then((r) => r.json());
+        deferred.resolve({ cart: CartLinesUpdateEvent.createCartFromAjaxResponse(ajaxCart), detail: { items: ajaxCart.items, source: 'smoky-product', sourceId: form.dataset.productId, itemCount: count, productId: form.dataset.productId, sections: res.sections, didError: false } });
+        document.querySelectorAll('[data-smoky-cart-count]').forEach((el) => { el.textContent = ajaxCart.item_count; el.classList.toggle('is-empty', !ajaxCart.item_count); });
+        addBtn.classList.add('is-added');
+        form.querySelector('[data-label]').hidden = true;
+        form.querySelector('[data-added]').hidden = false;
+        setTimeout(() => { addBtn.classList.remove('is-added'); form.querySelector('[data-label]').hidden = false; form.querySelector('[data-added]').hidden = true; }, 1800);
+      } catch (err) {
+        deferred.reject(err);
+        errorEl.textContent = err.message;
+        errorEl.hidden = false;
+      } finally {
+        addBtn.classList.remove('is-busy');
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Smoky продукт",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "add_label", "label": "Бутон за поръчка", "default": "Поръчай" },
+    { "type": "text", "id": "added_label", "label": "Текст след добавяне", "default": "Добавено ✓" },
+    { "type": "text", "id": "menu_label", "label": "Бутон към менюто", "default": "Към менюто" },
+    { "type": "url", "id": "menu_link", "label": "Линк към менюто (по избор — иначе автоматично)" },
+    { "type": "text", "id": "note", "label": "Бележка под бутоните", "default": "Готвим на момента — средно 30–45 мин. до вратата." },
+    { "type": "text", "id": "related_heading", "label": "Заглавие „Виж и“", "default": "ВИЖ И" }
+  ]
+}
+{% endschema %}
