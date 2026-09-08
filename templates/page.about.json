@@ -6,18 +6,20 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "about_hero": {
       "type": "smoky-page-hero",
       "settings": {
         "title": "ЕДНО ГОЛЯМО СЕМЕЙСТВО",
+        "layout": "notch",
+        "notch_align": "left",
         "center": false,
         "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
+        "video_url": "",
         "curve_top": false,
-        "curve_bottom": false,
-        "layout": "notch",
-        "notch_align": "left"
+        "curve_bottom": false
       }
     },
     "about_intro": {
@@ -55,6 +57,7 @@
             "title": "Прясно всеки ден",
             "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
             "mascot": "smoky-mascot-smiling",
+            "image": "shopify://shop_images/smoky-logo-horizontal-2.svg",
             "circle_color": "#ebdcc3"
           }
         },
@@ -64,6 +67,7 @@
             "title": "От Балкана",
             "text": "Рецепти, предавани през поколения — с уважение към традицията.",
             "mascot": "smoky-mascot-front",
+            "image": "shopify://shop_images/smoky-logo-horizontal-2.svg",
             "circle_color": "#ebdcc3"
           }
         },
