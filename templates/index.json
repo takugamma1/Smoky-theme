@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -16,6 +17,7 @@
         "line2": "СКАРАТА!",
         "loop_words": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!",
         "use_mascot": true,
+        "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
         "video_url": "",
         "button_label": "Поръчай сега",
         "button_link": "shopify://collections/all",
@@ -31,7 +33,9 @@
         "button_label": "",
         "button_link": "",
         "sticker_asset": "smoky-flame-sticker",
-        "background": "cream"
+        "background": "cream",
+        "curve_bottom": true,
+        "curve_top": false
       }
     },
     "smoky_concepts": {
@@ -40,6 +44,7 @@
         "card_kebapcheta": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Кебапчета",
             "subtitle": "Класиката, която ни събира",
             "link": "shopify://products/kebabche"
@@ -48,6 +53,7 @@
         "card_kyufteta": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Кюфтета",
             "subtitle": "По селски, с лук и кимион",
             "link": "shopify://collections/all"
@@ -56,6 +62,7 @@
         "card_stekove": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Стекове",
             "subtitle": "Врат, флейка, вешалица",
             "link": "shopify://collections/all"
@@ -64,6 +71,7 @@
         "card_pileshko": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Пилешко",
             "subtitle": "Мариновано и на въглища",
             "link": "shopify://collections/all"
@@ -72,6 +80,7 @@
         "card_sach": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Сач",
             "subtitle": "Цвърчащ, за компания",
             "link": "shopify://collections/all"
@@ -80,6 +89,7 @@
         "card_garnituri": {
           "type": "card",
           "settings": {
+            "collection": "",
             "title": "Гарнитури",
             "subtitle": "Картофки, лютеница, топъл хляб",
             "link": "shopify://collections/all"
@@ -196,7 +206,9 @@
         "us_title": "SMOKY",
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
-        "button_link": "shopify://collections/all"
+        "button_link": "shopify://collections/all",
+        "curve_top": true,
+        "curve_bottom": true
       }
     },
     "smoky_marquee": {
@@ -273,7 +285,9 @@
       "settings": {
         "background": "cream",
         "speed": 50,
-        "direction": "right"
+        "direction": "right",
+        "curve_top": true,
+        "curve_bottom": true
       }
     },
     "smoky_steps": {
@@ -325,7 +339,9 @@
         "s6"
       ],
       "settings": {
-        "heading": "СТЪПКА"
+        "heading": "СТЪПКА",
+        "curve_top": false,
+        "curve_bottom": true
       }
     },
     "smoky_stats": {
