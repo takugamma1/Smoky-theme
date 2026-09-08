@@ -64,7 +64,7 @@
 
   <div class="smoky-drawer" id="smoky-drawer" hidden>
     <span class="smoky-drawer__flames" aria-hidden="true"></span>
-    <img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="Smoky" width="600" height="200" class="smoky-drawer__wordmark" loading="lazy">
+    <a href="{{ routes.root_url }}" class="smoky-drawer__home" aria-label="{{ shop.name }} — начало"><img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="Smoky" width="600" height="200" class="smoky-drawer__wordmark" loading="lazy"></a>
     <button type="button" class="smoky-drawer__close" aria-label="Затвори менюто">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10 38 38 M38 10 10 38" stroke="currentColor" stroke-width="9" stroke-linecap="round"/></svg>
     </button>
@@ -130,6 +130,8 @@
   }
 
   .smoky-nav__logo {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     height: 100%;
@@ -256,6 +258,8 @@
     opacity: 0.45;
     transform: rotate(-4deg) scale(1.1);
   }
+
+  .smoky-drawer__home { display: block; position: relative; }
 
   .smoky-drawer__wordmark {
     position: relative;

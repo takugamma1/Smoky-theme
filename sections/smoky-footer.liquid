@@ -54,7 +54,7 @@
         {%- endif -%}
       {%- endfor -%}
       <div class="smoky-footer__col smoky-footer__col--brand">
-        <img src="{{ 'smoky-wordmark-pink.svg' | asset_url }}" alt="Smoky" loading="lazy" width="600" height="200" class="smoky-footer__wordmark">
+        <a href="{{ routes.root_url }}" class="smoky-footer__home" aria-label="{{ shop.name }} — начало"><img src="{{ 'smoky-wordmark-pink.svg' | asset_url }}" alt="Smoky" loading="lazy" width="600" height="200" class="smoky-footer__wordmark"></a>
         {%- if section.settings.tagline != blank -%}
           <p>{{ section.settings.tagline }}</p>
         {%- endif -%}
