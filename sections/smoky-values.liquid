@@ -14,15 +14,20 @@
     <div class="smoky-values__grid">
       {%- for block in section.blocks -%}
         <article class="smoky-values__card smoky-grained" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
-          <span class="smoky-values__circle" style="--circle-bg: {{ block.settings.circle_color }};">
+          <figure class="smoky-values__photo">
             {%- if block.settings.image != blank -%}
-              {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy', alt: '' }}
+              {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', alt: block.settings.title, widths: '400, 600, 900', sizes: '(min-width: 990px) 26vw, 76vw' }}
             {%- else -%}
-              <img src="{{ block.settings.mascot | append: '.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
+              <span class="smoky-values__ph"><img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="300" height="140"></span>
             {%- endif -%}
+          </figure>
+          <span class="smoky-values__badge" style="--circle-bg: {{ block.settings.circle_color }};" aria-hidden="true">
+            <img src="{{ block.settings.mascot | append: '.svg' | asset_url }}" alt="" loading="lazy" width="120" height="120">
           </span>
-          <h3>{{ block.settings.title }}</h3>
-          <p>{{ block.settings.text }}</p>
+          <div class="smoky-values__body">
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
         </article>
       {%- endfor -%}
     </div>
@@ -91,35 +96,68 @@
   }
 
   #smoky-values-{{ section.id }} .smoky-values__card {
+    position: relative;
     background: var(--smoky-sand);
     border: var(--smoky-border);
     border-radius: var(--smoky-radius);
-    padding: clamp(24px, 3vw, 40px) clamp(18px, 2.2vw, 28px);
-    text-align: center;
+    padding: 10px 10px clamp(22px, 2.6vw, 32px);
+    text-align: left;
     color: var(--smoky-dark);
     transition: transform var(--smoky-anim-bounce);
   }
 
-  #smoky-values-{{ section.id }} .smoky-values__card:hover { transform: translateY(-8px) rotate(-1deg); }
+  /* normal photo on top of the card */
+  #smoky-values-{{ section.id }} .smoky-values__photo {
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    border-radius: calc(var(--smoky-radius) - 8px);
+    overflow: hidden;
+    background: var(--smoky-cream);
+  }
 
-  #smoky-values-{{ section.id }} .smoky-values__circle {
+  #smoky-values-{{ section.id }} .smoky-values__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__ph {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(88px, 9vw, 128px);
-    height: clamp(88px, 9vw, 128px);
-    margin: 0 auto clamp(14px, 1.8vw, 22px);
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__ph img { width: 44%; height: auto; opacity: 0.45; object-fit: contain; }
+
+  /* mascot badge hanging off the top-right corner */
+  #smoky-values-{{ section.id }} .smoky-values__badge {
+    position: absolute;
+    top: -18px;
+    right: -14px;
+    width: clamp(64px, 6vw, 84px);
+    height: clamp(64px, 6vw, 84px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
     border: var(--smoky-border);
     background: var(--circle-bg, var(--smoky-pink));
+    box-shadow: 0 5px 0 var(--smoky-shadow-color);
+    transform: rotate(8deg);
     overflow: hidden;
+    z-index: 2;
   }
 
-  #smoky-values-{{ section.id }} .smoky-values__circle img {
-    width: 72%;
-    height: 72%;
-    object-fit: contain;
-  }
+  #smoky-values-{{ section.id }} .smoky-values__badge img { width: 72%; height: 72%; object-fit: contain; }
+
+  #smoky-values-{{ section.id }} .smoky-values__body { padding: clamp(16px, 1.8vw, 22px) clamp(10px, 1.2vw, 16px) 0; }
+
+  #smoky-values-{{ section.id }} .smoky-values__card:hover { transform: translateY(-8px) rotate(-1deg); }
+
+
 
   #smoky-values-{{ section.id }} .smoky-values__card h3 {
     margin: 0 0 8px;
@@ -217,7 +255,7 @@
         {
           "type": "select",
           "id": "mascot",
-          "label": "Емоция на Димо",
+          "label": "Емоция на Димо (значка в ъгъла)",
           "options": [
             {
               "value": "smoky-mascot-happy",
@@ -250,7 +288,7 @@
         {
           "type": "color",
           "id": "circle_color",
-          "label": "Цвят на кръга",
+          "label": "Цвят на значката",
           "default": "#FA0082"
         }
       ]
