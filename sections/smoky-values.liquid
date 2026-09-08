@@ -9,6 +9,8 @@
     {%- if section.settings.heading != blank -%}
       <h2 class="smoky-title smoky-title--small smoky-values__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
     {%- endif -%}
+  </div>
+  <div class="smoky-values__viewport" data-smoky-drag-cursor tabindex="0">
     <div class="smoky-values__grid">
       {%- for block in section.blocks -%}
         <article class="smoky-values__card smoky-grained" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
@@ -25,6 +27,20 @@
       {%- endfor -%}
     </div>
   </div>
+  <div class="smoky-container smoky-values__controls">
+    <button type="button" class="smoky-arrow smoky-arrow--prev" data-dir="-1" aria-label="Назад">
+      <span class="smoky-arrow__shadow"></span>
+      <span class="smoky-arrow__fill">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+    <button type="button" class="smoky-arrow" data-dir="1" aria-label="Напред">
+      <span class="smoky-arrow__shadow"></span>
+      <span class="smoky-arrow__fill">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+  </div>
 </section>
 
 <style>
@@ -39,10 +55,39 @@
     margin-bottom: clamp(36px, 5vw, 64px);
   }
 
+  #smoky-values-{{ section.id }} .smoky-values__viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__viewport::-webkit-scrollbar { display: none; }
+
+  /* one line, always: a scroll-snap track instead of a wrapping grid */
   #smoky-values-{{ section.id }} .smoky-values__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    display: flex;
     gap: clamp(20px, 2.6vw, 36px);
+    width: max-content;
+    padding: 10px max(min(8vw, 96px), calc((100vw - 1200px) / 2 + min(8vw, 96px))) 16px;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__card {
+    flex: 0 0 auto;
+    width: clamp(260px, 26vw, 380px);
+    scroll-snap-align: center;
+  }
+
+  #smoky-values-{{ section.id }} .smoky-values__controls {
+    max-width: 1200px;
+    display: flex;
+    gap: 14px;
+    margin-top: clamp(20px, 2.6vw, 36px);
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-values-{{ section.id }} .smoky-values__grid { padding-inline: 5vw; }
+    #smoky-values-{{ section.id }} .smoky-values__card { width: 76vw; }
   }
 
   #smoky-values-{{ section.id }} .smoky-values__card {
@@ -93,6 +138,24 @@
     opacity: 0.85;
   }
 </style>
+
+<script>
+  (() => {
+    const root = document.getElementById('smoky-values-{{ section.id }}');
+    if (!root) return;
+    const viewport = root.querySelector('.smoky-values__viewport');
+    const card = root.querySelector('.smoky-values__card');
+    root.querySelectorAll('.smoky-arrow').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        viewport.scrollBy({ left: (card ? card.offsetWidth + 28 : 320) * parseInt(btn.dataset.dir, 10), behavior: 'smooth' });
+      });
+    });
+    let down = false, startX = 0, startScroll = 0;
+    viewport.addEventListener('mousedown', (e) => { down = true; startX = e.pageX; startScroll = viewport.scrollLeft; viewport.style.cursor = 'grabbing'; viewport.style.scrollSnapType = 'none'; });
+    window.addEventListener('mouseup', () => { if (!down) return; down = false; viewport.style.cursor = 'grab'; viewport.style.scrollSnapType = ''; });
+    window.addEventListener('mousemove', (e) => { if (!down) return; e.preventDefault(); viewport.scrollLeft = startScroll - (e.pageX - startX); });
+  })();
+</script>
 
 {% schema %}
 {
