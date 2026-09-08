@@ -74,7 +74,8 @@
     display: flex;
     gap: clamp(20px, 2.6vw, 36px);
     width: max-content;
-    padding: 10px max(min(8vw, 96px), calc((100vw - 1200px) / 2 + min(8vw, 96px))) 16px;
+    /* headroom for the corner badge + flames: the scroll container clips vertically too */
+    padding: 60px max(min(8vw, 96px), calc((100vw - 1200px) / 2 + min(8vw, 96px))) 16px;
   }
 
   #smoky-values-{{ section.id }} .smoky-values__card {
