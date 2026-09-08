@@ -48,6 +48,7 @@
             "title": "Истинска жар",
             "text": "Готвим само на дървени въглища — без плочи, без компромиси.",
             "mascot": "smoky-mascot-happy",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "circle_color": "#fa0082"
           }
         },
@@ -57,7 +58,7 @@
             "title": "Прясно всеки ден",
             "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
             "mascot": "smoky-mascot-smiling",
-            "image": "shopify://shop_images/smoky-logo-horizontal-2.svg",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "circle_color": "#ebdcc3"
           }
         },
@@ -67,7 +68,7 @@
             "title": "От Балкана",
             "text": "Рецепти, предавани през поколения — с уважение към традицията.",
             "mascot": "smoky-mascot-front",
-            "image": "shopify://shop_images/smoky-logo-horizontal-2.svg",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "circle_color": "#ebdcc3"
           }
         },
@@ -77,6 +78,7 @@
             "title": "С усмивка",
             "text": "Димо и екипът готвим с кеф — и се познава на вкуса.",
             "mascot": "smoky-mascot-surprised",
+            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "circle_color": "#fa0082"
           }
         }
