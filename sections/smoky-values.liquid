@@ -147,11 +147,19 @@
     background: var(--circle-bg, var(--smoky-pink));
     box-shadow: 0 5px 0 var(--smoky-shadow-color);
     transform: rotate(8deg);
-    overflow: hidden;
     z-index: 2;
   }
 
-  #smoky-values-{{ section.id }} .smoky-values__badge img { width: 72%; height: 72%; object-fit: contain; }
+  /* the mascot sits ON the circle and his flames rise above its rim — nothing clipped */
+  #smoky-values-{{ section.id }} .smoky-values__badge img {
+    position: absolute;
+    left: 50%;
+    bottom: 6%;
+    width: 98%;
+    height: auto;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 2px 2px rgb(40 40 40 / 0.25));
+  }
 
   #smoky-values-{{ section.id }} .smoky-values__body { padding: clamp(16px, 1.8vw, 22px) clamp(10px, 1.2vw, 16px) 0; }
 
