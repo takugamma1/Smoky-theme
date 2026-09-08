@@ -12,17 +12,14 @@
     "faq_hero": {
       "type": "smoky-page-hero",
       "settings": {
-        "title": "ЧЕСТО ЗАДАВАНИ ВЪПРОСИ",
-        "layout": "notch",
-        "notch_align": "left",
-        "center": false,
-        "video_url": "",
-        "curve_top": false,
-        "curve_bottom": false
+        "title": "ЧЕСТО ЗАДАВАНИ ВЪПРОСИ"
       }
     },
     "faq_delivery": {
       "type": "smoky-faq",
+      "settings": {
+        "heading": "ДОСТАВКА"
+      },
       "blocks": {
         "d1": {
           "type": "qa",
@@ -66,15 +63,13 @@
         "d3",
         "d4",
         "d5"
-      ],
-      "settings": {
-        "heading": "ДОСТАВКА",
-        "curve_top": true,
-        "curve_bottom": false
-      }
+      ]
     },
     "faq_orders": {
       "type": "smoky-faq",
+      "settings": {
+        "heading": "ПОРЪЧКИ И ПЛАЩАНЕ"
+      },
       "blocks": {
         "o1": {
           "type": "qa",
@@ -110,15 +105,13 @@
         "o2",
         "o3",
         "o4"
-      ],
-      "settings": {
-        "heading": "ПОРЪЧКИ И ПЛАЩАНЕ",
-        "curve_top": true,
-        "curve_bottom": false
-      }
+      ]
     },
     "faq_food": {
       "type": "smoky-faq",
+      "settings": {
+        "heading": "ХРАНАТА"
+      },
       "blocks": {
         "f1": {
           "type": "qa",
@@ -154,12 +147,7 @@
         "f2",
         "f3",
         "f4"
-      ],
-      "settings": {
-        "heading": "ХРАНАТА",
-        "curve_top": true,
-        "curve_bottom": false
-      }
+      ]
     }
   },
   "order": [
