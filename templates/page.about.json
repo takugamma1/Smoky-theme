@@ -62,16 +62,6 @@
             "circle_color": "#ebdcc3"
           }
         },
-        "v3": {
-          "type": "value",
-          "settings": {
-            "title": "От Балкана",
-            "text": "Рецепти, предавани през поколения — с уважение към традицията.",
-            "mascot": "smoky-mascot-front",
-            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
-            "circle_color": "#ebdcc3"
-          }
-        },
         "v4": {
           "type": "value",
           "settings": {
@@ -86,7 +76,6 @@
       "block_order": [
         "v1",
         "v2",
-        "v3",
         "v4"
       ],
       "settings": {
