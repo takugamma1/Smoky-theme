@@ -168,14 +168,19 @@
         let i = 0;
         words.forEach((w, idx) => w.setAttribute('data-word-status', idx === 0 ? 'active' : 'next'));
         if (reduced) return;
+        // slot-machine sequence: the old word fully leaves upward, THEN the new one rises in —
+        // two words never share the strip, so nothing can ghost or bounce
         setInterval(() => {
           const prev = words[i];
           i = (i + 1) % words.length;
           const next = words[i];
           prev.setAttribute('data-word-status', 'prev');
-          next.setAttribute('data-word-status', 'active');
-          setTimeout(() => prev.setAttribute('data-word-status', 'next'), 500);
-        }, 2200);
+          setTimeout(() => {
+            prev.setAttribute('data-word-status', 'next');   // snaps below (no transition)
+            void prev.offsetHeight;
+            next.setAttribute('data-word-status', 'active'); // rises from below
+          }, 480);
+        }, 2600);
       });
     };
 

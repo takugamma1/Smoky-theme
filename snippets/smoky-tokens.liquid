@@ -119,6 +119,9 @@
      dim behind it, and never let a dark body gap show. */
   body { background: var(--smoky-cream); }
 
+  /* the <footer> wrapper paints dark so no cream band / corner reveal can appear above the footer */
+  body > .page-wrapper > footer { background: var(--smoky-dark-soft); margin: 0; padding: 0; }
+
   .page-wrapper--drawer-open { margin-right: 0 !important; }
 
   #cart-drawer .theme-drawer__dialog { z-index: 400 !important; }

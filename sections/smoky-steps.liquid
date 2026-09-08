@@ -137,13 +137,13 @@
     padding-inline: clamp(16px, 3vw, 48px);
     text-align: center;
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateX(28px);               /* sideways only — no vertical movement */
     transition: opacity 0.45s var(--smoky-ease), transform 0.5s var(--smoky-bounce);
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__slide.is-active {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 
   #smoky-steps-{{ section.id }} .smoky-steps__slide h3 {
