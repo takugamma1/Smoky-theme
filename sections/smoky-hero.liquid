@@ -148,7 +148,8 @@
 
   /* first word visible before JS wires the loop */
   #smoky-hero-{{ section.id }} .smoky-loop-word:first-child { transform: translateY(0); }
-  #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='next'] { transform: translateY(110%); }
+  /* re-parking below the strip must snap, not travel back down through the pill */
+  #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='next'] { transform: translateY(110%); transition: none; }
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='active'] { transform: translateY(0); }
   #smoky-hero-{{ section.id }} .smoky-loop-word[data-word-status='prev'] { transform: translateY(-110%); }
 
