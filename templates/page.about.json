@@ -149,46 +149,6 @@
         "curve_top": true,
         "curve_bottom": true
       }
-    },
-    "about_stats": {
-      "type": "smoky-stats",
-      "blocks": {
-        "st1": {
-          "type": "stat",
-          "settings": {
-            "number": "8",
-            "label": "Години на жарта"
-          }
-        },
-        "st2": {
-          "type": "stat",
-          "settings": {
-            "number": "14",
-            "label": "Души в екипа"
-          }
-        },
-        "st3": {
-          "type": "stat",
-          "settings": {
-            "number": "12+",
-            "label": "Вида скара"
-          }
-        },
-        "st4": {
-          "type": "stat",
-          "settings": {
-            "number": "5000+",
-            "label": "Щастливи гости"
-          }
-        }
-      },
-      "block_order": [
-        "st1",
-        "st2",
-        "st3",
-        "st4"
-      ],
-      "settings": {}
     }
   },
   "order": [
@@ -196,7 +156,6 @@
     "about_intro",
     "about_divider",
     "about_values",
-    "about_photos",
-    "about_stats"
+    "about_photos"
   ]
 }
