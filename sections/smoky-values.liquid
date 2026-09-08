@@ -63,7 +63,11 @@
   #smoky-values-{{ section.id }} .smoky-values__viewport {
     overflow-x: auto;
     overflow-y: hidden;   /* horizontal only — transforms inside must never create a vertical scroll */
-    overscroll-behavior-y: none;
+    /* contain ONLY the horizontal axis: overscroll-behavior-y:none blocked vertical wheel/touch
+       scrolling from reaching the page while the pointer was over the carousel */
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+    touch-action: pan-x pan-y pinch-zoom;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     cursor: grab;
