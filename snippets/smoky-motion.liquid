@@ -68,11 +68,21 @@
         const track = marquee.querySelector('.smoky-marquee-track');
         if (!track || !track.children.length) return;
 
-        // clone content until the track safely covers 2x the viewport
+        // outer width of one set incl. margins — the loop length
         const originals = [...track.children];
-        while (track.scrollWidth < (window.innerWidth || 1200) * 2.2) {
+        const setWidth = () =>
+          originals.reduce((w, el) => {
+            const cs = getComputedStyle(el);
+            return w + el.getBoundingClientRect().width + (parseFloat(cs.marginLeft) || 0) + (parseFloat(cs.marginRight) || 0);
+          }, 0);
+
+        // ALWAYS at least two sets (a second copy must sit behind the first for a seamless
+        // wrap), then keep cloning until the track covers the viewport twice plus one set
+        let sets = 1;
+        while (sets < 2 || track.scrollWidth < (window.innerWidth || 1200) * 2.2 + setWidth()) {
           originals.forEach((child) => track.appendChild(child.cloneNode(true)));
-          if (track.children.length > 200) break;
+          sets += 1;
+          if (track.children.length > 300) break;
         }
         if (reduced) return;
 
@@ -86,9 +96,7 @@
           // web fonts change item widths after first paint — a stale unit
           // makes the loop visibly jump at every wrap point
           const measure = () => {
-            unit = 0;
-            originals.forEach((_, i) => (unit += track.children[i].getBoundingClientRect().width));
-            unit = Math.round(unit * 100) / 100;
+            unit = Math.round(setWidth() * 100) / 100;
           };
           measure();
           if (document.fonts?.ready) document.fonts.ready.then(measure);
