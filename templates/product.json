@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "smoky_product": {
@@ -6,10 +15,13 @@
         "add_label": "Поръчай",
         "added_label": "Добавено ✓",
         "menu_label": "Към менюто",
+        "menu_link": "",
         "note": "Готвим на момента — средно 30–45 мин. до вратата.",
-        "related_heading": "ВИЖ И"
+        "related_heading": "ВЪРВИ ДОБРЕ"
       }
     }
   },
-  "order": ["smoky_product"]
+  "order": [
+    "smoky_product"
+  ]
 }
