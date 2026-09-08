@@ -13,7 +13,11 @@
       "type": "smoky-page-hero",
       "settings": {
         "title": "КОНТАКТ",
+        "layout": "notch",
+        "notch_align": "right",
         "center": true,
+        "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
+        "video_url": "",
         "curve_top": false,
         "curve_bottom": false
       }
