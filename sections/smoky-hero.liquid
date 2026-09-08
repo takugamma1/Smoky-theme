@@ -61,7 +61,7 @@
     {%- if section.settings.button_label != blank or section.settings.button2_label != blank -%}
       <div class="smoky-hero__actions" data-smoky-reveal data-smoky-reveal-delay="0.2">
         {%- if section.settings.button_label != blank -%}
-          <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn">
+          <a href="{% render 'smoky-url', link: section.settings.button_link, label: section.settings.button_label, kind: 'menu' %}" class="smoky-btn">
             <span class="smoky-btn__shadow"></span>
             <span class="smoky-btn__content">
               <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>
@@ -69,7 +69,7 @@
           </a>
         {%- endif -%}
         {%- if section.settings.button2_label != blank -%}
-          <a href="{{ section.settings.button2_link | default: '#' }}" class="smoky-btn smoky-btn--light">
+          <a href="{% render 'smoky-url', link: section.settings.button2_link, label: section.settings.button2_label %}" class="smoky-btn smoky-btn--light">
             <span class="smoky-btn__shadow"></span>
             <span class="smoky-btn__content">
               <span class="smoky-roll"><span>{{ section.settings.button2_label }}</span><span class="smoky-roll__dup">{{ section.settings.button2_label }}</span></span>

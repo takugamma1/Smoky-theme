@@ -37,7 +37,7 @@
             "side": "auto",
             "boxed": true,
             "button_label": "Виж менюто",
-            "button_link": "/pages/menu",
+            "button_link": "",
             "button_style": "pink"
           }
         },
@@ -73,7 +73,7 @@
             "side": "auto",
             "boxed": true,
             "button_label": "Пиши ни",
-            "button_link": "/pages/contact",
+            "button_link": "",
             "button_style": "pink"
           }
         },
@@ -203,7 +203,7 @@
         "order_title": "ПОРЪЧАЙ ОНЛАЙН",
         "order_text": "Избираш от менюто, ние палим жарта. Средно 30–45 минути до твоята врата, в брандирана термо опаковка.",
         "order_button": "Към менюто",
-        "order_link": "/pages/menu",
+        "order_link": "",
         "visit_kicker": "Ресторантът",
         "visit_title": "ЕЛА НА МЯСТО",
         "visit_text": "Скарата е най-вкусна до огъня. Ела да я усетиш на живо — с топъл хляб, студена бира и Димо на бара.",

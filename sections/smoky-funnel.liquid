@@ -14,7 +14,7 @@
     </div>
 
     <div class="smoky-funnel__paths">
-      <a href="{{ section.settings.order_link | default: '#' }}" class="smoky-funnel__card smoky-funnel__card--order" data-smoky-reveal>
+      <a href="{% render 'smoky-url', link: section.settings.order_link, kind: 'menu' %}" class="smoky-funnel__card smoky-funnel__card--order" data-smoky-reveal>
         <svg class="smoky-dotted-frame" aria-hidden="true" preserveAspectRatio="none">
           <rect style="x:1px;y:1px;width:calc(100% - 2px);height:calc(100% - 2px)" rx="24" stroke="var(--smoky-cream)"></rect>
         </svg>

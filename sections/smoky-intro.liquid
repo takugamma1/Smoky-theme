@@ -17,7 +17,7 @@
     <div class="smoky-intro__col-text" data-smoky-reveal data-smoky-reveal-delay="0.1">
       <div class="smoky-intro__text">{{ section.settings.text }}</div>
       {%- if section.settings.button_label != blank -%}
-        <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn{% if bg == 'dark' %} smoky-btn--sand{% endif %}" style="margin-top: clamp(20px, 2.4vw, 32px);">
+        <a href="{% render 'smoky-url', link: section.settings.button_link, label: section.settings.button_label %}" class="smoky-btn{% if bg == 'dark' %} smoky-btn--sand{% endif %}" style="margin-top: clamp(20px, 2.4vw, 32px);">
           <span class="smoky-btn__shadow"></span>
           <span class="smoky-btn__content">
             <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>

@@ -47,7 +47,7 @@
           {%- endfor -%}
         </ul>
         {%- if section.settings.button_label != blank -%}
-          <a href="{{ section.settings.button_link | default: '#' }}" class="smoky-btn">
+          <a href="{% render 'smoky-url', link: section.settings.button_link, label: section.settings.button_label, kind: 'menu' %}" class="smoky-btn">
             <span class="smoky-btn__shadow"></span>
             <span class="smoky-btn__content">
               <span class="smoky-roll"><span>{{ section.settings.button_label }}</span><span class="smoky-roll__dup">{{ section.settings.button_label }}</span></span>

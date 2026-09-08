@@ -1,0 +1,67 @@
+{%- doc -%}
+  Resolves a button URL. Explicit `link` wins; when it is blank the target is
+  inferred from `kind` (menu | contact | about | locations | home) or from the
+  button `label` (Bulgarian keywords), then looked up in the store's main
+  navigation so buttons always land on the REAL page the merchant set up.
+  Fallbacks: page handles (menu / contact / about / story / faq), then the
+  all-products collection or home.
+{%- enddoc -%}
+{%- liquid
+  assign out = link
+  if out == blank
+    assign k = kind | default: ''
+    assign l = label | default: '' | downcase
+    if k == ''
+      if l contains 'меню' or l contains 'поръч' or l contains 'виж'
+        assign k = 'menu'
+      elsif l contains 'пиши' or l contains 'контакт' or l contains 'резерв' or l contains 'звънн'
+        assign k = 'contact'
+      elsif l contains 'за нас' or l contains 'истори'
+        assign k = 'about'
+      elsif l contains 'обект' or l contains 'място' or l contains 'ресторант'
+        assign k = 'locations'
+      elsif l contains 'начало' or l contains 'home'
+        assign k = 'home'
+      else
+        assign k = 'menu'
+      endif
+    endif
+
+    if k == 'home'
+      assign out = routes.root_url
+    else
+      for nav in linklists.main-menu.links
+        assign t = nav.title | downcase
+        if k == 'menu' and t contains 'меню'
+          assign out = nav.url
+          break
+        elsif k == 'contact' and t contains 'контакт'
+          assign out = nav.url
+          break
+        elsif k == 'about' and t contains 'за нас'
+          assign out = nav.url
+          break
+        elsif k == 'locations' and t contains 'обект'
+          assign out = nav.url
+          break
+        endif
+      endfor
+    endif
+
+    if out == blank
+      case k
+        when 'menu'
+          assign out = pages['menu'].url | default: routes.all_products_collection_url
+        when 'contact'
+          assign out = pages['contact'].url | default: '/pages/contact'
+        when 'about'
+          assign out = pages['about'].url | default: routes.root_url
+        when 'locations'
+          assign out = pages['story'].url | default: routes.root_url
+        else
+          assign out = routes.root_url
+      endcase
+    endif
+  endif
+  echo out
+-%}

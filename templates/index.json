@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "smoky_hero": {
       "type": "smoky-hero",
@@ -20,9 +19,9 @@
         "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
         "video_url": "",
         "button_label": "Поръчай сега",
-        "button_link": "shopify://collections/all",
+        "button_link": "",
         "button2_label": "Виж менюто",
-        "button2_link": "/pages/menu"
+        "button2_link": ""
       }
     },
     "smoky_intro": {
@@ -201,7 +200,7 @@
         "us_title": "SMOKY",
         "them_title": "Обикновената доставка",
         "button_label": "Поръчай сега",
-        "button_link": "shopify://collections/all",
+        "button_link": "",
         "curve_top": true,
         "curve_bottom": true
       }

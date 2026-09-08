@@ -41,7 +41,7 @@
               <h2 class="smoky-title smoky-title--small">{{ block.settings.heading }}</h2>
               <div class="smoky-story__copy">{{ block.settings.text }}</div>
               {%- if block.settings.button_label != blank -%}
-                <a href="{{ block.settings.button_link | default: '#' }}" class="smoky-btn{% if block.settings.button_style == 'dark' %} smoky-btn--dark{% endif %}">
+                <a href="{% render 'smoky-url', link: block.settings.button_link, label: block.settings.button_label %}" class="smoky-btn{% if block.settings.button_style == 'dark' %} smoky-btn--dark{% endif %}">
                   <span class="smoky-btn__shadow"></span>
                   <span class="smoky-btn__content">
                     <span class="smoky-roll"><span>{{ block.settings.button_label }}</span><span class="smoky-roll__dup">{{ block.settings.button_label }}</span></span>
