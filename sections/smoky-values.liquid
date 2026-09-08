@@ -62,6 +62,8 @@
 
   #smoky-values-{{ section.id }} .smoky-values__viewport {
     overflow-x: auto;
+    overflow-y: hidden;   /* horizontal only — transforms inside must never create a vertical scroll */
+    overscroll-behavior-y: none;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     cursor: grab;
