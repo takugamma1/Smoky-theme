@@ -66,8 +66,8 @@
           "settings": {
             "collection": "",
             "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
-            "title": "Стекове",
-            "subtitle": "Врат, флейка, вешалица",
+            "title": "Кътове",
+            "subtitle": "Врат, Ребра, Беконче",
             "link": "shopify://collections/all"
           }
         },
@@ -77,7 +77,7 @@
             "collection": "",
             "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Пилешко",
-            "subtitle": "Мариновано и на въглища",
+            "subtitle": "Модерно мариновано",
             "link": "shopify://collections/all"
           }
         },
@@ -87,7 +87,7 @@
             "collection": "",
             "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
             "title": "Сач",
-            "subtitle": "Цвърчащ, за компания",
+            "subtitle": "Цвърчащ, за компанията",
             "link": "shopify://collections/all"
           }
         }
