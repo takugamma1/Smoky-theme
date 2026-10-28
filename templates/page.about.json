@@ -117,12 +117,6 @@
           "settings": {
             "alt": ""
           }
-        },
-        "p6": {
-          "type": "photo",
-          "settings": {
-            "alt": ""
-          }
         }
       },
       "block_order": [
@@ -130,8 +124,7 @@
         "p2",
         "p3",
         "p4",
-        "p5",
-        "p6"
+        "p5"
       ],
       "settings": {
         "background": "cream",
