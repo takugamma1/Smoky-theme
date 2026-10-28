@@ -245,6 +245,7 @@
         "p5": {
           "type": "photo",
           "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-10-29_at_0.45.38.png",
             "alt": ""
           }
         }
