@@ -32,7 +32,7 @@
       </span>
     </div>
 
-    <div class="smoky-steps__viewport">
+    <div class="smoky-steps__viewport smoky-no-callout">
       <ul class="smoky-steps__track">
         {%- for block in section.blocks -%}
           <li class="smoky-steps__slide{% if forloop.first %} is-active{% endif %}" data-step="{{ forloop.index }}" {{ block.shopify_attributes }}>

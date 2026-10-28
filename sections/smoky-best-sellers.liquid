@@ -41,7 +41,7 @@
       {%- assign c = block.settings.collection -%}
       {%- if c != blank -%}
         <div class="smoky-bs__panel" id="panel-{{ block.id }}" {% unless first_panel %}hidden{% endunless %}>
-          <div class="smoky-bs__grid">
+          <div class="smoky-bs__grid smoky-no-callout">
             {%- for product in c.products limit: section.settings.limit -%}
               <a href="{{ product.url }}" class="smoky-bs__card">
                 {%- if section.settings.show_top and forloop.first -%}
@@ -80,7 +80,7 @@
       {%- endfor -%}
     </div>
     <div class="smoky-bs__panel">
-      <div class="smoky-bs__grid">
+      <div class="smoky-bs__grid smoky-no-callout">
         {%- render 'smoky-bs-placeholders', show_top: section.settings.show_top -%}
       </div>
     </div>

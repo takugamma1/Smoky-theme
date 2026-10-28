@@ -561,15 +561,17 @@
 
   .smoky-marquee-track > * { flex: 0 0 auto; }
 
-  /* marquee photos are decoration — iOS long-press must not lift them into the
-     "Save to Photos / Copy Subject" sheet (touches fall through to the card) */
-  .smoky-marquee-track {
+  /* marquees + swipe carousels — an iOS long-press must not lift a photo into the
+     "Save to Photos / Copy Subject" sheet (touches fall through to the card/link) */
+  .smoky-marquee-track,
+  .smoky-no-callout {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
   }
 
-  .smoky-marquee-track img {
+  .smoky-marquee-track img,
+  .smoky-no-callout img {
     pointer-events: none;
     -webkit-user-drag: none;
   }

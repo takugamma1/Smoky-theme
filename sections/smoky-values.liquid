@@ -10,7 +10,7 @@
       <h2 class="smoky-title smoky-title--small smoky-values__heading" data-smoky-reveal>{{ section.settings.heading }}</h2>
     {%- endif -%}
   </div>
-  <div class="smoky-values__viewport" data-smoky-drag-cursor tabindex="0">
+  <div class="smoky-values__viewport smoky-no-callout" data-smoky-drag-cursor tabindex="0">
     <div class="smoky-values__grid">
       {%- for block in section.blocks -%}
         <article class="smoky-values__card smoky-grained" data-smoky-reveal {% unless forloop.first %}data-smoky-reveal-delay="{{ forloop.index0 | times: 0.07 }}"{% endunless %} {{ block.shopify_attributes }}>
