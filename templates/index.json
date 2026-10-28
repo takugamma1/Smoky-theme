@@ -232,6 +232,7 @@
         "p3": {
           "type": "photo",
           "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-10-29_at_0.37.01.png",
             "alt": ""
           }
         },
