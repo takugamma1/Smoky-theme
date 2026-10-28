@@ -60,7 +60,7 @@
           "settings": {
             "title": "Прясно всеки ден",
             "text": "Месото се мели сутринта, подправките са си наши, хлябът е топъл.",
-            "mascot": "smoky-mascot-smiling",
+            "mascot": "smoky-mascot-surprised",
             "image": "shopify://shop_images/Screenshot_2026-10-29_at_1.39.35.png",
             "circle_color": "#ebdcc3"
           }
@@ -70,7 +70,7 @@
           "settings": {
             "title": "С усмивка",
             "text": "Димо и екипът готвим с кеф — и се познава на вкуса.",
-            "mascot": "smoky-mascot-surprised",
+            "mascot": "smoky-mascot-smiling",
             "image": "shopify://shop_images/Screenshot_2026-10-29_at_1.44.05.png",
             "circle_color": "#fa0082"
           }
