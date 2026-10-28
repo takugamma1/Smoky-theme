@@ -87,13 +87,6 @@
             "title": "Скара"
           }
         },
-        "cat_sach": {
-          "type": "category",
-          "settings": {
-            "collection": "frontpage",
-            "title": "Сач и плата"
-          }
-        },
         "cat_garnituri": {
           "type": "category",
           "settings": {
@@ -101,23 +94,33 @@
             "title": "Гарнитури и салати"
           }
         },
+        "category_dFRQCN": {
+          "type": "category",
+          "settings": {
+            "collection": "frontpage",
+            "title": "Десерти"
+          }
+        },
         "cat_deserti": {
           "type": "category",
           "settings": {
             "collection": "frontpage",
-            "title": "Десерти и напитки"
+            "title": "Напитки"
           }
         }
       },
       "block_order": [
         "cat_skara",
-        "cat_sach",
         "cat_garnituri",
+        "category_dFRQCN",
         "cat_deserti"
       ],
       "settings": {
         "heading": "",
         "button_label": "Поръчай",
+        "added_label": "Добавено ✓",
+        "choose_label": "Избери",
+        "show_cart": true,
         "limit": 12,
         "curve_top": false,
         "curve_bottom": true
