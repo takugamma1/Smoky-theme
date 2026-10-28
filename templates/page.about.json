@@ -38,7 +38,9 @@
     },
     "about_divider": {
       "type": "smoky-image-divider",
-      "settings": {}
+      "settings": {
+        "image": "shopify://shop_images/hf_20261028_232635_f154f970-efbf-4e47-809a-80cd7977adda.png"
+      }
     },
     "about_values": {
       "type": "smoky-values",
