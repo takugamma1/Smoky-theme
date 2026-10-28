@@ -42,8 +42,36 @@
           <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
             <source src="{{ section.settings.video_url }}" type="video/mp4">
           </video>
-        {%- elsif section.settings.image != blank -%}
-          {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+        {%- elsif section.settings.image != blank or section.settings.image_mobile != blank -%}
+          {%- liquid
+            # optional phone-only photo; with just one of the two set, it shows everywhere
+            assign img_desktop = section.settings.image
+            assign img_mobile = section.settings.image_mobile
+            if img_desktop == blank
+              assign img_desktop = img_mobile
+              assign img_mobile = nil
+            endif
+          -%}
+          <picture>
+            {%- if img_mobile != blank -%}
+              {%- capture mobile_srcset -%}
+                {%- assign mobile_widths = '600,750,1100,1500' | split: ',' -%}
+                {%- for w in mobile_widths -%}
+                  {%- assign w_num = w | plus: 0 -%}
+                  {%- if w_num < img_mobile.width -%}{{ img_mobile | image_url: width: w_num }} {{ w_num }}w, {% endif -%}
+                {%- endfor -%}
+                {{ img_mobile | image_url: width: img_mobile.width }} {{ img_mobile.width }}w
+              {%- endcapture -%}
+              <source
+                media="(max-width: 749px)"
+                srcset="{{ mobile_srcset | strip }}"
+                sizes="92vw"
+                width="{{ img_mobile.width }}"
+                height="{{ img_mobile.height }}"
+              >
+            {%- endif -%}
+            {{ img_desktop | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+          </picture>
         {%- else -%}
           <div class="smoky-hero__media-placeholder">
             <img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="" loading="eager" width="600" height="200">
@@ -191,6 +219,12 @@
   }
 
 
+  #smoky-hero-{{ section.id }} .smoky-hero__media picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   #smoky-hero-{{ section.id }} .smoky-hero__media img,
   #smoky-hero-{{ section.id }} .smoky-hero__media video {
     width: 100%;
@@ -303,7 +337,8 @@
     { "type": "text", "id": "loop_words", "label": "Въртящи се думи (със запетая)", "default": "Добър апетит!, На жар!, Bon appétit!, Смак!, Наздраве!" },
     { "type": "checkbox", "id": "use_mascot", "label": "Стикер с Димо до балончето", "default": true },
     { "type": "image_picker", "id": "sticker", "label": "Собствен стикер (по избор)" },
-    { "type": "image_picker", "id": "image", "label": "Снимка" },
+    { "type": "image_picker", "id": "image", "label": "Снимка — десктоп" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Снимка — мобилен", "info": "По избор. Показва се на телефон (до 749px). Ако е празно, се ползва снимката за десктоп." },
     { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },
     { "type": "text", "id": "button_label", "label": "Бутон 1 — текст", "default": "Поръчай сега" },
     { "type": "url", "id": "button_link", "label": "Бутон 1 — линк" },
