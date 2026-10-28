@@ -561,6 +561,19 @@
 
   .smoky-marquee-track > * { flex: 0 0 auto; }
 
+  /* marquee photos are decoration — iOS long-press must not lift them into the
+     "Save to Photos / Copy Subject" sheet (touches fall through to the card) */
+  .smoky-marquee-track {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .smoky-marquee-track img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
 </style>
 <script>
   document.documentElement.classList.add('smoky-js');
