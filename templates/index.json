@@ -222,13 +222,6 @@
     "smoky_photo_marquee": {
       "type": "smoky-photo-marquee",
       "blocks": {
-        "p1": {
-          "type": "photo",
-          "settings": {
-            "image": "shopify://shop_images/Screenshot_2026-10-29_at_0.27.53.png",
-            "alt": ""
-          }
-        },
         "p2": {
           "type": "photo",
           "settings": {
@@ -256,7 +249,6 @@
         }
       },
       "block_order": [
-        "p1",
         "p2",
         "p3",
         "p4",
