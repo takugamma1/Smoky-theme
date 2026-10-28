@@ -222,7 +222,7 @@
       ],
       "settings": {
         "background": "dark",
-        "separator": "smoky-pattern-shevitsa",
+        "separator": "none",
         "sep_repeat": 3,
         "speed": 70,
         "size": 4,
