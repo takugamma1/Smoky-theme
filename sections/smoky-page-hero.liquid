@@ -8,7 +8,7 @@
 {%- endcomment %}
 
 {%- assign has_media = false -%}
-{%- if section.settings.image != blank or section.settings.video_url != blank -%}{%- assign has_media = true -%}{%- endif -%}
+{%- if section.settings.image != blank or section.settings.image_mobile != blank or section.settings.video_url != blank -%}{%- assign has_media = true -%}{%- endif -%}
 {%- assign notch = false -%}
 {%- if section.settings.layout == 'notch' -%}{%- assign notch = true -%}{%- endif -%}
 
@@ -21,8 +21,8 @@
             <video autoplay muted loop playsinline preload="metadata" {% if section.settings.image != blank %}poster="{{ section.settings.image | image_url: width: 1920 }}"{% endif %}>
               <source src="{{ section.settings.video_url }}" type="video/mp4">
             </video>
-          {%- elsif section.settings.image != blank -%}
-            {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+          {%- elsif section.settings.image != blank or section.settings.image_mobile != blank -%}
+            {% render 'smoky-responsive-image', image: section.settings.image, mobile_image: section.settings.image_mobile, priority: true %}
           {%- else -%}
             <div class="smoky-phero__placeholder"><img src="{{ 'smoky-wordmark-sand.svg' | asset_url }}" alt="" loading="eager" width="600" height="200"></div>
           {%- endif -%}
@@ -55,7 +55,7 @@
               <source src="{{ section.settings.video_url }}" type="video/mp4">
             </video>
           {%- else -%}
-            {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1920, 2400', sizes: '92vw' }}
+            {% render 'smoky-responsive-image', image: section.settings.image, mobile_image: section.settings.image_mobile %}
           {%- endif -%}
         </div>
       </div>
@@ -218,7 +218,8 @@
       "default": "center"
     },
     { "type": "checkbox", "id": "center", "label": "Центрирано заглавие (само заглавие)", "default": false },
-    { "type": "image_picker", "id": "image", "label": "Снимка" },
+    { "type": "image_picker", "id": "image", "label": "Снимка — десктоп" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Снимка — мобилен", "info": "По избор. Показва се на телефон (до 749px). Ако е празно, се ползва снимката за десктоп." },
     { "type": "url", "id": "video_url", "label": "Видео (mp4 URL, по избор)" },
     { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
     { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": false }

@@ -1,0 +1,49 @@
+{%- doc -%}
+  Photo with an optional phone-only version, as a <picture>. Up to 749px the
+  mobile image is used; with only one of the two set, that one shows at every
+  width. The picture fills its frame (.smoky-rimg in smoky-tokens), so the
+  section's own `img { object-fit: cover }` rule still crops it.
+
+  @param {image} [image] - Desktop image, the default at every width
+  @param {image} [mobile_image] - Phone image, shown up to 749px
+  @param {string} [sizes] - The sizes attribute, defaults to '92vw'
+  @param {boolean} [priority] - Adds fetchpriority="high" (above-the-fold heroes)
+
+  @example
+  {% render 'smoky-responsive-image', image: section.settings.image, mobile_image: section.settings.image_mobile, priority: true %}
+{%- enddoc -%}
+{%- liquid
+  assign img_desktop = image
+  assign img_mobile = mobile_image
+  if img_desktop == blank
+    assign img_desktop = img_mobile
+    assign img_mobile = nil
+  endif
+  assign img_sizes = sizes | default: '92vw'
+-%}
+{%- if img_desktop != blank -%}
+  <picture class="smoky-rimg">
+    {%- if img_mobile != blank -%}
+      {%- capture mobile_srcset -%}
+        {%- assign mobile_widths = '600,750,1100,1500' | split: ',' -%}
+        {%- for w in mobile_widths -%}
+          {%- assign w_num = w | plus: 0 -%}
+          {%- if w_num < img_mobile.width -%}{{ img_mobile | image_url: width: w_num }} {{ w_num }}w, {% endif -%}
+        {%- endfor -%}
+        {{ img_mobile | image_url: width: img_mobile.width }} {{ img_mobile.width }}w
+      {%- endcapture -%}
+      <source
+        media="(max-width: 749px)"
+        srcset="{{ mobile_srcset | strip }}"
+        sizes="{{ img_sizes }}"
+        width="{{ img_mobile.width }}"
+        height="{{ img_mobile.height }}"
+      >
+    {%- endif -%}
+    {%- if priority -%}
+      {{ img_desktop | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 1920, 2400', sizes: img_sizes }}
+    {%- else -%}
+      {{ img_desktop | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1920, 2400', sizes: img_sizes }}
+    {%- endif -%}
+  </picture>
+{%- endif -%}
