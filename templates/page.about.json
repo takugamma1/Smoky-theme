@@ -39,8 +39,7 @@
     "about_divider": {
       "type": "smoky-image-divider",
       "settings": {
-        "image": "shopify://shop_images/hf_20261028_232635_f154f970-efbf-4e47-809a-80cd7977adda.png",
-        "focus_y": 46
+        "image": "shopify://shop_images/hf_20261028_232635_f154f970-efbf-4e47-809a-80cd7977adda.png"
       }
     },
     "about_values": {
@@ -116,12 +115,14 @@
         "p4": {
           "type": "photo",
           "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-10-29_at_1.21.00.png",
             "alt": ""
           }
         },
         "p5": {
           "type": "photo",
           "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-10-29_at_1.10.02.png",
             "alt": ""
           }
         }
