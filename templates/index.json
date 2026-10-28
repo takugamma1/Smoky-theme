@@ -81,24 +81,13 @@
             "subtitle": "Модерно мариновано",
             "link": "shopify://collections/all"
           }
-        },
-        "card_sach": {
-          "type": "card",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/9b7415cbf4f0b1b54952c22752996a7c.jpg",
-            "title": "Сач",
-            "subtitle": "Цвърчащ, за компанията",
-            "link": "shopify://collections/all"
-          }
         }
       },
       "block_order": [
         "card_kebapcheta",
         "card_kyufteta",
         "card_stekove",
-        "card_pileshko",
-        "card_sach"
+        "card_pileshko"
       ],
       "settings": {
         "heading_before": "Нашите",
