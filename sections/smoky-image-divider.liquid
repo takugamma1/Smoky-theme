@@ -4,6 +4,13 @@
   Sits between light sections to create the FTC light→dark→light rhythm.
 {% endcomment %}
 
+{%- liquid
+  # pulls the chosen row of the photo (focus_y) to the middle of the band —
+  # capped so nudge + parallax drift never uncover the figure's edges
+  assign focus_y = section.settings.focus_y | default: 50
+  assign focus_shift = 50 | minus: focus_y | at_least: -4.5 | at_most: 4.5
+-%}
+
 <section class="smoky-imgdiv" id="smoky-imgdiv-{{ section.id }}">
   <figure class="smoky-imgdiv__figure">
     {%- if section.settings.image != blank -%}
@@ -20,14 +27,17 @@
   #smoky-imgdiv-{{ section.id }} {
     position: relative;
     background: var(--smoky-dark-soft);
-    height: clamp(320px, 55vw, 640px);
+    /* grows with the width: a capped band turns into a thin slit on wide screens
+       and crops the subject (a 16:9 photo at 1920px is ~1070px tall) */
+    height: clamp(320px, 50vw, 960px);
     overflow: clip;
   }
 
+  /* 10% overscan each side = room for the ±3.5% parallax drift + the focus nudge */
   #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__figure {
     margin: 0;
     position: absolute;
-    inset: -12% 0;
+    inset: -10% 0;
   }
 
   #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__img,
@@ -37,6 +47,8 @@
     object-fit: cover;
     display: block;
   }
+
+  #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__img { translate: 0 {{ focus_shift }}%; }
 
   #smoky-imgdiv-{{ section.id }} .smoky-imgdiv__placeholder {
     display: flex;
@@ -61,8 +73,8 @@
       window.gsap.registerPlugin(window.ScrollTrigger);
       window.gsap.fromTo(
         fig,
-        { yPercent: -8 },
-        { yPercent: 8, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } }
+        { yPercent: -3.5 },
+        { yPercent: 3.5, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } }
       );
       return true;
     };
@@ -84,6 +96,17 @@
       "type": "image_picker",
       "id": "image",
       "label": "Снимка (широка, атмосферна)"
+    },
+    {
+      "type": "range",
+      "id": "focus_y",
+      "label": "Вертикален фокус",
+      "info": "Кой ред от снимката да е в средата на лентата: по-малко = по-горна част (напр. табела), 50 = център.",
+      "min": 40,
+      "max": 60,
+      "step": 1,
+      "unit": "%",
+      "default": 50
     }
   ],
   "presets": [
