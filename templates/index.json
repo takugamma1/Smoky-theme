@@ -338,46 +338,6 @@
         "curve_top": false,
         "curve_bottom": true
       }
-    },
-    "smoky_stats": {
-      "type": "smoky-stats",
-      "blocks": {
-        "st1": {
-          "type": "stat",
-          "settings": {
-            "number": "100%",
-            "label": "На истинска жар"
-          }
-        },
-        "st2": {
-          "type": "stat",
-          "settings": {
-            "number": "30",
-            "label": "Минути средна доставка"
-          }
-        },
-        "st3": {
-          "type": "stat",
-          "settings": {
-            "number": "12+",
-            "label": "Вида скара"
-          }
-        },
-        "st4": {
-          "type": "stat",
-          "settings": {
-            "number": "5000+",
-            "label": "Щастливи гости"
-          }
-        }
-      },
-      "block_order": [
-        "st1",
-        "st2",
-        "st3",
-        "st4"
-      ],
-      "settings": {}
     }
   },
   "order": [
@@ -387,7 +347,6 @@
     "smoky_compare",
     "smoky_marquee",
     "smoky_photo_marquee",
-    "smoky_steps",
-    "smoky_stats"
+    "smoky_steps"
   ]
 }
