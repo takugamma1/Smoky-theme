@@ -236,16 +236,16 @@
             "alt": ""
           }
         },
-        "p4": {
-          "type": "photo",
-          "settings": {
-            "alt": ""
-          }
-        },
         "p5": {
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/Screenshot_2026-10-29_at_0.45.38.png",
+            "alt": ""
+          }
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {
             "alt": ""
           }
         }
@@ -253,8 +253,8 @@
       "block_order": [
         "p2",
         "p3",
-        "p4",
-        "p5"
+        "p5",
+        "p4"
       ],
       "settings": {
         "background": "cream",
