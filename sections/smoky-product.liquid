@@ -23,7 +23,7 @@
         {%- if product.featured_image -%}
           {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200', sizes: '(min-width: 990px) 46vw, 92vw', class: 'smoky-product__img', id: 'smoky-product-img-' | append: section.id }}
         {%- else -%}
-          <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" width="300" height="140" class="smoky-product__img smoky-product__img--ph">
+          <img src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" width="249" height="323" class="smoky-product__img smoky-product__img--ph">
         {%- endif -%}
       </div>
       {%- if product.images.size > 1 -%}
@@ -118,6 +118,8 @@
                 <svg class="smoky-product__blob smoky-product__blob--dark" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_c }}" fill="var(--smoky-dark)"/></svg>
                 {%- if p.featured_image -%}
                   {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title, class: 'smoky-product__img' }}
+                {%- else -%}
+                  <img src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" loading="lazy" width="249" height="323" class="smoky-product__img smoky-product__img--ph">
                 {%- endif -%}
               </span>
               <span class="smoky-product__rel-name">{{ p.title }}</span>
@@ -168,7 +170,8 @@
     transition: opacity 0.25s ease;
   }
 
-  #smoky-product-{{ section.id }} .smoky-product__img--ph { width: 50%; height: 40%; left: 25%; top: 30%; opacity: 0.5; filter: none; }
+  /* no photo yet: happy Димо centred on the blobs */
+  #smoky-product-{{ section.id }} .smoky-product__img--ph { width: 56%; height: 56%; left: 22%; top: 22%; border-radius: 0; filter: drop-shadow(0 12px 16px rgb(40 40 40 / 0.28)); }
 
   #smoky-product-{{ section.id }} .smoky-product__thumbs {
     display: flex;

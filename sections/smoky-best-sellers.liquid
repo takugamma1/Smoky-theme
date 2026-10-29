@@ -55,7 +55,7 @@
                     {%- if product.featured_image -%}
                       {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 990px) 30vw, 80vw' }}
                     {%- else -%}
-                      <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="200" height="200" class="smoky-bs__media-fallback">
+                      <img src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" loading="lazy" width="249" height="323" class="smoky-bs__media-fallback">
                     {%- endif -%}
                   </span>
                   <span class="smoky-bs__name">{{ product.title }}</span>
@@ -189,10 +189,10 @@
     filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.55));
   }
 
+  /* no photo yet: happy Димо (sticker variant — cream face + edge on the dark card) */
   .smoky-bs__media-fallback {
-    max-width: 62% !important;
-    opacity: 0.9;
-    filter: none !important;
+    max-width: 46% !important;
+    filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.5)) !important;
   }
 
   .smoky-bs__name {
