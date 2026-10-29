@@ -353,6 +353,7 @@
   },
   "smoky": {
     "general": {
+      "close": "Close",
       "previous": "Previous",
       "next": "Next",
       "home": "Home",

@@ -346,6 +346,7 @@
   },
   "smoky": {
     "general": {
+      "close": "Затвори",
       "previous": "Назад",
       "next": "Напред",
       "home": "Начало",

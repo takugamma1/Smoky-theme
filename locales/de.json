@@ -346,6 +346,7 @@
   },
   "smoky": {
     "general": {
+      "close": "Schließen",
       "previous": "Zurück",
       "next": "Weiter",
       "home": "Startseite",

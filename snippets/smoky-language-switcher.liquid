@@ -39,6 +39,9 @@
       </span>
     </summary>
     <div class="smoky-lang__menu">
+      <button type="button" class="smoky-lang__close" data-smoky-lang-close aria-label="{{ 'smoky.general.close' | t }}">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3 3 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
       {%- for language in localization.available_languages -%}
         {%- unless language.iso_code == localization.language.iso_code -%}
           {%- assign root = language.root_url -%}
