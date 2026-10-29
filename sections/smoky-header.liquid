@@ -161,13 +161,21 @@
     position: relative;
     z-index: 3;
     flex: 0 0 auto;
+    transition: opacity 0.2s ease, transform 0.25s ease;
   }
+
+  .smoky-lang[hidden] { display: none !important; }
+  .smoky-lang.is-leaving { opacity: 0; transform: scale(0.4); }
+  .smoky-lang__dd { position: relative; }
 
   .smoky-lang__current {
     display: grid;
     place-items: center;
     width: 40px;
     height: 40px;
+    /* Horizon pads every <summary> by ~11px vertically — that pushed the flag low */
+    margin: 0;
+    padding: 0;
     border: 2px solid #282828;
     border-radius: 50%;
     background: #fff;
@@ -179,7 +187,7 @@
 
   .smoky-lang__current::-webkit-details-marker { display: none; }
   .smoky-lang__current:hover,
-  .smoky-lang[open] .smoky-lang__current { transform: translateY(-2px) rotate(-8deg); }
+  .smoky-lang__dd[open] .smoky-lang__current { transform: translateY(-2px) rotate(-8deg); }
   .smoky-lang__current:focus-visible { outline: 2px solid #F2ECDF; outline-offset: 3px; }
 
   .smoky-lang__flag {
@@ -246,15 +254,16 @@
   .smoky-lang__option:hover,
   .smoky-lang__option:focus-visible { background: #F2ECDF; color: #282828; }
 
-  /* small circled × biting the drawer's top-right corner */
+  /* small circled × on the flag circle's top-right edge: hides the switcher */
   .smoky-lang__close {
     position: absolute;
-    top: -11px;
-    right: -11px;
+    z-index: 2;
+    top: -6px;
+    right: -7px;
     display: grid;
     place-items: center;
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     padding: 0;
     border: 2px solid #282828;
     border-radius: 50%;
@@ -264,7 +273,7 @@
     transition: transform 0.35s cubic-bezier(0.35, 1.5, 0.6, 1), background-color 0.2s ease;
   }
 
-  .smoky-lang__close svg { width: 12px; height: 12px; display: block; }
+  .smoky-lang__close svg { width: 10px; height: 10px; display: block; }
   .smoky-lang__close:hover { transform: rotate(90deg) scale(1.1); background: #FA0082; color: #fff; }
   .smoky-lang__close:focus-visible { outline: 2px solid #FA0082; outline-offset: 2px; }
 
@@ -518,6 +527,8 @@
     .smoky-lang { margin-left: auto; margin-right: -4px; }
     .smoky-lang__current { width: 32px; height: 32px; box-shadow: 0 2px 0 rgb(40 40 40 / 0.25); }
     .smoky-lang__flag { width: 22px; height: 22px; }
+    .smoky-lang__close { width: 16px; height: 16px; top: -5px; right: -6px; border-width: 1.5px; }
+    .smoky-lang__close svg { width: 8px; height: 8px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -576,11 +587,17 @@
       document.addEventListener('click', (e) => {
         if (lang.open && !lang.contains(e.target)) lang.open = false;
       });
-      lang.querySelector('[data-smoky-lang-close]')?.addEventListener('click', (e) => {
+      // × on the flag: hide the whole switcher for the rest of this visit
+      const wrap = lang.closest('[data-smoky-lang-wrap]');
+      wrap?.querySelector('[data-smoky-lang-close]')?.addEventListener('click', (e) => {
         e.preventDefault();
         clearTimeout(leaveTimer);
         lang.open = false;
-        lang.querySelector('summary')?.focus();
+        wrap.classList.add('is-leaving');
+        setTimeout(() => (wrap.hidden = true), 250);
+        try {
+          sessionStorage.setItem('smoky-lang-dismissed', '1');
+        } catch (err) {}
       });
       document.addEventListener('keyup', (e) => {
         if (e.key === 'Escape') lang.open = false;
