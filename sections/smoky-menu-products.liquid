@@ -13,7 +13,7 @@
 {%- assign blob_c = 'M31.4,-38.3C41.9,-30.4,52.1,-21.5,56.6,-9.7C61.1,2.1,59.9,16.8,52.8,27.6C45.7,38.4,32.7,45.3,19.2,50.2C5.7,55.1,-8.3,58,-21.1,54.4C-33.9,50.8,-45.5,40.7,-52.1,27.9C-58.7,15.1,-60.3,-0.4,-56,-13.6C-51.7,-26.8,-41.5,-37.7,-29.8,-45.4C-18.1,-53.1,-4.9,-57.6,5.6,-64.3C16.1,-71,20.9,-46.2,31.4,-38.3Z' -%}
 
 {%- if section.settings.show_cart and section.settings.ordering -%}
-  <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="Кошница">
+  <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="{{ 'smoky.menu.cart' | t }}">
     <svg class="smoky-flamecart__shape" viewBox="0 0 1250 1250" aria-hidden="true">
       <!-- flame-circle traced from the brand icon: round body, tall centre tongue leaning right, left + right tongues, two small licks -->
       <path fill="var(--smoky-pink)" d="M240 640 C210 600 180 540 180 470 C230 490 260 540 300 540 C280 470 300 320 500 260 C470 330 480 420 600 440 C560 350 560 200 610 90 C750 150 860 260 850 470 C900 420 960 340 1050 315 C1010 380 1040 560 1060 650 C1090 620 1110 630 1125 640 C1120 700 1090 760 1090 800 A470 470 0 1 1 150 800 C150 740 190 690 240 640 Z"/>
@@ -112,14 +112,14 @@
                       {%- else -%}
                         <span class="smoky-btn smoky-mp__btn smoky-mp__btn--off" aria-disabled="true">
                           <span class="smoky-btn__shadow"></span>
-                          <span class="smoky-btn__content">Изчерпано</span>
+                          <span class="smoky-btn__content">{{ 'smoky.general.sold_out' | t }}</span>
                         </span>
                       {%- endif -%}
                     </div>
                   </div>
                 </article>
               {%- else -%}
-                <p class="smoky-mp__empty">В тази категория още няма продукти.</p>
+                <p class="smoky-mp__empty">{{ 'smoky.menu.empty' | t }}</p>
               {%- endfor -%}
             </div>
           </div>
@@ -372,6 +372,11 @@
 
   @media screen and (max-width: 749px) {
     .smoky-flamecart { top: auto; bottom: 18px; right: 16px; width: 66px; }
+  }
+
+  /* wide screens: the language flag sits right of the nav — hang the cart below it */
+  @media screen and (min-width: 1250px) {
+    .smoky-flamecart { top: 118px; }
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__add { display: inline-block; }

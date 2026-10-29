@@ -29,7 +29,7 @@
       {%- if product.images.size > 1 -%}
         <div class="smoky-product__thumbs" role="list">
           {%- for image in product.images limit: 6 -%}
-            <button type="button" class="smoky-product__thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ image | image_url: width: 1200 }}" aria-label="Снимка {{ forloop.index }}">
+            <button type="button" class="smoky-product__thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ image | image_url: width: 1200 }}" aria-label="{{ 'smoky.product.photo' | t: number: forloop.index }}">
               {{ image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
             </button>
           {%- endfor -%}
@@ -76,14 +76,14 @@
 
         <div class="smoky-product__row">
           <div class="smoky-product__qty">
-            <button type="button" data-qty="-1" aria-label="По-малко">−</button>
-            <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Количество">
-            <button type="button" data-qty="1" aria-label="Повече">+</button>
+            <button type="button" data-qty="-1" aria-label="{{ 'smoky.product.decrease' | t }}">−</button>
+            <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="{{ 'smoky.product.quantity' | t }}">
+            <button type="button" data-qty="1" aria-label="{{ 'smoky.product.increase' | t }}">+</button>
           </div>
           <button type="submit" class="smoky-btn smoky-product__add"{% unless v.available %} disabled{% endunless %}>
             <span class="smoky-btn__shadow"></span>
             <span class="smoky-btn__content">
-              <span class="smoky-roll" data-label><span>{% if v.available %}{{ section.settings.add_label }}{% else %}Изчерпано{% endif %}</span><span class="smoky-roll__dup">{% if v.available %}{{ section.settings.add_label }}{% else %}Изчерпано{% endif %}</span></span>
+              <span class="smoky-roll" data-label><span>{% if v.available %}{{ section.settings.add_label }}{% else %}{{ 'smoky.general.sold_out' | t }}{% endif %}</span><span class="smoky-roll__dup">{% if v.available %}{{ section.settings.add_label }}{% else %}{{ 'smoky.general.sold_out' | t }}{% endif %}</span></span>
               <span data-added hidden>{{ section.settings.added_label }}</span>
             </span>
           </button>
@@ -432,7 +432,7 @@
         idInput.value = match.id;
         if (price) price.textContent = money(match.price);
         const label = form.querySelector('[data-label]');
-        const txt = match.available ? '{{ section.settings.add_label | escape }}' : 'Изчерпано';
+        const txt = match.available ? '{{ section.settings.add_label | escape }}' : {{ 'smoky.general.sold_out' | t | json }};
         label.querySelectorAll('span').forEach((sp) => (sp.textContent = txt));
         addBtn.toggleAttribute('disabled', !match.available);
       };
@@ -460,7 +460,7 @@
       form.dispatchEvent(new CartLinesUpdateEvent({ action: 'add', context: 'product', lines: [{ merchandiseId: formData.get('id'), quantity: count }], promise: deferred.promise }));
       try {
         const res = await fetch(window.Theme?.routes?.cart_add_url || '/cart/add.js', { method: 'POST', headers: { Accept: 'application/javascript', 'X-Requested-With': 'XMLHttpRequest' }, body: formData }).then((r) => r.json());
-        if (res.status) throw new Error(res.description || res.message || 'Неуспешно добавяне');
+        if (res.status) throw new Error(res.description || res.message || {{ 'smoky.product.add_error' | t | json }});
         const ajaxCart = await fetch('/cart.js', { headers: { Accept: 'application/json' } }).then((r) => r.json());
         deferred.resolve({ cart: CartLinesUpdateEvent.createCartFromAjaxResponse(ajaxCart), detail: { items: ajaxCart.items, source: 'smoky-product', sourceId: form.dataset.productId, itemCount: count, productId: form.dataset.productId, sections: res.sections, didError: false } });
         document.querySelectorAll('[data-smoky-cart-count]').forEach((el) => { el.textContent = ajaxCart.item_count; el.classList.toggle('is-empty', !ajaxCart.item_count); });

@@ -343,5 +343,45 @@
       "success_moderated": "댓글이 게시되었습니다. 조정 대기 중입니다",
       "success": "댓글 게시됨"
     }
+  },
+  "smoky": {
+    "general": {
+      "previous": "Previous",
+      "next": "Next",
+      "home": "Home",
+      "sold_out": "Sold out"
+    },
+    "header": {
+      "close_menu": "Close menu"
+    },
+    "language": {
+      "change": "Change language"
+    },
+    "steps": {
+      "label": "Steps",
+      "step": "Step {{ number }}"
+    },
+    "contact": {
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "hours": "Opening hours",
+      "name": "Name",
+      "name_placeholder": "What should we call you?",
+      "email_required": "Email *",
+      "email_placeholder": "you@example.com",
+      "message_required": "Message *"
+    },
+    "menu": {
+      "cart": "Cart",
+      "empty": "No products in this category yet."
+    },
+    "product": {
+      "photo": "Photo {{ number }}",
+      "decrease": "Less",
+      "quantity": "Quantity",
+      "increase": "More",
+      "add_error": "Couldn't add to cart"
+    }
   }
 }

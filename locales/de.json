@@ -343,5 +343,45 @@
       "success_moderated": "Kommentar gepostet, Moderation ausstehend",
       "success": "Kommentar gepostet"
     }
+  },
+  "smoky": {
+    "general": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "home": "Startseite",
+      "sold_out": "Ausverkauft"
+    },
+    "header": {
+      "close_menu": "Menü schließen"
+    },
+    "language": {
+      "change": "Sprache ändern"
+    },
+    "steps": {
+      "label": "Schritte",
+      "step": "Schritt {{ number }}"
+    },
+    "contact": {
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "address": "Adresse",
+      "hours": "Öffnungszeiten",
+      "name": "Name",
+      "name_placeholder": "Wie dürfen wir dich nennen?",
+      "email_required": "E-Mail *",
+      "email_placeholder": "du@beispiel.de",
+      "message_required": "Nachricht *"
+    },
+    "menu": {
+      "cart": "Warenkorb",
+      "empty": "In dieser Kategorie gibt es noch keine Produkte."
+    },
+    "product": {
+      "photo": "Foto {{ number }}",
+      "decrease": "Weniger",
+      "quantity": "Menge",
+      "increase": "Mehr",
+      "add_error": "Hinzufügen fehlgeschlagen"
+    }
   }
 }

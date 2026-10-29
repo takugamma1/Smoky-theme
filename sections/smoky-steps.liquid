@@ -8,13 +8,13 @@
 {%- assign badge_points = '100.0,0.0 109.2,18.5 122.3,2.5 127.1,22.6 143.4,9.9 143.6,30.6 162.3,21.8 158.0,42.0 178.2,37.7 169.4,56.4 190.1,56.6 177.4,72.9 197.5,77.7 181.5,90.8 200.0,100.0 181.5,109.2 197.5,122.3 177.4,127.1 190.1,143.4 169.4,143.6 178.2,162.3 158.0,158.0 162.3,178.2 143.6,169.4 143.4,190.1 127.1,177.4 122.3,197.5 109.2,181.5 100.0,200.0 90.8,181.5 77.7,197.5 72.9,177.4 56.6,190.1 56.4,169.4 37.7,178.2 42.0,158.0 21.8,162.3 30.6,143.6 9.9,143.4 22.6,127.1 2.5,122.3 18.5,109.2 0.0,100.0 18.5,90.8 2.5,77.7 22.6,72.9 9.9,56.6 30.6,56.4 21.8,37.7 42.0,42.0 37.7,21.8 56.4,30.6 56.6,9.9 72.9,22.6 77.7,2.5 90.8,18.5' -%}
 
 <section class="smoky-steps smoky-grained{% if section.settings.curve_top %} smoky-curl-top{% endif %}{% if section.settings.curve_bottom %} smoky-curl-bottom{% endif %}" id="smoky-steps-{{ section.id }}">
-  <button type="button" class="smoky-arrow smoky-arrow--prev smoky-steps__edge smoky-steps__edge--left" data-dir="-1" aria-label="Назад">
+  <button type="button" class="smoky-arrow smoky-arrow--prev smoky-steps__edge smoky-steps__edge--left" data-dir="-1" aria-label="{{ 'smoky.general.previous' | t }}">
     <span class="smoky-arrow__shadow"></span>
     <span class="smoky-arrow__fill">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </span>
   </button>
-  <button type="button" class="smoky-arrow smoky-steps__edge smoky-steps__edge--right" data-dir="1" aria-label="Напред">
+  <button type="button" class="smoky-arrow smoky-steps__edge smoky-steps__edge--right" data-dir="1" aria-label="{{ 'smoky.general.next' | t }}">
     <span class="smoky-arrow__shadow"></span>
     <span class="smoky-arrow__fill">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -42,9 +42,9 @@
       </ul>
     </div>
 
-    <div class="smoky-steps__dots" role="tablist" aria-label="Стъпки">
+    <div class="smoky-steps__dots" role="tablist" aria-label="{{ 'smoky.steps.label' | t }}">
       {%- for block in section.blocks -%}
-        <button type="button" class="smoky-steps__dot{% if forloop.first %} is-active{% endif %}" data-goto="{{ forloop.index0 }}" aria-label="Стъпка {{ forloop.index }}"></button>
+        <button type="button" class="smoky-steps__dot{% if forloop.first %} is-active{% endif %}" data-goto="{{ forloop.index0 }}" aria-label="{{ 'smoky.steps.step' | t: number: forloop.index }}"></button>
       {%- endfor -%}
     </div>
 

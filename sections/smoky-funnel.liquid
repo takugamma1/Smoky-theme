@@ -44,10 +44,10 @@
         <span class="smoky-funnel__text">{{ section.settings.visit_text }}</span>
         <dl class="smoky-funnel__facts">
           {%- if section.settings.address != blank -%}
-            <div><dt>Адрес</dt><dd>{{ section.settings.address }}</dd></div>
+            <div><dt>{{ 'smoky.contact.address' | t }}</dt><dd>{{ section.settings.address }}</dd></div>
           {%- endif -%}
           {%- if section.settings.hours != blank -%}
-            <div><dt>Работно време</dt><dd>{{ section.settings.hours }}</dd></div>
+            <div><dt>{{ 'smoky.contact.hours' | t }}</dt><dd>{{ section.settings.hours }}</dd></div>
           {%- endif -%}
         </dl>
         <span class="smoky-funnel__actions">

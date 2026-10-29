@@ -1,0 +1,61 @@
+{%- doc -%}
+  Flag language switcher for the Smoky nav: the current language's flag in a
+  small white circle; hover (fine pointers) or tap opens a tiny drawer with the
+  other languages. Every option is a plain link to the SAME page under that
+  language's own root (bg = "/", en = "/en", de = "/de"), so switching is one
+  click and instant. Flags are inline SVG so they render on every OS (emoji
+  flags fall back to letters on Windows). Renders nothing with one language.
+{%- enddoc -%}
+
+{%- if localization.available_languages.size > 1 -%}
+  {%- liquid
+    # strip the current language prefix, then rebuild the same path under each root
+    assign base_path = request.path
+    assign current_root = localization.language.root_url
+    if current_root != blank and current_root != '/'
+      assign head = base_path | slice: 0, current_root.size
+      if head == current_root
+        assign base_path = base_path | remove_first: current_root
+      endif
+    endif
+    if base_path == blank
+      assign base_path = '/'
+    endif
+  -%}
+
+  {%- capture flag_bg -%}<svg viewBox="0 0 18 12" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="18" height="4" fill="#fff"/><rect y="4" width="18" height="4" fill="#00966E"/><rect y="8" width="18" height="4" fill="#D62612"/></svg>{%- endcapture -%}
+  {%- capture flag_en -%}<svg viewBox="0 0 18 12" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="18" height="12" fill="#012169"/><path d="M0 0 18 12M18 0 0 12" stroke="#fff" stroke-width="2.4"/><path d="M0 0 18 12M18 0 0 12" stroke="#C8102E" stroke-width="1.2"/><path d="M9 0V12M0 6H18" stroke="#fff" stroke-width="4"/><path d="M9 0V12M0 6H18" stroke="#C8102E" stroke-width="2.4"/></svg>{%- endcapture -%}
+  {%- capture flag_de -%}<svg viewBox="0 0 18 12" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="18" height="4" fill="#000"/><rect y="4" width="18" height="4" fill="#DD0000"/><rect y="8" width="18" height="4" fill="#FFCE00"/></svg>{%- endcapture -%}
+
+  <details class="smoky-lang" data-smoky-lang>
+    <summary class="smoky-lang__current" aria-label="{{ 'smoky.language.change' | t }}" title="{{ localization.language.endonym_name | capitalize }}">
+      <span class="smoky-lang__flag">
+        {%- case localization.language.iso_code -%}
+          {%- when 'bg' -%}{{ flag_bg }}
+          {%- when 'en' -%}{{ flag_en }}
+          {%- when 'de' -%}{{ flag_de }}
+          {%- else -%}<span class="smoky-lang__code">{{ localization.language.iso_code | upcase }}</span>
+        {%- endcase -%}
+      </span>
+    </summary>
+    <div class="smoky-lang__menu">
+      {%- for language in localization.available_languages -%}
+        {%- unless language.iso_code == localization.language.iso_code -%}
+          {%- assign root = language.root_url -%}
+          {%- if root == '/' -%}{%- assign root = '' -%}{%- endif -%}
+          <a href="{{ root }}{{ base_path }}" class="smoky-lang__option" lang="{{ language.iso_code }}" hreflang="{{ language.iso_code }}">
+            <span class="smoky-lang__flag smoky-lang__flag--small">
+              {%- case language.iso_code -%}
+                {%- when 'bg' -%}{{ flag_bg }}
+                {%- when 'en' -%}{{ flag_en }}
+                {%- when 'de' -%}{{ flag_de }}
+                {%- else -%}<span class="smoky-lang__code">{{ language.iso_code | upcase }}</span>
+              {%- endcase -%}
+            </span>
+            <span class="smoky-lang__name">{{ language.endonym_name | capitalize }}</span>
+          </a>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </details>
+{%- endif -%}

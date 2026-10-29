@@ -343,5 +343,45 @@
       "success_moderated": "Коментарът е публикуван, в очакване на модериране",
       "success": "Коментарът е публикуван"
     }
+  },
+  "smoky": {
+    "general": {
+      "previous": "Назад",
+      "next": "Напред",
+      "home": "Начало",
+      "sold_out": "Изчерпано"
+    },
+    "header": {
+      "close_menu": "Затвори менюто"
+    },
+    "language": {
+      "change": "Смени езика"
+    },
+    "steps": {
+      "label": "Стъпки",
+      "step": "Стъпка {{ number }}"
+    },
+    "contact": {
+      "email": "Имейл",
+      "phone": "Телефон",
+      "address": "Адрес",
+      "hours": "Работно време",
+      "name": "Име",
+      "name_placeholder": "Как да те наричаме?",
+      "email_required": "Имейл *",
+      "email_placeholder": "ти@пример.bg",
+      "message_required": "Съобщение *"
+    },
+    "menu": {
+      "cart": "Кошница",
+      "empty": "В тази категория още няма продукти."
+    },
+    "product": {
+      "photo": "Снимка {{ number }}",
+      "decrease": "По-малко",
+      "quantity": "Количество",
+      "increase": "Повече",
+      "add_error": "Неуспешно добавяне"
+    }
   }
 }
