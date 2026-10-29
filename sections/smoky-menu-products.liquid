@@ -3,14 +3,16 @@
   filter pills. Pills: selected = pink fill + dark text, others = dark
   outline. Each product photo is clipped into an organic blob and sits on a
   pink + dark-grey blob composition (4 rotating variants), info underneath:
-  name, short description, price and an order pill. Blocks = collections.
+  name, short description, optional price and an order pill. Blocks = collections.
+  Cards never link to product pages. While online ordering is off the pill is
+  an inert "coming soon" button (and the flame cart is hidden).
 {% endcomment %}
 
 {%- assign blob_a = 'M44.6,-57.2C57.7,-46.8,68.2,-32.6,72.4,-16.5C76.6,-0.4,74.5,17.6,66.3,32.1C58,46.7,43.6,57.8,27.8,64.3C12,70.8,-5.2,72.7,-21.4,68.3C-37.6,63.9,-52.8,53.1,-62.7,38.5C-72.6,23.9,-77.2,5.4,-73.2,-10.6C-69.2,-26.6,-56.6,-40.1,-42.6,-50.4C-28.6,-60.7,-14.3,-67.8,1,-69.1C16.3,-70.4,31.5,-67.6,44.6,-57.2Z' -%}
 {%- assign blob_b = 'M38.1,-46.9C50.9,-38.9,63.6,-28.3,68.7,-14.5C73.8,-0.7,71.3,16.3,63.2,30.1C55.1,43.9,41.4,54.5,26.3,60.8C11.2,67.1,-5.3,69.1,-20.9,64.9C-36.5,60.7,-51.2,50.3,-59.9,36.4C-68.6,22.5,-71.3,5.1,-67.6,-10.3C-63.9,-25.7,-53.8,-39.1,-41.1,-47.4C-28.4,-55.7,-14.2,-58.9,-0.2,-58.7C13.8,-58.5,27.6,-54.9,38.1,-46.9Z' -%}
 {%- assign blob_c = 'M31.4,-38.3C41.9,-30.4,52.1,-21.5,56.6,-9.7C61.1,2.1,59.9,16.8,52.8,27.6C45.7,38.4,32.7,45.3,19.2,50.2C5.7,55.1,-8.3,58,-21.1,54.4C-33.9,50.8,-45.5,40.7,-52.1,27.9C-58.7,15.1,-60.3,-0.4,-56,-13.6C-51.7,-26.8,-41.5,-37.7,-29.8,-45.4C-18.1,-53.1,-4.9,-57.6,5.6,-64.3C16.1,-71,20.9,-46.2,31.4,-38.3Z' -%}
 
-{%- if section.settings.show_cart -%}
+{%- if section.settings.show_cart and section.settings.ordering -%}
   <a href="{{ routes.cart_url }}" class="smoky-flamecart" data-smoky-cart aria-label="Кошница">
     <svg class="smoky-flamecart__shape" viewBox="0 0 1250 1250" aria-hidden="true">
       <!-- flame-circle traced from the brand icon: round body, tall centre tongue leaning right, left + right tongues, two small licks -->
@@ -63,7 +65,7 @@
               {%- for product in c.products limit: section.settings.limit -%}
                 {%- assign v = forloop.index0 | modulo: 4 | plus: 1 -%}
                 <article class="smoky-mp__card smoky-mp__card--v{{ v }}" data-smoky-reveal>
-                  {%- if section.settings.link_products -%}<a href="{{ product.url }}" class="smoky-mp__media" aria-label="{{ product.title | escape }}">{%- else -%}<div class="smoky-mp__media">{%- endif -%}
+                  <div class="smoky-mp__media">
                     <svg class="smoky-mp__blob smoky-mp__blob--pink" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_a }}" fill="var(--smoky-pink)"/></svg>
                     <svg class="smoky-mp__blob smoky-mp__blob--dark" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_c }}" fill="var(--smoky-dark)"/></svg>
                     <svg class="smoky-mp__blob smoky-mp__blob--dot" viewBox="-100 -100 200 200" aria-hidden="true"><path d="{{ blob_b }}" fill="var(--smoky-dark)"/></svg>
@@ -72,17 +74,32 @@
                     {%- else -%}
                       <img src="{{ 'smoky-stamp-smoky.svg' | asset_url }}" alt="" loading="lazy" width="300" height="300" class="smoky-mp__img smoky-mp__img--ph">
                     {%- endif -%}
-                  {%- if section.settings.link_products -%}</a>{%- else -%}</div>{%- endif -%}
+                  </div>
                   <div class="smoky-mp__info">
-                    <h3 class="smoky-mp__name">{%- if section.settings.link_products -%}<a href="{{ product.url }}">{{ product.title }}</a>{%- else -%}{{ product.title }}{%- endif -%}</h3>
+                    <h3 class="smoky-mp__name">{{ product.title }}</h3>
                     {%- assign desc = product.description | strip_html | truncate: 80 -%}
                     {%- if desc != blank -%}<p class="smoky-mp__desc">{{ desc }}</p>{%- endif -%}
                     <div class="smoky-mp__row">
-                      <span class="smoky-mp__price">{{ product.price | money }}</span>
-                      {%- assign v = product.selected_or_first_available_variant -%}
-                      {%- if product.available and product.has_only_default_variant and v != blank -%}
+                      {%- if section.settings.show_price -%}<span class="smoky-mp__price">{{ product.price | money }}</span>{%- endif -%}
+                      {%- if section.settings.ordering == false -%}
+                        <button type="button" class="smoky-btn smoky-mp__btn smoky-mp__btn--soon" aria-disabled="true">
+                          <span class="smoky-btn__shadow"></span>
+                          <span class="smoky-btn__content">
+                            <span class="smoky-roll"><span>{{ section.settings.soon_label }}</span><span class="smoky-roll__dup">{{ section.settings.soon_label }}</span></span>
+                          </span>
+                        </button>
+                      {%- elsif product.available -%}
                         <form class="smoky-mp__add" data-smoky-add data-product-id="{{ product.id }}">
-                          <input type="hidden" name="id" value="{{ v.id }}">
+                          {%- if product.has_only_default_variant -%}
+                            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                          {%- else -%}
+                            {%- # variants are picked right here — the card never leads to the product page -%}
+                            <select name="id" class="smoky-mp__variant" aria-label="{{ section.settings.choose_label | escape }}">
+                              {%- for variant in product.variants -%}
+                                {%- if variant.available -%}<option value="{{ variant.id }}">{{ variant.title }}</option>{%- endif -%}
+                              {%- endfor -%}
+                            </select>
+                          {%- endif -%}
                           <input type="hidden" name="quantity" value="1">
                           <button type="submit" class="smoky-btn smoky-mp__btn">
                             <span class="smoky-btn__shadow"></span>
@@ -93,12 +110,10 @@
                           </button>
                         </form>
                       {%- else -%}
-                        <a href="{{ product.url }}" class="smoky-btn smoky-mp__btn">
+                        <span class="smoky-btn smoky-mp__btn smoky-mp__btn--off" aria-disabled="true">
                           <span class="smoky-btn__shadow"></span>
-                          <span class="smoky-btn__content">
-                            <span class="smoky-roll"><span>{% if product.available %}{{ section.settings.choose_label }}{% else %}Изчерпано{% endif %}</span><span class="smoky-roll__dup">{% if product.available %}{{ section.settings.choose_label }}{% else %}Изчерпано{% endif %}</span></span>
-                          </span>
-                        </a>
+                          <span class="smoky-btn__content">Изчерпано</span>
+                        </span>
                       {%- endif -%}
                     </div>
                   </div>
@@ -136,8 +151,8 @@
                 <h3 class="smoky-mp__name">{{ parts[0] }}</h3>
                 <p class="smoky-mp__desc">{{ parts[1] }}</p>
                 <div class="smoky-mp__row">
-                  <span class="smoky-mp__price">{{ parts[2] }}</span>
-                  <span class="smoky-btn smoky-mp__btn"><span class="smoky-btn__shadow"></span><span class="smoky-btn__content">{{ section.settings.button_label }}</span></span>
+                  {%- if section.settings.show_price -%}<span class="smoky-mp__price">{{ parts[2] }}</span>{%- endif -%}
+                  <span class="smoky-btn smoky-mp__btn"><span class="smoky-btn__shadow"></span><span class="smoky-btn__content">{% if section.settings.ordering %}{{ section.settings.button_label }}{% else %}{{ section.settings.soon_label }}{% endif %}</span></span>
                 </div>
               </div>
             </article>
@@ -282,9 +297,6 @@
     line-height: 1.05;
   }
 
-  #smoky-mp-{{ section.id }} .smoky-mp__name a { color: inherit; text-decoration: none; }
-  #smoky-mp-{{ section.id }} .smoky-mp__name a:hover { color: var(--smoky-pink); }
-
   #smoky-mp-{{ section.id }} .smoky-mp__desc {
     margin: 0 0 10px;
     font-family: var(--smoky-font-body);
@@ -361,6 +373,26 @@
   #smoky-mp-{{ section.id }} .smoky-mp__added { white-space: nowrap; }
   #smoky-mp-{{ section.id }} .smoky-mp__btn.is-added .smoky-btn__content { background: var(--smoky-dark); color: var(--smoky-sand); }
   #smoky-mp-{{ section.id }} .smoky-mp__btn.is-busy { opacity: 0.7; pointer-events: none; }
+
+  /* ordering off: looks like the order pill, does nothing */
+  #smoky-mp-{{ section.id }} .smoky-mp__btn--soon { cursor: default; }
+  #smoky-mp-{{ section.id }} .smoky-mp__btn--off { cursor: default; }
+  #smoky-mp-{{ section.id }} .smoky-mp__btn--off .smoky-btn__content { background: var(--smoky-sand); color: var(--smoky-dark); }
+
+  #smoky-mp-{{ section.id }} .smoky-mp__add:has(.smoky-mp__variant) { display: inline-flex; align-items: center; gap: 10px; }
+
+  #smoky-mp-{{ section.id }} .smoky-mp__variant {
+    height: 2.4em;
+    padding-inline: 0.9em;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
 
   @media screen and (max-width: 989px) {
     #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -498,12 +530,14 @@
   "tag": "section",
   "settings": [
     { "type": "text", "id": "heading", "label": "Заглавие (по избор)" },
+    { "type": "checkbox", "id": "ordering", "label": "Онлайн поръчки активни", "info": "Изключено: бутонът показва текста по-долу и не прави нищо, кошницата е скрита. Включено: бутонът добавя в кошницата.", "default": false },
+    { "type": "text", "id": "soon_label", "label": "Бутон, докато поръчките са изключени", "default": "Скоро и доставка" },
+    { "type": "checkbox", "id": "show_price", "label": "Показвай цените", "default": false },
     { "type": "text", "id": "button_label", "label": "Бутон на продуктите", "default": "Поръчай" },
     { "type": "text", "id": "added_label", "label": "Текст след добавяне", "default": "Добавено ✓" },
-    { "type": "text", "id": "choose_label", "label": "Бутон при варианти", "default": "Избери" },
-    { "type": "checkbox", "id": "show_cart", "label": "Плаваща кошница с пламъци", "default": true },
-    { "type": "checkbox", "id": "link_products", "label": "Снимката и името водят към продукта", "default": false },
-    { "type": "range", "id": "limit", "label": "Максимум продукти на категория", "min": 3, "max": 24, "step": 1, "default": 12 },
+    { "type": "text", "id": "choose_label", "label": "Избор на вариант (етикет)", "default": "Избери" },
+    { "type": "checkbox", "id": "show_cart", "label": "Плаваща кошница с пламъци", "info": "Показва се само при активни поръчки.", "default": true },
+    { "type": "range", "id": "limit", "label": "Максимум продукти на категория", "min": 3, "max": 48, "step": 1, "default": 24 },
     { "type": "checkbox", "id": "curve_top", "label": "Заоблен горен ръб (над тъмно)", "default": false },
     { "type": "checkbox", "id": "curve_bottom", "label": "Заоблен долен ръб (над тъмно)", "default": true }
   ],

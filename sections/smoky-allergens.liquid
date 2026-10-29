@@ -1,0 +1,268 @@
+{% comment %}
+  Smoky allergens — the menu's allergen key as a sheet of rubber stamps on the
+  dark slab: each allergen is a round stamp (dark ring + hard pink offset
+  shadow) in a rotating brand fill, a hand-drawn line icon, its EU number on
+  a little sticker and the label underneath. Stamps sit slightly askew and
+  straighten with the brand bounce on hover. Димо peeks over the heading,
+  shevitsa ornament + a note close the section. Blocks = allergens.
+{% endcomment %}
+
+<section class="smoky-allergens smoky-grained--light" id="smoky-allergens-{{ section.id }}">
+  <div class="smoky-container smoky-container--medium">
+    <div class="smoky-allergens__head" data-smoky-reveal>
+      {%- if section.settings.show_mascot -%}
+        <img class="smoky-allergens__mascot" src="{{ 'smoky-mascot-surprised.svg' | asset_url }}" alt="" loading="lazy" width="150" height="150">
+      {%- endif -%}
+      {%- if section.settings.kicker != blank -%}
+        <p class="smoky-kicker smoky-allergens__kicker">{{ section.settings.kicker }}</p>
+      {%- endif -%}
+      <h2 class="smoky-title smoky-title--main smoky-allergens__title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="smoky-allergens__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+    </div>
+
+    <ul class="smoky-allergens__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign tone = forloop.index0 | modulo: 4 -%}
+        {%- capture tilt -%}{% cycle 'allergen-tilt': '-6', '4', '-3', '7', '-5', '3', '-7', '5' %}{%- endcapture -%}
+        <li
+          class="smoky-allergens__item smoky-allergens__item--t{{ tone }}"
+          style="--tilt: {{ tilt }}deg;"
+          data-smoky-reveal
+          data-smoky-reveal-delay="{{ forloop.index0 | times: 0.06 }}"
+          {{ block.shopify_attributes }}
+        >
+          <span class="smoky-allergens__stamp">
+            {% render 'smoky-allergen-icon', icon: block.settings.icon %}
+            {%- if block.settings.number != blank -%}
+              <span class="smoky-allergens__num" aria-hidden="true">{{ block.settings.number }}</span>
+            {%- endif -%}
+          </span>
+          <span class="smoky-allergens__label">{{ block.settings.label }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="smoky-allergens__foot" data-smoky-reveal>
+      <div class="smoky-shevitsa-row smoky-allergens__ornament" aria-hidden="true">
+        <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
+      </div>
+      {%- if section.settings.note != blank -%}
+        <p class="smoky-allergens__note">{{ section.settings.note }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  #smoky-allergens-{{ section.id }} {
+    background: var(--smoky-dark-soft);
+    color: var(--smoky-sand);
+    /* the cream menu above curls over this slab — clear its radius first */
+    padding-block: calc(var(--smoky-radius-big) + clamp(48px, 6vw, 96px)) clamp(56px, 7vw, 110px);
+    overflow: clip;
+  }
+
+  /* ---- heading ---- */
+  #smoky-allergens-{{ section.id }} .smoky-allergens__head {
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto clamp(44px, 5.5vw, 80px);
+    text-align: center;
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__kicker {
+    margin: 0 0 12px;
+    color: var(--smoky-pink);
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__title { color: var(--smoky-sand); }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__text {
+    margin: 16px auto 0;
+    max-width: 46ch;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.95rem, 1.1vw, 1.08rem);
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  /* Димо hangs off the title's top-right corner */
+  #smoky-allergens-{{ section.id }} .smoky-allergens__mascot {
+    position: absolute;
+    top: clamp(-34px, -2.4vw, -18px);
+    right: clamp(-40px, -3vw, 0px);
+    width: clamp(70px, 8vw, 116px);
+    height: auto;
+    transform: rotate(10deg);
+    filter: drop-shadow(0 8px 10px rgb(0 0 0 / 0.35));
+    pointer-events: none;
+  }
+
+  /* ---- stamp sheet ---- */
+  #smoky-allergens-{{ section.id }} .smoky-allergens__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(36px, 4.4vw, 64px) clamp(18px, 2.6vw, 40px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__stamp {
+    --stamp-fill: var(--smoky-pink);
+    --stamp-ink: var(--smoky-dark);
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(104px, 11vw, 150px);
+    aspect-ratio: 1;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--stamp-fill);
+    color: var(--stamp-ink);
+    box-shadow: 6px 7px 0 var(--smoky-pink);
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform 0.5s var(--smoky-bounce), box-shadow 0.5s var(--smoky-bounce);
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item--t1 .smoky-allergens__stamp { --stamp-fill: var(--smoky-cream); }
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item--t2 .smoky-allergens__stamp { --stamp-fill: var(--smoky-sand); }
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item--t3 .smoky-allergens__stamp { --stamp-fill: var(--smoky-pink-soft); }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergen-icon {
+    width: 60%;
+    height: 60%;
+    transition: transform 0.5s var(--smoky-bounce);
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item:hover .smoky-allergens__stamp {
+    transform: rotate(0deg) translate(-2px, -5px);
+    box-shadow: 9px 12px 0 var(--smoky-pink);
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__item:hover .smoky-allergen-icon { transform: scale(1.08) rotate(-6deg); }
+
+  /* EU allergen number on a little dark sticker biting the stamp's edge */
+  #smoky-allergens-{{ section.id }} .smoky-allergens__num {
+    position: absolute;
+    top: -4%;
+    right: -4%;
+    display: grid;
+    place-items: center;
+    min-width: 2.1em;
+    height: 2.1em;
+    padding-inline: 0.35em;
+    border: 2px solid var(--smoky-sand);
+    border-radius: 999px;
+    background: var(--smoky-dark);
+    color: var(--smoky-sand);
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(0.8rem, 0.9vw, 0.95rem);
+    line-height: 1;
+    transform: rotate(calc(var(--tilt, 0deg) * -1.5));
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__label {
+    margin-top: clamp(16px, 1.8vw, 24px);
+    max-width: 17ch;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: clamp(0.85rem, 1vw, 1.02rem);
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ---- foot ---- */
+  #smoky-allergens-{{ section.id }} .smoky-allergens__foot {
+    margin-top: clamp(48px, 6vw, 88px);
+    text-align: center;
+  }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__ornament { color: var(--smoky-pink); font-size: clamp(14px, 1.4vw, 20px); }
+
+  #smoky-allergens-{{ section.id }} .smoky-allergens__note {
+    margin: 18px auto 0;
+    max-width: 52ch;
+    font-family: var(--smoky-font-body);
+    font-size: clamp(0.92rem, 1.05vw, 1.05rem);
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  @media screen and (max-width: 749px) {
+    #smoky-allergens-{{ section.id }} .smoky-allergens__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #smoky-allergens-{{ section.id }} .smoky-allergens__mascot { right: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #smoky-allergens-{{ section.id }} .smoky-allergens__stamp,
+    #smoky-allergens-{{ section.id }} .smoky-allergen-icon { transition: none; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Smoky алергени",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Надзаглавие", "default": "Добре е да знаеш" },
+    { "type": "text", "id": "heading", "label": "Заглавие", "default": "Алергени" },
+    { "type": "textarea", "id": "text", "label": "Текст под заглавието", "default": "Ястията ни могат да съдържат следните алергени. Номерата са по европейския списък на алергените." },
+    { "type": "textarea", "id": "note", "label": "Бележка най-долу", "default": "Имаш алергия или непоносимост? Кажи ни при поръчка — ще ти кажем точно какво има във всяко ястие." },
+    { "type": "checkbox", "id": "show_mascot", "label": "Димо до заглавието", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "allergen",
+      "name": "Алерген",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Икона",
+          "options": [
+            { "value": "gluten", "label": "Глутен (жито)" },
+            { "value": "eggs", "label": "Яйца" },
+            { "value": "peanuts", "label": "Фъстъци" },
+            { "value": "soy", "label": "Соя" },
+            { "value": "milk", "label": "Мляко" },
+            { "value": "nuts", "label": "Ядки" },
+            { "value": "mustard", "label": "Синап (горчица)" },
+            { "value": "sesame", "label": "Сусам" }
+          ],
+          "default": "gluten"
+        },
+        { "type": "text", "id": "label", "label": "Текст", "default": "Зърнени култури, съдържащи глутен" },
+        { "type": "text", "id": "number", "label": "Номер (ЕС)", "default": "1" }
+      ]
+    }
+  ],
+  "max_blocks": 14,
+  "presets": [
+    {
+      "name": "Smoky алергени",
+      "blocks": [
+        { "type": "allergen", "settings": { "icon": "gluten", "label": "Зърнени култури, съдържащи глутен", "number": "1" } },
+        { "type": "allergen", "settings": { "icon": "eggs", "label": "Яйца и продукти от тях", "number": "3" } },
+        { "type": "allergen", "settings": { "icon": "peanuts", "label": "Фъстъци и продукти от тях", "number": "5" } },
+        { "type": "allergen", "settings": { "icon": "soy", "label": "Соя и соеви продукти", "number": "6" } },
+        { "type": "allergen", "settings": { "icon": "milk", "label": "Мляко и млечни продукти", "number": "7" } },
+        { "type": "allergen", "settings": { "icon": "nuts", "label": "Ядки", "number": "8" } },
+        { "type": "allergen", "settings": { "icon": "mustard", "label": "Синап и синапено семе (горчица)", "number": "10" } },
+        { "type": "allergen", "settings": { "icon": "sesame", "label": "Сусамово семе и продукти от него", "number": "11" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

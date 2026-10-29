@@ -83,37 +83,45 @@
         "cat_skara": {
           "type": "category",
           "settings": {
-            "collection": "frontpage",
+            "collection": "скара",
             "title": "Скара"
+          }
+        },
+        "cat_salati": {
+          "type": "category",
+          "settings": {
+            "collection": "салати",
+            "title": "Салати"
           }
         },
         "cat_garnituri": {
           "type": "category",
           "settings": {
-            "collection": "frontpage",
-            "title": "Гарнитури и салати"
+            "collection": "гарнитури-и-сосове",
+            "title": "Гарнитури и сосове"
           }
         },
-        "category_dFRQCN": {
+        "cat_sandvichi": {
           "type": "category",
           "settings": {
-            "collection": "frontpage",
-            "title": "Десерти"
+            "collection": "сандвичи",
+            "title": "Сандвичи"
           }
         },
-        "cat_deserti": {
+        "cat_napitki": {
           "type": "category",
           "settings": {
-            "collection": "frontpage",
+            "collection": "напитки",
             "title": "Напитки"
           }
         }
       },
       "block_order": [
         "cat_skara",
+        "cat_salati",
         "cat_garnituri",
-        "category_dFRQCN",
-        "cat_deserti"
+        "cat_sandvichi",
+        "cat_napitki"
       ],
       "settings": {
         "heading": "",
@@ -121,14 +129,104 @@
         "added_label": "Добавено ✓",
         "choose_label": "Избери",
         "show_cart": true,
-        "limit": 12,
+        "limit": 24,
         "curve_top": false,
-        "curve_bottom": true
+        "curve_bottom": true,
+        "ordering": false,
+        "soon_label": "Скоро и доставка",
+        "show_price": false
+      }
+    },
+    "menu_allergens": {
+      "type": "smoky-allergens",
+      "blocks": {
+        "allergen_gluten": {
+          "type": "allergen",
+          "settings": {
+            "icon": "gluten",
+            "label": "Зърнени култури, съдържащи глутен",
+            "number": "1"
+          }
+        },
+        "allergen_eggs": {
+          "type": "allergen",
+          "settings": {
+            "icon": "eggs",
+            "label": "Яйца и продукти от тях",
+            "number": "3"
+          }
+        },
+        "allergen_peanuts": {
+          "type": "allergen",
+          "settings": {
+            "icon": "peanuts",
+            "label": "Фъстъци и продукти от тях",
+            "number": "5"
+          }
+        },
+        "allergen_soy": {
+          "type": "allergen",
+          "settings": {
+            "icon": "soy",
+            "label": "Соя и соеви продукти",
+            "number": "6"
+          }
+        },
+        "allergen_milk": {
+          "type": "allergen",
+          "settings": {
+            "icon": "milk",
+            "label": "Мляко и млечни продукти",
+            "number": "7"
+          }
+        },
+        "allergen_nuts": {
+          "type": "allergen",
+          "settings": {
+            "icon": "nuts",
+            "label": "Ядки",
+            "number": "8"
+          }
+        },
+        "allergen_mustard": {
+          "type": "allergen",
+          "settings": {
+            "icon": "mustard",
+            "label": "Синап и синапено семе (горчица)",
+            "number": "10"
+          }
+        },
+        "allergen_sesame": {
+          "type": "allergen",
+          "settings": {
+            "icon": "sesame",
+            "label": "Сусамово семе и продукти от него",
+            "number": "11"
+          }
+        }
+      },
+      "block_order": [
+        "allergen_gluten",
+        "allergen_eggs",
+        "allergen_peanuts",
+        "allergen_soy",
+        "allergen_milk",
+        "allergen_nuts",
+        "allergen_mustard",
+        "allergen_sesame"
+      ],
+      "settings": {
+        "kicker": "Добре е да знаеш",
+        "heading": "Алергени",
+        "text": "Ястията ни могат да съдържат следните алергени. Номерата са по европейския списък на алергените.",
+        "note": "Имаш алергия или непоносимост? Кажи ни при поръчка — ще ти кажем точно какво има във всяко ястие.",
+        "show_mascot": true
       }
     }
   },
   "order": [
     "section_6UEi69",
-    "menu_products"
+    "menu_products",
+    "menu_allergens"
   ]
 }
