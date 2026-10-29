@@ -403,11 +403,22 @@
     #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
+  /* phones: two narrow columns (~160px) — type and the pill shrink so names and
+     "Скоро и доставка" stay on their lines */
   @media screen and (max-width: 599px) {
-    #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: 1fr; gap: 36px; }
-    #smoky-mp-{{ section.id }} .smoky-mp__media { max-width: 340px; margin-inline: auto; }
-    #smoky-mp-{{ section.id }} .smoky-mp__info { text-align: center; }
-    #smoky-mp-{{ section.id }} .smoky-mp__row { justify-content: center; gap: 18px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__info { text-align: center; padding-top: 8px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__name { font-size: 1rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+    #smoky-mp-{{ section.id }} .smoky-mp__desc { margin-bottom: 8px; font-size: 0.8rem; }
+    #smoky-mp-{{ section.id }} .smoky-mp__row { flex-wrap: wrap; justify-content: center; gap: 8px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__price { font-size: 1.05rem; }
+    #smoky-mp-{{ section.id }} .smoky-mp__btn .smoky-btn__content {
+      height: 2.7em;
+      padding-inline: 1em;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
   }
 </style>
 
