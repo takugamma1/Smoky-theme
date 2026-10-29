@@ -290,7 +290,8 @@
   #smoky-mp-{{ section.id }} .smoky-mp__card:hover .smoky-mp__blob--dark { transform: rotate(0deg) translate(-4%, -4%); }
 
   /* ---- info below ---- */
-  #smoky-mp-{{ section.id }} .smoky-mp__info { padding-top: clamp(10px, 1.2vw, 16px); }
+  /* centred under the centred blob: name → description → price → pill */
+  #smoky-mp-{{ section.id }} .smoky-mp__info { padding-top: clamp(10px, 1.2vw, 16px); text-align: center; }
 
   #smoky-mp-{{ section.id }} .smoky-mp__name {
     margin: 0 0 4px;
@@ -303,7 +304,8 @@
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__desc {
-    margin: 0 0 10px;
+    max-width: 34ch;
+    margin: 0 auto 12px;
     font-family: var(--smoky-font-body);
     font-size: clamp(0.88rem, 1vw, 0.98rem);
     line-height: 1.45;
@@ -312,15 +314,16 @@
 
   #smoky-mp-{{ section.id }} .smoky-mp__row {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 14px;
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__price {
     font-family: var(--smoky-font-heading);
     font-weight: 800;
     font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+    line-height: 1;
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__btn { font-size: 0.8rem; }
@@ -412,12 +415,11 @@
      "Скоро и доставка" stay on their lines */
   @media screen and (max-width: 599px) {
     #smoky-mp-{{ section.id }} .smoky-mp__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 14px; }
-    #smoky-mp-{{ section.id }} .smoky-mp__info { text-align: center; padding-top: 8px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__info { padding-top: 8px; }
     #smoky-mp-{{ section.id }} .smoky-mp__name { font-size: 1rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
     #smoky-mp-{{ section.id }} .smoky-mp__desc { margin-bottom: 8px; font-size: 0.8rem; }
-    /* price gets its own centred line between the description and the pill */
-    #smoky-mp-{{ section.id }} .smoky-mp__row { flex-direction: column; justify-content: center; gap: 8px; }
-    #smoky-mp-{{ section.id }} .smoky-mp__price { font-size: 1.15rem; line-height: 1; }
+    #smoky-mp-{{ section.id }} .smoky-mp__row { gap: 8px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__price { font-size: 1.15rem; }
     #smoky-mp-{{ section.id }} .smoky-mp__btn .smoky-btn__content {
       height: 2.7em;
       padding-inline: 1em;
