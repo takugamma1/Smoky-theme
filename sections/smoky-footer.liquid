@@ -29,7 +29,7 @@
         {%- endif -%}
         <h2 class="smoky-title smoky-title--big">{{ section.settings.title2 }}</h2>
         <span class="smoky-footer__mascot" aria-hidden="true">
-          <img src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
+          <img src="{{ 'smoky-mascot-front-sticker.svg' | asset_url }}" alt="" loading="lazy" width="110" height="110">
         </span>
       </div>
     </div>
@@ -148,20 +148,15 @@
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon::after { display: none; }
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon svg { width: 40%; height: 40%; }
 
-  /* Димо като стикер: кремав контур (насложени drop-shadows) го прави
-     видим върху тъмното без никакъв кръг отзад */
+  /* Димо като стикер: smoky-mascot-front-sticker.svg носи кремав фон и контур,
+     така че е в истинските си цветове върху тъмното без кръг отзад */
   #smoky-footer-{{ section.id }} .smoky-footer__mascot {
     flex: 0 0 auto;
     width: clamp(84px, 8vw, 132px);
     align-self: flex-start;
     margin-top: -0.4em;
     transform: rotate(7deg);
-    filter:
-      drop-shadow(1.5px 0 0 var(--smoky-sand))
-      drop-shadow(-1.5px 0 0 var(--smoky-sand))
-      drop-shadow(0 1.5px 0 var(--smoky-sand))
-      drop-shadow(0 -1.5px 0 var(--smoky-sand))
-      drop-shadow(0 8px 10px rgb(0 0 0 / 0.45));
+    filter: drop-shadow(0 8px 10px rgb(0 0 0 / 0.45));
     pointer-events: none;
   }
 

@@ -3,15 +3,15 @@
   dark slab: each allergen is a round stamp (dark ring + hard pink offset
   shadow) in a rotating brand fill, a hand-drawn line icon, its EU number on
   a little sticker and the label underneath. Stamps sit slightly askew and
-  straighten with the brand bounce on hover. Димо peeks over the heading,
-  shevitsa ornament + a note close the section. Blocks = allergens.
+  straighten with the brand bounce on hover. Димо peeks over the heading.
+  Blocks = allergens.
 {% endcomment %}
 
 <section class="smoky-allergens smoky-grained--light" id="smoky-allergens-{{ section.id }}">
   <div class="smoky-container smoky-container--medium">
     <div class="smoky-allergens__head" data-smoky-reveal>
       {%- if section.settings.show_mascot -%}
-        <img class="smoky-allergens__mascot" src="{{ 'smoky-mascot-surprised.svg' | asset_url }}" alt="" loading="lazy" width="150" height="150">
+        <img class="smoky-allergens__mascot" src="{{ 'smoky-mascot-front-sticker.svg' | asset_url }}" alt="" loading="lazy" width="323" height="349">
       {%- endif -%}
       {%- if section.settings.kicker != blank -%}
         <p class="smoky-kicker smoky-allergens__kicker">{{ section.settings.kicker }}</p>
@@ -43,15 +43,6 @@
         </li>
       {%- endfor -%}
     </ul>
-
-    <div class="smoky-allergens__foot" data-smoky-reveal>
-      <div class="smoky-shevitsa-row smoky-allergens__ornament" aria-hidden="true">
-        <span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span><span class="smoky-shevitsa"></span>
-      </div>
-      {%- if section.settings.note != blank -%}
-        <p class="smoky-allergens__note">{{ section.settings.note }}</p>
-      {%- endif -%}
-    </div>
   </div>
 </section>
 
@@ -183,23 +174,6 @@
     text-transform: uppercase;
   }
 
-  /* ---- foot ---- */
-  #smoky-allergens-{{ section.id }} .smoky-allergens__foot {
-    margin-top: clamp(48px, 6vw, 88px);
-    text-align: center;
-  }
-
-  #smoky-allergens-{{ section.id }} .smoky-allergens__ornament { color: var(--smoky-pink); font-size: clamp(14px, 1.4vw, 20px); }
-
-  #smoky-allergens-{{ section.id }} .smoky-allergens__note {
-    margin: 18px auto 0;
-    max-width: 52ch;
-    font-family: var(--smoky-font-body);
-    font-size: clamp(0.92rem, 1.05vw, 1.05rem);
-    line-height: 1.5;
-    opacity: 0.85;
-  }
-
   @media screen and (max-width: 749px) {
     #smoky-allergens-{{ section.id }} .smoky-allergens__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     #smoky-allergens-{{ section.id }} .smoky-allergens__mascot { right: 0; }
@@ -219,7 +193,6 @@
     { "type": "text", "id": "kicker", "label": "Надзаглавие", "default": "Добре е да знаеш" },
     { "type": "text", "id": "heading", "label": "Заглавие", "default": "Алергени" },
     { "type": "textarea", "id": "text", "label": "Текст под заглавието", "default": "Ястията ни могат да съдържат следните алергени. Номерата са по европейския списък на алергените." },
-    { "type": "textarea", "id": "note", "label": "Бележка най-долу", "default": "Имаш алергия или непоносимост? Кажи ни при поръчка — ще ти кажем точно какво има във всяко ястие." },
     { "type": "checkbox", "id": "show_mascot", "label": "Димо до заглавието", "default": true }
   ],
   "blocks": [

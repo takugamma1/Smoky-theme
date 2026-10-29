@@ -200,8 +200,9 @@
       const el = document.createElement('div');
       el.className = 'smoky-cursor-mascot';
       el.innerHTML =
-        '<img class="smoky-cursor-mascot__base" src="{{ 'smoky-mascot-front.svg' | asset_url }}" alt="" width="54" height="54">' +
-        '<img class="smoky-cursor-mascot__alt" src="{{ 'smoky-mascot-happy.svg' | asset_url }}" alt="" width="54" height="54">';
+        // sticker variants (cream fill + edge) so Димо keeps his colours over the dark slabs too
+        '<img class="smoky-cursor-mascot__base" src="{{ 'smoky-mascot-front-sticker.svg' | asset_url }}" alt="" width="54" height="54">' +
+        '<img class="smoky-cursor-mascot__alt" src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" width="54" height="54">';
       document.body.appendChild(el);
       withGsap((gsap) => {
         const qx = gsap.quickTo(el, 'x', { duration: 0.55, ease: 'power3.out' });

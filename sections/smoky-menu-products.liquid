@@ -169,6 +169,9 @@
     color: var(--smoky-dark);
     /* bottom padding always clears the curl radius plus whatever curls up over it */
     padding-block: clamp(10px, 1.4vw, 22px) calc(var(--smoky-radius-big) * 2 + clamp(32px, 4vw, 64px));
+    /* the rotated blob boxes poke past the card edge (bounding box of a rotated
+       square), which on phones is wider than the 5vw gutter -> sideways scroll */
+    overflow-x: clip;
   }
 
   #smoky-mp-{{ section.id }} .smoky-mp__heading {
