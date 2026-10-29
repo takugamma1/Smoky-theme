@@ -69,7 +69,7 @@
             "image": "shopify://shop_images/425462c4-59dc-4f15-b5d0-ec6d8acdba44.png",
             "title": "Кътове",
             "subtitle": "Врат, Ребра, Беконче",
-            "link": "shopify://collections/all"
+            "link": "shopify://pages/меню"
           }
         },
         "card_pileshko": {
@@ -79,7 +79,7 @@
             "image": "shopify://shop_images/3850818b-39c5-4c64-b31d-5153ed0e2773.png",
             "title": "Пилешко",
             "subtitle": "Модерно мариновано",
-            "link": "shopify://collections/all"
+            "link": "shopify://pages/меню"
           }
         }
       },
