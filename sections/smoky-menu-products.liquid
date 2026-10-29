@@ -415,8 +415,9 @@
     #smoky-mp-{{ section.id }} .smoky-mp__info { text-align: center; padding-top: 8px; }
     #smoky-mp-{{ section.id }} .smoky-mp__name { font-size: 1rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
     #smoky-mp-{{ section.id }} .smoky-mp__desc { margin-bottom: 8px; font-size: 0.8rem; }
-    #smoky-mp-{{ section.id }} .smoky-mp__row { flex-wrap: wrap; justify-content: center; gap: 8px; }
-    #smoky-mp-{{ section.id }} .smoky-mp__price { font-size: 1.05rem; }
+    /* price gets its own centred line between the description and the pill */
+    #smoky-mp-{{ section.id }} .smoky-mp__row { flex-direction: column; justify-content: center; gap: 8px; }
+    #smoky-mp-{{ section.id }} .smoky-mp__price { font-size: 1.15rem; line-height: 1; }
     #smoky-mp-{{ section.id }} .smoky-mp__btn .smoky-btn__content {
       height: 2.7em;
       padding-inline: 1em;
