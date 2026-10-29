@@ -4,9 +4,7 @@
   other languages. Every option is a plain link to the SAME page under that
   language's own root (bg = "/", en = "/en", de = "/de"), so switching is one
   click and instant. Flags are inline SVG so they render on every OS (emoji
-  flags fall back to letters on Windows). A small circled × on the flag hides
-  the whole switcher for the rest of the visit (sessionStorage) — it comes back
-  on the next visit. Renders nothing with one language.
+  flags fall back to letters on Windows). Renders nothing with one language.
 {%- enddoc -%}
 
 {%- if localization.available_languages.size > 1 -%}
@@ -61,11 +59,5 @@
       {%- endfor -%}
     </div>
   </details>
-  {%- # outside <details> so it stays visible (and clickable) while the drawer is closed -%}
-  <button type="button" class="smoky-lang__close" data-smoky-lang-close aria-label="{{ 'smoky.general.close' | t }}">
-    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.2 3.2l5.6 5.6M8.8 3.2 3.2 8.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </button>
   </div>
-  {%- # dismissed earlier in this visit: hide before first paint, no flash -%}
-  <script>try { if (sessionStorage.getItem('smoky-lang-dismissed')) document.currentScript.previousElementSibling.hidden = true; } catch (e) {}</script>
 {%- endif -%}

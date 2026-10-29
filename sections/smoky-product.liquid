@@ -51,7 +51,8 @@
         <a href="{{ col.url }}" class="smoky-kicker smoky-product__kicker">{{ col.title }}</a>
       {%- endif -%}
       <h1 class="smoky-title smoky-title--small smoky-product__title">{{ product.title }}</h1>
-      <p class="smoky-product__price" data-price>{{ v.price | money }}</p>
+      {%- # an unpriced (0) product shows no price rather than "€0,00" -%}
+      <p class="smoky-product__price" data-price{% if v.price == 0 %} hidden{% endif %}>{{ v.price | money }}</p>
 
       {%- if product.description != blank -%}
         <div class="smoky-product__desc">{{ product.description }}</div>
@@ -77,6 +78,13 @@
         {%- endunless -%}
 
         <div class="smoky-product__row">
+          {%- unless section.settings.ordering -%}
+            {%- # online ordering off: an inert pill instead of quantity + add to cart -%}
+            <button type="button" class="smoky-btn smoky-product__add smoky-product__add--soon" aria-disabled="true">
+              <span class="smoky-btn__shadow"></span>
+              <span class="smoky-btn__content"><span class="smoky-roll"><span>{{ 'smoky.general.coming_soon' | t }}</span><span class="smoky-roll__dup">{{ 'smoky.general.coming_soon' | t }}</span></span></span>
+            </button>
+          {%- else -%}
           <div class="smoky-product__qty">
             <button type="button" data-qty="-1" aria-label="{{ 'smoky.product.decrease' | t }}">−</button>
             <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="{{ 'smoky.product.quantity' | t }}">
@@ -89,6 +97,7 @@
               <span data-added hidden>{{ section.settings.added_label }}</span>
             </span>
           </button>
+          {%- endunless -%}
         </div>
         <p class="smoky-product__error" data-error hidden></p>
       </form>
@@ -125,7 +134,7 @@
                 {%- endif -%}
               </span>
               <span class="smoky-product__rel-name">{{ p.title }}</span>
-              <span class="smoky-product__rel-price">{{ p.price | money }}</span>
+              {%- if p.price > 0 -%}<span class="smoky-product__rel-price">{{ p.price | money }}</span>{%- endif -%}
             </a>
           {%- endif -%}
         {%- endfor -%}
@@ -317,6 +326,7 @@
   #smoky-product-{{ section.id }} .smoky-product__add[disabled] { opacity: 0.55; pointer-events: none; }
   #smoky-product-{{ section.id }} .smoky-product__add.is-added .smoky-btn__content { background: var(--smoky-dark); color: var(--smoky-sand); }
   #smoky-product-{{ section.id }} .smoky-product__add.is-busy { opacity: 0.7; pointer-events: none; }
+  #smoky-product-{{ section.id }} .smoky-product__add--soon { cursor: default; }
 
   #smoky-product-{{ section.id }} .smoky-product__error {
     margin: 0;
@@ -432,8 +442,13 @@
         const match = variants.find((vv) => chosen.every((val, i) => vv.options[i] === val));
         if (!match) return;
         idInput.value = match.id;
-        if (price) price.textContent = money(match.price);
+        if (price) {
+          price.textContent = money(match.price);
+          price.hidden = !match.price;
+        }
+        // ordering off: there is no add button label to update
         const label = form.querySelector('[data-label]');
+        if (!label) return;
         const txt = match.available ? '{{ section.settings.add_label | escape }}' : {{ 'smoky.general.sold_out' | t | json }};
         label.querySelectorAll('span').forEach((sp) => (sp.textContent = txt));
         addBtn.toggleAttribute('disabled', !match.available);
@@ -451,6 +466,7 @@
     const errorEl = form.querySelector('[data-error]');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!form.querySelector('[data-label]')) return; // ordering off
       if (addBtn.classList.contains('is-busy')) return;
       addBtn.classList.add('is-busy');
       errorEl.hidden = true;
@@ -486,6 +502,7 @@
   "name": "Smoky продукт",
   "tag": "section",
   "settings": [
+    { "type": "checkbox", "id": "ordering", "label": "Онлайн поръчки активни", "info": "Изключено: вместо количество и „Поръчай“ се показва бутон „Скоро и доставка“, който не прави нищо. Включи го заедно с менюто.", "default": false },
     { "type": "text", "id": "add_label", "label": "Бутон за поръчка", "default": "Поръчай" },
     { "type": "text", "id": "added_label", "label": "Текст след добавяне", "default": "Добавено ✓" },
     { "type": "text", "id": "menu_label", "label": "Бутон към менюто", "default": "Към менюто" },

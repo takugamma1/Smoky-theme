@@ -80,7 +80,7 @@
                     {%- assign desc = product.description | strip_html | truncate: 80 -%}
                     {%- if desc != blank -%}<p class="smoky-mp__desc">{{ desc }}</p>{%- endif -%}
                     <div class="smoky-mp__row">
-                      {%- if section.settings.show_price -%}<span class="smoky-mp__price">{{ product.price | money }}</span>{%- endif -%}
+                      {%- if section.settings.show_price and product.price > 0 -%}<span class="smoky-mp__price">{{ product.price | money }}</span>{%- endif -%}
                       {%- if section.settings.ordering == false -%}
                         <button type="button" class="smoky-btn smoky-mp__btn smoky-mp__btn--soon" aria-disabled="true">
                           <span class="smoky-btn__shadow"></span>

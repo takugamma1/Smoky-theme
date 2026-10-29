@@ -134,7 +134,7 @@
         "curve_bottom": true,
         "ordering": false,
         "soon_label": "Скоро и доставка",
-        "show_price": false
+        "show_price": true
       }
     },
     "menu_allergens": {

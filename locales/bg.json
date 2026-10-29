@@ -346,6 +346,7 @@
   },
   "smoky": {
     "general": {
+      "coming_soon": "Скоро и доставка",
       "close": "Затвори",
       "previous": "Назад",
       "next": "Напред",

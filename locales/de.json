@@ -346,6 +346,7 @@
   },
   "smoky": {
     "general": {
+      "coming_soon": "Lieferung bald",
       "close": "Schließen",
       "previous": "Zurück",
       "next": "Weiter",

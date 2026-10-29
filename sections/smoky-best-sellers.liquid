@@ -60,7 +60,7 @@
                   </span>
                   <span class="smoky-bs__name">{{ product.title }}</span>
                   <span class="smoky-bs__sep" aria-hidden="true"></span>
-                  <span class="smoky-bs__price">{{ product.price | money }}</span>
+                  {%- if product.price > 0 -%}<span class="smoky-bs__price">{{ product.price | money }}</span>{%- endif -%}
                 </span>
               </a>
             {%- else -%}

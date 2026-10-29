@@ -77,7 +77,12 @@
 
   @media screen and (max-width: 899px) {
     #smoky-intro-{{ section.id }} .smoky-intro__row { grid-template-columns: 1fr; }
-    #smoky-intro-{{ section.id }} .smoky-intro__sticker { top: auto; bottom: -14px; }
+    /* stacked: the sticker gets its own strip under the text instead of sitting on
+       the last lines (longer EN/DE copy ran straight into it) */
+    {%- if section.settings.sticker_asset != 'none' -%}
+      #smoky-intro-{{ section.id }} .smoky-intro__row { padding-bottom: 72px; }
+    {%- endif -%}
+    #smoky-intro-{{ section.id }} .smoky-intro__sticker { top: auto; bottom: -18px; width: 76px; }
   }
 </style>
 

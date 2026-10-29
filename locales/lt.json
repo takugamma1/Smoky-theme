@@ -360,6 +360,7 @@
   },
   "smoky": {
     "general": {
+      "coming_soon": "Delivery soon",
       "close": "Close",
       "previous": "Previous",
       "next": "Next",
