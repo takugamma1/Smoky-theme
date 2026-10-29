@@ -49,7 +49,7 @@
             "image": "shopify://shop_images/c76c6954-0913-49a7-afca-03fa0df3a9de.png",
             "title": "Кебапчета",
             "subtitle": "Класиката, която ни събира",
-            "link": "shopify://products/kebabche"
+            "link": "shopify://pages/меню"
           }
         },
         "card_kyufteta": {
@@ -59,7 +59,7 @@
             "image": "shopify://shop_images/00695fb5-f5e1-43f3-9d7a-14efdcc9d80f.png",
             "title": "Кюфтета",
             "subtitle": "По селски, с лук и магданоз",
-            "link": "shopify://collections/all"
+            "link": "shopify://pages/меню"
           }
         },
         "card_stekove": {
