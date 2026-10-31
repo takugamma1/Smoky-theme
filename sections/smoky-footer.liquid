@@ -1,6 +1,7 @@
 {% comment %}
   Smoky footer — FTC playful contact footer: giant title rows interleaved
-  with pill "speech bubble" links (email / phone / Instagram), then link
+  with pill "speech bubble" links (email / phone / Instagram / Facebook /
+  Google Maps with a „Ние сме тук“ bubble), then link
   columns from admin menus, then the legal bottom bar with the wordmark.
   Dark slab with a rounded top cap curling over the page.
 {% endcomment %}
@@ -18,6 +19,21 @@
         {%- if section.settings.instagram != blank -%}
           <a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" class="smoky-footer__bubble smoky-footer__bubble--icon" aria-label="Instagram">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="5.5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.facebook != blank -%}
+          <a href="{{ section.settings.facebook }}" target="_blank" rel="noopener" class="smoky-footer__bubble smoky-footer__bubble--icon" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M15.4 7.6h-1.2a2.7 2.7 0 0 0-2.7 2.7V21M9 13.2h5.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.maps != blank -%}
+          {%- assign we_are_here = 'smoky.footer.we_are_here' | t -%}
+          {%- # the icon + its „Ние сме тук“ speech bubble are one link and wrap together -%}
+          <a href="{{ section.settings.maps }}" target="_blank" rel="noopener" class="smoky-footer__map" aria-label="Google Maps — {{ we_are_here }}">
+            <span class="smoky-footer__bubble smoky-footer__bubble--icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.2s-6.6-6-6.6-11.1a6.6 6.6 0 1 1 13.2 0c0 5.1-6.6 11.1-6.6 11.1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10.1" r="2.4" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <span class="smoky-footer__here" aria-hidden="true">{{ we_are_here }}</span>
           </a>
         {%- endif -%}
       </div>
@@ -148,6 +164,70 @@
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon::after { display: none; }
   #smoky-footer-{{ section.id }} .smoky-footer__bubble--icon svg { width: 40%; height: 40%; }
 
+  /* Google Maps: pin icon + a small pink speech bubble whose tail points left at the pin */
+  #smoky-footer-{{ section.id }} .smoky-footer__map {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__map:hover .smoky-footer__bubble { transform: translateY(-0.2em) rotate(-2deg); }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__here {
+    position: relative;
+    padding: 0.42em 0.95em 0.48em;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: clamp(0.78rem, 1.05vw, 1rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 0.22em 0 rgb(0 0 0 / 0.35);
+    transform-origin: left center;
+    animation: smoky-footer-here 2.8s ease-in-out infinite;
+  }
+
+  /* tail: dark outline triangle with the pink fill laid over it, joined to the pill */
+  #smoky-footer-{{ section.id }} .smoky-footer__here::before,
+  #smoky-footer-{{ section.id }} .smoky-footer__here::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__here::before {
+    left: -13px;
+    width: 14px;
+    height: 16px;
+    margin-top: -8px;
+    background: var(--smoky-dark);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__here::after {
+    left: -9px;
+    width: 12px;
+    height: 11px;
+    margin-top: -5.5px;
+    background: var(--smoky-pink);
+  }
+
+  #smoky-footer-{{ section.id }} .smoky-footer__map:hover .smoky-footer__here { animation-duration: 0.9s; }
+
+  @keyframes smoky-footer-here {
+    0%, 100% { transform: rotate(-6deg) translateY(0); }
+    50% { transform: rotate(-2deg) translateY(-3px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #smoky-footer-{{ section.id }} .smoky-footer__here { animation: none; transform: rotate(-5deg); }
+  }
+
   /* Димо като стикер: smoky-mascot-front-sticker.svg носи кремав фон и контур,
      така че е в истинските си цветове върху тъмното без кръг отзад */
   #smoky-footer-{{ section.id }} .smoky-footer__mascot {
@@ -265,6 +345,8 @@
     { "type": "text", "id": "email", "label": "Имейл", "default": "hello@smoky.bg" },
     { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 52 830 300" },
     { "type": "url", "id": "instagram", "label": "Instagram линк" },
+    { "type": "url", "id": "facebook", "label": "Facebook линк" },
+    { "type": "url", "id": "maps", "label": "Google Maps линк", "info": "Показва се с балон „Ние сме тук“ до иконата." },
     { "type": "link_list", "id": "menu_1", "label": "Колона 1 (меню)" },
     { "type": "link_list", "id": "menu_2", "label": "Колона 2 (меню)" },
     { "type": "link_list", "id": "menu_3", "label": "Колона 3 (меню)" },

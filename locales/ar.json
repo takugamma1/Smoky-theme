@@ -382,6 +382,9 @@
     }
   },
   "smoky": {
+    "footer": {
+      "we_are_here": "We're here"
+    },
     "general": {
       "coming_soon": "Delivery soon",
       "close": "Close",

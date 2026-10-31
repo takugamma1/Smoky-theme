@@ -354,6 +354,9 @@
     }
   },
   "smoky": {
+    "footer": {
+      "we_are_here": "Ние сме тук"
+    },
     "general": {
       "coming_soon": "Скоро и доставка",
       "close": "Затвори",

@@ -354,6 +354,9 @@
     }
   },
   "smoky": {
+    "footer": {
+      "we_are_here": "Hier sind wir"
+    },
     "general": {
       "coming_soon": "Lieferung bald",
       "close": "Schließen",
