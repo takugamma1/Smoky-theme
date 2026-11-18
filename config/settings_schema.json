@@ -2141,13 +2141,13 @@
         "type": "text",
         "id": "smoky_store_lat",
         "label": "Ресторант — географска ширина",
-        "default": "43.2147333"
+        "default": "43.2143708"
       },
       {
         "type": "text",
         "id": "smoky_store_lng",
         "label": "Ресторант — географска дължина",
-        "default": "27.9141246"
+        "default": "27.9148584"
       },
       {
         "type": "checkbox",
