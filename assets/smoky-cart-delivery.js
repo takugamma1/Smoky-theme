@@ -940,15 +940,17 @@ class SmokyCartProgress extends HTMLElement {
       }
     }
 
+    // state goes on the inner body: the drawer morph resets this element's own attributes
+    const body = this.querySelector('[data-prog-body]');
+    if (!body) return; // children not parsed yet
     const zone = state.mode === 'delivery' && state.zone && !state.zone.out ? state.zone : null;
-    this.hidden = !zone;
+    body.hidden = !zone;
     if (!zone) return;
     const done = this.total >= zone.min;
     const percent = zone.min > 0 ? Math.min(100, Math.round((this.total / zone.min) * 100)) : 100;
-    this.style.setProperty('--smoky-prog', `${percent}%`);
-    this.classList.toggle('is-done', done);
+    body.style.setProperty('--smoky-prog', `${percent}%`);
+    body.classList.toggle('is-done', done);
     const text = this.querySelector('[data-prog-text]');
-    if (!text) return; // children not parsed yet
     if (done) {
       text.textContent = t('progress_done');
     } else {
@@ -962,9 +964,11 @@ class SmokyCartProgress extends HTMLElement {
 
   /** The locked checkout button was tapped: show what is missing. */
   nudge() {
-    this.classList.remove('is-nudge');
-    void this.offsetWidth;
-    this.classList.add('is-nudge');
+    const body = this.querySelector('[data-prog-body]');
+    if (!body) return;
+    body.classList.remove('is-nudge');
+    void body.offsetWidth;
+    body.classList.add('is-nudge');
   }
 }
 

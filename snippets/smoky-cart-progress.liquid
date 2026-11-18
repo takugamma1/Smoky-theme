@@ -8,21 +8,29 @@
   attribute even though the subtree is skipped) — that is what moves the bar.
 {%- enddoc -%}
 
+{%- comment -%}
+  Only data-total lives on the custom element: the drawer morph rewrites the element's own
+  attributes to what the server rendered, so everything the script changes (visible / done /
+  fill) sits on the inner .smoky-prog, which the morph leaves alone.
+{%- endcomment -%}
 <smoky-cart-progress
-  class="smoky-prog"
   data-skip-subtree-update
   data-total="{{ cart.total_price }}"
-  hidden
 >
-  <p class="smoky-prog__text" data-prog-text aria-live="polite"></p>
-  <div class="smoky-prog__track" aria-hidden="true">
-    <div class="smoky-prog__fill" data-prog-fill></div>
-    <img class="smoky-prog__dimo" src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" width="249" height="323" loading="lazy">
+  <div class="smoky-prog" data-prog-body hidden>
+    <p class="smoky-prog__text" data-prog-text aria-live="polite"></p>
+    <div class="smoky-prog__track" aria-hidden="true">
+      <div class="smoky-prog__fill" data-prog-fill></div>
+      <img class="smoky-prog__dimo" src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" width="249" height="323" loading="lazy">
+    </div>
+    <p class="smoky-prog__meta" data-prog-meta></p>
   </div>
-  <p class="smoky-prog__meta" data-prog-meta></p>
 </smoky-cart-progress>
 
 {% stylesheet %}
+  /* the wrapper takes no box of its own: when the bar is hidden it leaves no gap in the summary */
+  smoky-cart-progress { display: contents; }
+
   .smoky-prog {
     --smoky-prog: 0%;
     display: block;
