@@ -125,8 +125,23 @@
 {% stylesheet %}
   .smoky-dlv {
     display: block;
+    flex-shrink: 0;
     padding: 18px var(--cart-drawer-padding, 20px) 22px;
     border-top: 2px dotted rgb(40 40 40 / 0.3);
+    color: var(--smoky-dark);
+  }
+
+  /* Horizon lets the item list shrink and scroll on its own; with the delivery form under it
+     the list collapsed to a sliver on short screens. Items + form scroll together instead,
+     the totals and „Поръчай“ stay pinned at the bottom. */
+  #cart-drawer .cart-drawer__items {
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  /* #cart-drawer: the drawer's colour scheme paints headings in its own (light) colour */
+  #cart-drawer .smoky-dlv__title,
+  .smoky-dlv .smoky-dlv__title {
     color: var(--smoky-dark);
   }
 
