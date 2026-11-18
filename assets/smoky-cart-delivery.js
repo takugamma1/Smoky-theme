@@ -11,15 +11,21 @@
  *
  * Zones (fee + minimum order) are Shopify's own Local delivery zones. For a picked address the
  * script ASKS SHOPIFY which zone applies (Storefront API, a throwaway cart big enough to clear
- * every minimum), so the cart can never promise something checkout will refuse. The distance
- * table from the theme settings is only the offline fallback.
+ * every minimum), so the cart can never promise something checkout will refuse — and MEASURES
+ * the distance itself from the point the lookup returned (theme settings: same zone table).
+ * Shopify geocodes the typed text on its own and answers for the city centre when it does not
+ * know the street, so an address counts as deliverable only when both agree.
  *
  * The choice is saved on the cart (attributes „Получаване“, „Адрес за доставка“, „Координати“,
  * „Пощенски код“ + the note) and handed to checkout through the Storefront API (delivery
  * address / pickup preference), so checkout opens with it already filled in.
  *
  * Lookup: Google Maps (Places + Geocoding) when the theme has an API key, otherwise
- * OpenStreetMap (Photon / Nominatim) — same UI, less precise house numbers.
+ * OpenStreetMap (Photon / Nominatim) — same UI, less precise house numbers. The OpenStreetMap
+ * path reads the address the way people write it (parseAddressQuery): „ул./бул./кв./ж.к.“,
+ * quotes, district, city and postcode are understood, not required; „бл.“ is a house number,
+ * „вх./ет./ап.“ are kept as the second address line. A street that is known without that
+ * house number is still offered with the number the customer typed (approximate point).
  */
 
 const LS_KEY = 'smoky_order_v2';
@@ -162,7 +168,15 @@ async function storefront(query, variables) {
 const deliveryAddressInput = (address) => ({
   selected: true,
   oneTimeUse: true,
-  address: { deliveryAddress: { address1: address.line1, city: address.city || DEFAULT_CITY, zip: address.zip || '', countryCode: 'BG' } },
+  address: {
+    deliveryAddress: {
+      address1: address.line1,
+      ...(address.extra ? { address2: address.extra } : {}),
+      city: address.city || DEFAULT_CITY,
+      zip: address.zip || '',
+      countryCode: 'BG',
+    },
+  },
 });
 
 /** Zone table entry for a fee Shopify quoted (cents); unknown fees still get a sensible minimum. */
@@ -222,19 +236,42 @@ async function probeFee(address) {
   return local.length ? Math.min(...local) : null;
 }
 
+/** How far past the last radius our own measurement still gives Shopify the benefit of the doubt (km). */
+const RANGE_TOLERANCE_KM = 0.3;
+
+/**
+ * Shopify's zone and our measured zone → the one the order is held to.
+ * Out of range if either says so; otherwise the fee is Shopify's (that is what checkout will
+ * charge) and the minimum is the stricter of the two.
+ */
+export function settleZone(quoted, measured) {
+  if (!measured) return quoted;
+  if (!quoted) return measured;
+  if (quoted.out || measured.out) return { out: true };
+  return { fee: quoted.fee, min: Math.max(quoted.min, measured.min) };
+}
+
 /** { min, fee } for the address, or { out: true } when it is outside every zone. */
 async function resolveZone(address) {
   const { zones, store } = config();
+  let measured = null;
+  if (address.lat != null && Number.isFinite(store.lat) && Number.isFinite(store.lng) && zones.length) {
+    const km = distanceKm(store, address);
+    const last = zones[zones.length - 1];
+    measured = km > last.radius + RANGE_TOLERANCE_KM ? { out: true } : zoneForDistance(zones, Math.min(km, last.radius));
+  }
+  if (measured?.out) return measured; // no need to ask
+  let quoted = null;
   try {
     // Local delivery is the only way to ship, so "no option" = Shopify will not deliver there.
     // Asked twice before it is believed: a single empty answer can be a hiccup.
     let fee = await withTimeout(probeFee(address), 7000);
     if (fee == null) fee = await withTimeout(probeFee(address), 7000);
-    return fee == null ? { out: true } : zoneForFee(zones, fee);
+    quoted = fee == null ? { out: true } : zoneForFee(zones, fee);
   } catch (error) {
-    if (address.lat == null || !Number.isFinite(store.lat) || !Number.isFinite(store.lng)) throw error;
-    return zoneForDistance(zones, distanceKm(store, address));
+    if (!measured) throw error;
   }
+  return settleZone(quoted, measured);
 }
 
 /** Put the choice on the cart itself, which is what makes checkout open with it filled in. */
@@ -386,6 +423,7 @@ function osmAddress({ street, housenumber, district, city, zip, lat, lng }) {
   return {
     line1,
     street,
+    district: district && district !== street ? district : '',
     city: town,
     zip: cleanZip(zip),
     lat: round6(lat),
@@ -409,7 +447,176 @@ function fromPhoton(feature) {
   });
 }
 
-async function osmSearch(query) {
+/* What people actually type: „ЛевскиПриморски, ул. „Мир“ 33, 9010 Варна“ (copied from a map),
+   „ж.к. Чайка бл. 28 вх. Б ет. 5 ап. 60“, „Мир 33“. The lookup wants bare words. */
+const lower = (text) => String(text || '').toLowerCase();
+const STREET_MARK = /(?:^|[\s,])(?:улица|ул|булевард|бул|площад|пл)(?:\.\s*|\s+)/i;
+const AREA_MARK = /(?:^|[\s,])(?:квартал|кв|ж\.\s?к|жк|район|р-н|местност|м-т)(?:\.\s*|\s+)/gi;
+const BLOCK = /(?:^|[\s,])бл(?:ок)?\.?\s*(\d+\s?[А-Яа-яA-Za-z]?)(?=$|[\s,.])/i;
+const EXTRA = /(?:^|[\s,])(вх(?:од)?|ет(?:аж)?|ап(?:артамент)?)\.?\s*(\d+\s?[А-Яа-яA-Za-z]?|[А-Яа-яA-Za-z])(?=$|[\s,.])/gi;
+const HOUSE_NUMBER = /\s(\d+\s?[А-Яа-яA-Za-z]?)\s*$/;
+const ONLY_NUMBER = /^\s*\d+\s?[А-Яа-яA-Za-z]?\s*$/;
+
+/**
+ * "ЛевскиПриморски, ул. „Мир“ 33" → { street: 'Мир', area: 'Левски Приморски', number: '33',
+ * block: false, extras: [], latin: false }. `extras` are entrance / floor / flat ("вх. Б").
+ */
+export function parseAddressQuery(raw) {
+  let text = String(raw || '')
+    .replace(/[„“”"«»‘’'`]/g, ' ')
+    .replace(/№/g, ' ')
+    .replace(/([а-яa-z])([А-ЯA-Z])/g, '$1 $2') // "ЛевскиПриморски" → "Левски Приморски"
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const extras = [];
+  text = text.replace(EXTRA, (_, kind, value) => {
+    extras.push(`${lower(kind).slice(0, 2)}. ${value.replace(/\s+/g, '').toUpperCase()}`);
+    return ' ';
+  });
+
+  let number = '';
+  let block = false;
+  text = text.replace(BLOCK, (_, value) => {
+    number = value;
+    block = true;
+    return ' ';
+  });
+
+  // city, country and postcode tell the lookup nothing it does not already know
+  text = text
+    .replace(/(?:^|[\s,])9\d{3}(?=$|[\s,])/g, ' ')
+    .replace(/(?:^|[\s,])(?:гр\.?\s*)?(?:варна|varna)(?=$|[\s,])/gi, ' ')
+    .replace(/(?:^|[\s,])(?:българия|bulgaria)(?=$|[\s,])/gi, ' ');
+
+  let street = text;
+  let area = '';
+  const mark = STREET_MARK.exec(text);
+  if (mark) {
+    // "ул." says where the street starts: what stands before it is the district
+    area = text.slice(0, mark.index);
+    const pieces = text.slice(mark.index + mark[0].length).split(',');
+    street = pieces.shift() || '';
+    for (const piece of pieces) {
+      if (!number && !/\d/.test(street) && ONLY_NUMBER.test(piece)) street += ` ${piece.trim()}`;
+      else area += ` ${piece}`;
+    }
+  } else if (text.includes(',')) {
+    // no "ул.": the piece that carries the number is the street, the rest is the district
+    const pieces = text.split(',').map((piece) => piece.trim()).filter(Boolean);
+    const index = number ? -1 : pieces.findIndex((piece) => /\d/.test(piece));
+    if (index >= 0) {
+      street = pieces[index];
+      area = pieces.filter((_, i) => i !== index).join(' ');
+    } else {
+      street = pieces.join(' ');
+    }
+  }
+
+  const tidy = (part) => ` ${part}`.replace(AREA_MARK, ' ').replace(/[,.]/g, ' ').replace(/\s+/g, ' ').trim();
+  street = tidy(street);
+  area = tidy(area);
+  if (!number) {
+    const match = HOUSE_NUMBER.exec(street); // the last number is the house; "8-ми Приморски полк 128"
+    if (match) {
+      number = match[1];
+      street = street.slice(0, match.index).trim();
+    }
+  }
+  return { street, area, number: number.replace(/\s+/g, '').toUpperCase(), block, extras, latin: /[a-z]/i.test(street) && !/[а-я]/i.test(street) };
+}
+
+const SKIP_WORDS = new Set(['ул', 'улица', 'бул', 'булевард', 'пл', 'площад', 'кв', 'жк', 'ж', 'к']);
+const words = (text) =>
+  lower(text)
+    .replace(/["„“”«».,()]/g, ' ')
+    .split(/[\s-]+/)
+    .filter((word) => word && !SKIP_WORDS.has(word));
+const numberKey = (text) => lower(text).replace(/бл(?:ок)?\.?/, '').replace(/[^0-9a-zа-я]/g, '');
+
+/**
+ * Photon features → the rows offered for a typed address, best first:
+ * the exact house · the street with the typed number (approximate point) · houses whose number
+ * starts the same · the bare street · places by name. Features that only share the number or
+ * a generic word with the query ("ул." → ул. „13-та“) are dropped.
+ */
+export function addressRows(features, parsed) {
+  const typed = words(parsed.street);
+  const areaWords = words(parsed.area);
+  const wanted = numberKey(parsed.number);
+  const shown = parsed.number ? (parsed.block ? `бл. ${parsed.number}` : parsed.number) : '';
+  const rows = [];
+  const seen = new Set();
+  const exactStreets = new Set();
+  let spare = null; // a house on the right street whose number starts like the typed one
+
+  (features || []).forEach((feature, order) => {
+    const p = feature?.properties || {};
+    const address = fromPhoton(feature);
+    if (!address) return;
+    const streetWords = words(address.street);
+    const placeWords = words(`${p.district || ''} ${p.locality || ''} ${p.city || ''}`);
+    const nameWords = p.type === 'street' ? [] : words(p.name);
+    const starts = (pool) => (word) => pool.some((candidate) => candidate.startsWith(word));
+    const byStreet = parsed.latin || !typed.length || (typed.some(starts(streetWords)) && typed.every(starts([...streetWords, ...placeWords])));
+    const byName = !byStreet && !wanted && nameWords.length > 0 && typed.some(starts(nameWords)) && typed.every(starts([...nameWords, ...placeWords]));
+    if (!byStreet && !byName) return;
+
+    const near = areaWords.length > 0 && areaWords.some(starts(placeWords)) ? 0 : 1;
+    const add = (rank, key, row) => {
+      if (seen.has(key)) return;
+      seen.add(key);
+      rows.push({ rank, near, order, streetKey: lower(address.street), ...row });
+    };
+    const rest = (a) => a.label.split(', ').slice(1).join(', ');
+
+    if (byName) {
+      if (address.precise) add(6, `name|${p.name}|${address.label}`, { title: p.name, subtitle: address.label, address });
+      return;
+    }
+    if (address.precise) {
+      const key = numberKey(p.housenumber);
+      if (wanted && key !== wanted) {
+        if (!key.startsWith(wanted)) return; // another building on the street
+        if (!spare) spare = address;
+        return void add(3, address.label, { title: address.line1, subtitle: rest(address), address });
+      }
+      if (wanted) exactStreets.add(lower(address.street));
+      return void add(wanted ? 0 : 2, address.label, { title: address.line1, subtitle: rest(address), address });
+    }
+    if (wanted) {
+      // the street is known, this house number is not: keep the customer's number, the point is the street's
+      const guess = typedNumberOn(address, shown);
+      return void add(1, `street|${lower(address.street)}|${lower(address.district)}`, { title: guess.line1, subtitle: rest(guess), address: guess });
+    }
+    add(5, `street|${lower(address.street)}|${lower(address.district)}`, { title: address.line1, subtitle: rest(address), address });
+  });
+
+  let out = rows.filter((row) => !(row.rank === 1 && exactStreets.has(row.streetKey)));
+  if (wanted && spare && !out.some((row) => row.rank <= 1)) {
+    const guess = typedNumberOn(spare, shown);
+    out.push({ rank: 1, near: 0, order: -1, title: guess.line1, subtitle: guess.label.split(', ').slice(1).join(', '), address: guess });
+  }
+  return out
+    .sort((a, b) => a.rank - b.rank || a.near - b.near || a.order - b.order)
+    .slice(0, 6)
+    .map(({ title, subtitle, address }) => ({ title, subtitle, resolve: async () => address }));
+}
+
+/** The street of `address` with the house number the customer typed; the point stays approximate. */
+function typedNumberOn(address, number) {
+  const line1 = `${address.street} ${number}`;
+  return {
+    ...address,
+    line1,
+    label: [line1, address.district, address.city].filter(Boolean).join(', '),
+    zip: '',
+    approx: true,
+    precise: true,
+  };
+}
+
+async function photonFeatures(query) {
   const params = new URLSearchParams({
     q: query,
     limit: '10',
@@ -420,16 +627,27 @@ async function osmSearch(query) {
   });
   ['house', 'street'].forEach((layer) => params.append('layer', layer));
   const data = await fetchJson(`${PHOTON_URL}/api/?${params}`);
-  const seen = new Set();
-  const out = [];
-  for (const feature of data?.features || []) {
-    const address = fromPhoton(feature);
-    if (!address || seen.has(address.label)) continue; // several shops at one address → one row
-    seen.add(address.label);
-    out.push({ title: address.line1, subtitle: address.label.split(', ').slice(1).join(', '), resolve: async () => address });
-    if (out.length === 6) break;
+  return data?.features || [];
+}
+
+/** Several spellings of the same question, most telling first; the first that finds something wins. */
+export async function osmSearch(query, isStale = () => false) {
+  const parsed = parseAddressQuery(query);
+  if (!parsed.street) return [];
+  const { street, area, number } = parsed;
+  const spellings = [
+    [street, number, DEFAULT_CITY], // "Мир 33" alone finds nothing, "Мир 33 Варна" does
+    [street, number],
+    area ? [area, street, number] : null,
+    number ? [street, DEFAULT_CITY] : null,
+  ]
+    .filter(Boolean)
+    .map((parts) => parts.filter(Boolean).join(' '));
+  for (const spelling of new Set(spellings)) {
+    const rows = addressRows(await photonFeatures(spelling), parsed);
+    if (rows.length || isStale()) return rows;
   }
-  return out;
+  return [];
 }
 
 async function osmReverse(lat, lng) {
@@ -645,7 +863,7 @@ class SmokyOrderType extends HTMLElement {
     }
     if (results === null) {
       try {
-        results = await osmSearch(query);
+        results = await osmSearch(query, () => seq !== this.searchSeq);
       } catch (_) {
         if (seq === this.searchSeq) {
           this.renderSuggestions([]);
@@ -717,6 +935,11 @@ class SmokyOrderType extends HTMLElement {
       return void this.fail(t('err_lookup'));
     }
     if (!address) return void this.fail(t('err_none'));
+    const { extras } = parseAddressQuery(typed);
+    if (extras.length && !address.extra) {
+      const extra = extras.join(', ');
+      address = { ...address, extra, label: `${address.label}, ${extra}` };
+    }
     this.accept(address, typed);
   }
 

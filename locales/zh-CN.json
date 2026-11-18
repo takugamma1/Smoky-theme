@@ -398,7 +398,7 @@
       "err_pick": "Pick an address from the list.",
       "err_number": "Add the building or block number.",
       "err_area": "We don't deliver to this address yet.",
-      "err_none": "We couldn't find this address.",
+      "err_none": "We couldn’t find that street. Type just the street name and number, e.g. “Mir 33”.",
       "err_lookup": "Address search isn't working right now. Try again.",
       "err_geo_denied": "Allow location access or type the address.",
       "err_geo_fail": "We couldn't find an exact address here. Type it in.",
