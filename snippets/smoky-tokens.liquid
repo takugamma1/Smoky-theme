@@ -255,29 +255,106 @@
     border-radius: 16px;
   }
 
+  /* no rule between products: the spacing separates them */
   #cart-drawer .cart-items__table-row {
-    border-bottom: 2px dotted rgb(40 40 40 / 0.3) !important;
+    border-bottom: 0 !important;
+    padding-bottom: 0;
+    margin-bottom: 22px;
   }
 
-  #cart-drawer quantity-selector-component,
-  #cart-drawer .cart-items__quantity-controls,
-  #cart-drawer .quantity-selector {
+  #cart-drawer .cart-items__table-row:last-child { margin-bottom: 8px; }
+
+  /* quantity: ONE white pill — round sand «−», bold number, round pink «+» — and the bin as
+     its own round button beside it (the old rule drew a pill inside a pill) */
+  #cart-drawer .cart-items__quantity-controls {
+    gap: 10px;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+    overflow: visible;
+  }
+
+  #cart-drawer .cart-items .quantity-selector {
+    --quantity-selector-width: 124px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: var(--quantity-selector-width);
+    height: 46px;
+    padding: 4px;
     border: var(--smoky-border) !important;
     border-radius: 999px !important;
-    background: var(--smoky-cream) !important;
+    background: #fff !important;
     color: var(--smoky-dark);
-    overflow: hidden;
+    box-shadow: 0 3px 0 var(--smoky-shadow-color);
+    overflow: visible;
   }
 
-  #cart-drawer .cart-items__remove,
-  #cart-drawer .cart-items__remove .button-text {
-    color: var(--smoky-pink);
-    font-family: var(--smoky-font-heading);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 0.75rem;
+  #cart-drawer .cart-items .quantity-selector button {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-sand);
+    color: var(--smoky-dark);
+    transition: transform var(--smoky-anim-bounce);
   }
+
+  #cart-drawer .cart-items .quantity-selector button.quantity-plus {
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+  }
+
+  #cart-drawer .cart-items .quantity-selector button:hover:not(:disabled) { transform: scale(1.1); }
+  #cart-drawer .cart-items .quantity-selector button:active:not(:disabled) { transform: scale(0.92); }
+  #cart-drawer .cart-items .quantity-selector button:disabled { opacity: 0.4; }
+
+  #cart-drawer .cart-items .quantity-selector button .svg-wrapper,
+  #cart-drawer .cart-items .quantity-selector button svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+  }
+
+  #cart-drawer .cart-items .quantity-selector input {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: 1.2rem;
+    line-height: 1;
+    text-align: center;
+  }
+
+  #cart-drawer .cart-items__remove {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--smoky-dark);
+    transition: transform var(--smoky-anim-bounce), background-color 0.2s ease;
+  }
+
+  #cart-drawer .cart-items__remove svg { width: 18px; height: 18px; }
+  #cart-drawer .cart-items__remove:hover { background: var(--smoky-pink-soft); transform: rotate(-8deg); }
 
   #cart-drawer .cart-drawer__summary {
     border-top: 2px dotted rgb(40 40 40 / 0.3);
