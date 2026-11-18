@@ -1,0 +1,329 @@
+{%- doc -%}
+  Delivery details inside the cart drawer: exact address (search-as-you-type + "use my
+  location"), contact phone and an optional delivery note. Behaviour lives in
+  assets/smoky-cart-delivery.js:
+
+    - the address is only accepted when it is picked from the lookup, so it always carries a
+      street + number (or block), city, postcode and coordinates — what Google Maps shows and
+      what the Wolt courier needs;
+    - lookup = Google Maps when Theme settings → „Smoky — Доставка“ has an API key,
+      otherwise OpenStreetMap (works without a key, less precise);
+    - everything is saved on the cart (attributes „Адрес за доставка“, „Координати“,
+      „Пощенски код“, „Телефон“ + the cart note) and handed to checkout through the
+      Storefront API, so checkout opens with the address and phone already filled in;
+    - „Поръчай“ stays blocked until the address and phone are valid.
+
+  The element opts out of drawer morphing (data-skip-subtree-update): its state is owned
+  by the script, a cart update must never wipe what the customer is typing.
+{%- enddoc -%}
+
+<smoky-cart-delivery
+  class="smoky-dlv"
+  data-skip-subtree-update
+  data-address="{{ cart.attributes['Адрес за доставка'] | escape }}"
+  data-coords="{{ cart.attributes['Координати'] | escape }}"
+  data-zip="{{ cart.attributes['Пощенски код'] | escape }}"
+  data-phone="{{ cart.attributes['Телефон'] | escape }}"
+  data-note="{{ cart.note | escape }}"
+  data-maps-key="{{ settings.smoky_maps_key | strip | escape }}"
+  data-locale="{{ request.locale.iso_code | escape }}"
+>
+  <script type="application/json" data-dlv-strings>
+    {
+      "locating": {{ 'smoky.delivery.locating' | t | json }},
+      "err_pick": {{ 'smoky.delivery.err_pick' | t | json }},
+      "err_number": {{ 'smoky.delivery.err_number' | t | json }},
+      "err_area": {{ 'smoky.delivery.err_area' | t | json }},
+      "err_none": {{ 'smoky.delivery.err_none' | t | json }},
+      "err_lookup": {{ 'smoky.delivery.err_lookup' | t | json }},
+      "err_geo_denied": {{ 'smoky.delivery.err_geo_denied' | t | json }},
+      "err_geo_fail": {{ 'smoky.delivery.err_geo_fail' | t | json }},
+      "err_phone": {{ 'smoky.delivery.err_phone' | t | json }},
+      "err_save": {{ 'smoky.delivery.err_save' | t | json }}
+    }
+  </script>
+
+  <h3 class="smoky-dlv__title">{{ 'smoky.delivery.title' | t }}</h3>
+
+  <div class="smoky-dlv__field" data-dlv-field="address">
+    <label class="smoky-dlv__label" for="smoky-dlv-address">{{ 'smoky.delivery.address_label' | t }}</label>
+    <div class="smoky-dlv__row">
+      <input
+        id="smoky-dlv-address"
+        class="smoky-dlv__input"
+        type="text"
+        name="smoky-dlv-address"
+        autocomplete="off"
+        autocapitalize="words"
+        spellcheck="false"
+        enterkeyhint="search"
+        placeholder="{{ 'smoky.delivery.address_placeholder' | t }}"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls="smoky-dlv-suggestions"
+        data-dlv-address
+        data-skip-node-update
+      >
+      <button
+        type="button"
+        class="smoky-dlv__locate"
+        data-dlv-locate
+        aria-label="{{ 'smoky.delivery.locate' | t }}"
+        title="{{ 'smoky.delivery.locate' | t }}"
+      >
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="6.2" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2.2v3.2M12 18.6v3.2M2.2 12h3.2M18.6 12h3.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <ul class="smoky-dlv__suggestions" id="smoky-dlv-suggestions" role="listbox" data-dlv-suggestions hidden></ul>
+    <p class="smoky-dlv__ok" data-dlv-address-ok hidden>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.4 4.4L19 7.4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-dlv-address-ok-text></span>
+    </p>
+    <p class="smoky-dlv__error" data-dlv-error="address" role="alert" hidden></p>
+  </div>
+
+  <div class="smoky-dlv__field" data-dlv-field="phone">
+    <label class="smoky-dlv__label" for="smoky-dlv-phone">{{ 'smoky.delivery.phone_label' | t }}</label>
+    <input
+      id="smoky-dlv-phone"
+      class="smoky-dlv__input"
+      type="tel"
+      name="smoky-dlv-phone"
+      inputmode="tel"
+      autocomplete="tel"
+      placeholder="0888 123 456"
+      data-dlv-phone
+      data-skip-node-update
+    >
+    <p class="smoky-dlv__error" data-dlv-error="phone" role="alert" hidden></p>
+  </div>
+
+  <div class="smoky-dlv__note">
+    <button type="button" class="smoky-dlv__note-toggle" data-dlv-note-toggle aria-expanded="false" aria-controls="smoky-dlv-note">
+      <span class="smoky-dlv__note-plus" aria-hidden="true"></span>
+      <span>{{ 'smoky.delivery.note_toggle' | t }}</span>
+      <small>({{ 'smoky.delivery.optional' | t }})</small>
+    </button>
+    <textarea
+      id="smoky-dlv-note"
+      class="smoky-dlv__input smoky-dlv__textarea"
+      name="smoky-dlv-note"
+      rows="2"
+      maxlength="300"
+      placeholder="{{ 'smoky.delivery.note_placeholder' | t }}"
+      aria-label="{{ 'smoky.delivery.note_toggle' | t }}"
+      data-dlv-note
+      data-skip-node-update
+      hidden
+    ></textarea>
+  </div>
+
+  <p class="smoky-dlv__error" data-dlv-error="save" role="alert" hidden></p>
+</smoky-cart-delivery>
+
+{% stylesheet %}
+  .smoky-dlv {
+    display: block;
+    padding: 18px var(--cart-drawer-padding, 20px) 22px;
+    border-top: 2px dotted rgb(40 40 40 / 0.3);
+    color: var(--smoky-dark);
+  }
+
+  .smoky-dlv__title {
+    margin: 0 0 12px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: 1.35rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .smoky-dlv__field { position: relative; margin-bottom: 12px; }
+
+  .smoky-dlv__label {
+    display: block;
+    margin: 0 0 5px 14px;
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .smoky-dlv__row { display: flex; align-items: center; gap: 8px; }
+
+  /* id-level specificity: Horizon paints every text input with its own light background */
+  #cart-drawer .smoky-dlv__input,
+  .smoky-dlv .smoky-dlv__input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    margin: 0;
+    padding: 0 18px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 16px; /* 16px keeps iOS from zooming the page on focus */
+    font-weight: 500;
+    line-height: 1.2;
+    box-shadow: none;
+    outline: none;
+    transition: box-shadow 0.15s ease;
+  }
+
+  #cart-drawer .smoky-dlv__input::placeholder,
+  .smoky-dlv .smoky-dlv__input::placeholder { color: rgb(40 40 40 / 0.45); }
+
+  #cart-drawer .smoky-dlv__input:focus-visible,
+  .smoky-dlv .smoky-dlv__input:focus-visible { box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  #cart-drawer .smoky-dlv__field.is-error .smoky-dlv__input,
+  .smoky-dlv .smoky-dlv__field.is-error .smoky-dlv__input { border-color: var(--smoky-pink); box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  #cart-drawer .smoky-dlv__textarea,
+  .smoky-dlv .smoky-dlv__textarea {
+    display: block;
+    height: auto;
+    min-height: 76px;
+    margin-top: 8px;
+    padding: 12px 18px;
+    border-radius: 20px;
+    resize: vertical;
+  }
+
+  #cart-drawer .smoky-dlv__textarea[hidden],
+  .smoky-dlv .smoky-dlv__textarea[hidden] { display: none; }
+
+  .smoky-dlv__locate {
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-dlv__locate svg { width: 26px; height: 26px; display: block; }
+  .smoky-dlv__locate:hover { transform: translateY(-2px) rotate(-8deg); }
+  .smoky-dlv__locate:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--smoky-shadow-color); }
+  .smoky-dlv__locate.is-busy { pointer-events: none; }
+  .smoky-dlv__locate.is-busy svg { animation: smoky-dlv-spin 1s linear infinite; }
+
+  @keyframes smoky-dlv-spin { to { transform: rotate(360deg); } }
+
+  /* suggestions: white card with the hard pink shadow of the language switcher */
+  .smoky-dlv__suggestions {
+    list-style: none;
+    margin: 8px 3px 0 0;
+    padding: 6px;
+    border: var(--smoky-border);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 4px 5px 0 var(--smoky-pink);
+  }
+
+  .smoky-dlv__suggestions[hidden] { display: none; }
+
+  .smoky-dlv__suggestion {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 0.95rem;
+    line-height: 1.25;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .smoky-dlv__suggestion strong { display: block; font-weight: 700; }
+  .smoky-dlv__suggestion span { display: block; font-size: 0.82rem; opacity: 0.65; }
+  .smoky-dlv__suggestion:hover,
+  .smoky-dlv__suggestion.is-active { background: var(--smoky-sand); }
+
+  .smoky-dlv__ok,
+  .smoky-dlv__error {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 7px 0 0 14px;
+    font-family: var(--smoky-font-body);
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .smoky-dlv__ok[hidden],
+  .smoky-dlv__error[hidden] { display: none; }
+  .smoky-dlv__ok svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 1px; color: #1f8a4c; }
+  .smoky-dlv__error { color: #c8005f; }
+  .smoky-dlv > .smoky-dlv__error { margin-top: 12px; }
+
+  .smoky-dlv__note-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    margin-left: 6px;
+    padding: 4px 8px;
+    border: 0;
+    background: none;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .smoky-dlv__note-toggle small { font-size: 0.74rem; font-weight: 500; opacity: 0.6; }
+
+  .smoky-dlv__note-plus {
+    position: relative;
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink-soft);
+  }
+
+  .smoky-dlv__note-plus::before,
+  .smoky-dlv__note-plus::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 2px;
+    margin: -1px 0 0 -5px;
+    background: var(--smoky-dark);
+    transition: transform 0.2s ease;
+  }
+
+  .smoky-dlv__note-plus::after { transform: rotate(90deg); }
+  .smoky-dlv__note-toggle[aria-expanded='true'] .smoky-dlv__note-plus::after { transform: rotate(0deg); }
+
+  /* „Поръчай“ while the details are being saved */
+  .cart__checkout-button.is-smoky-busy { opacity: 0.65; pointer-events: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .smoky-dlv__locate.is-busy svg { animation: none; }
+  }
+{% endstylesheet %}

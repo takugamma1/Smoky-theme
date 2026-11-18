@@ -354,6 +354,26 @@
     }
   },
   "smoky": {
+    "delivery": {
+      "title": "Lieferung",
+      "address_label": "Lieferadresse",
+      "address_placeholder": "Straße und Hausnummer",
+      "locate": "Meinen Standort verwenden",
+      "locating": "Standort wird ermittelt…",
+      "phone_label": "Telefon",
+      "note_toggle": "Liefernotiz",
+      "optional": "optional",
+      "note_placeholder": "Eingang, Etage, Klingel…",
+      "err_pick": "Bitte wähle eine Adresse aus der Liste.",
+      "err_number": "Bitte ergänze die Hausnummer.",
+      "err_area": "Dorthin liefern wir noch nicht.",
+      "err_none": "Diese Adresse haben wir nicht gefunden.",
+      "err_lookup": "Die Adresssuche funktioniert gerade nicht. Bitte versuche es erneut.",
+      "err_geo_denied": "Erlaube den Standortzugriff oder gib die Adresse ein.",
+      "err_geo_fail": "Hier haben wir keine genaue Adresse gefunden. Bitte gib sie ein.",
+      "err_phone": "Bitte gib eine gültige Handynummer ein.",
+      "err_save": "Deine Angaben konnten nicht gespeichert werden. Bitte versuche es erneut."
+    },
     "footer": {
       "we_are_here": "Hier sind wir"
     },

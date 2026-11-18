@@ -6,6 +6,18 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {%- comment -%}
+      Smoky: the cart lives in the drawer, where the delivery address, phone and note are
+      collected (snippets/smoky-cart-delivery.liquid). The /cart page would skip that, so it
+      opens the menu with the drawer open instead (?cart=open is handled in smoky-cart-delivery.js).
+    {%- endcomment -%}
+    {%- if template.name == 'cart' and settings.cart_type == 'drawer' -%}
+      {%- unless request.design_mode -%}
+        {%- assign smoky_menu_url = pages['меню'].url | default: routes.root_url -%}
+        <script>window.location.replace({{ smoky_menu_url | append: '?cart=open' | json }});</script>
+      {%- endunless -%}
+    {%- endif -%}
+
     {%- if settings.favicon != blank -%}
       <link
         rel="icon"

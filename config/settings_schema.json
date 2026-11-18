@@ -2116,5 +2116,20 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Smoky — Доставка",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Адресът в кошницата се избира от списък, за да е точен за куриера. С ключ за Google Maps адресите са същите като в Google Maps; без ключ се ползва OpenStreetMap."
+      },
+      {
+        "type": "text",
+        "id": "smoky_maps_key",
+        "label": "Google Maps API ключ",
+        "info": "Ключ от Google Cloud с включени Maps JavaScript API, Places API (New) и Geocoding API, ограничен до smoky.bg."
+      }
+    ]
   }
 ]

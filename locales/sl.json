@@ -368,6 +368,26 @@
     }
   },
   "smoky": {
+    "delivery": {
+      "title": "Delivery",
+      "address_label": "Delivery address",
+      "address_placeholder": "Street and number",
+      "locate": "Use my current location",
+      "locating": "Finding you…",
+      "phone_label": "Phone",
+      "note_toggle": "Delivery note",
+      "optional": "optional",
+      "note_placeholder": "Entrance, floor, doorbell…",
+      "err_pick": "Pick an address from the list.",
+      "err_number": "Add the building or block number.",
+      "err_area": "We don't deliver to this address yet.",
+      "err_none": "We couldn't find this address.",
+      "err_lookup": "Address search isn't working right now. Try again.",
+      "err_geo_denied": "Allow location access or type the address.",
+      "err_geo_fail": "We couldn't find an exact address here. Type it in.",
+      "err_phone": "Enter a valid mobile number.",
+      "err_save": "We couldn't save your details. Try again."
+    },
     "footer": {
       "we_are_here": "We're here"
     },
