@@ -40,6 +40,9 @@ const STOREFRONT_API = '/api/2026-10/graphql.json';
 const CENTER = { lat: 43.2141, lng: 27.9147 };
 const AREA = { west: 27.6, south: 43.05, east: 28.2, north: 43.45 };
 const DEFAULT_CITY = 'Варна';
+// Checkout will not show delivery options without a postcode, and nobody knows theirs by heart:
+// when the lookup has none for the address, Varna's general one goes in.
+const DEFAULT_ZIP = '9000';
 const LOOKUP_LANG = 'bg';
 
 const inArea = (lat, lng) => lat >= AREA.south && lat <= AREA.north && lng >= AREA.west && lng <= AREA.east;
@@ -126,7 +129,7 @@ function cartAttributes() {
     [ATTR.address]: address ? address.label : '',
     // an approximate point (street matched, house number typed) is not sent as the drop-off pin
     [ATTR.coords]: address && address.lat != null && !address.approx ? `${address.lat},${address.lng}` : '',
-    [ATTR.zip]: address ? address.zip || '' : '',
+    [ATTR.zip]: address ? address.zip || DEFAULT_ZIP : '',
     [ATTR.phone]: '', // the phone is collected at checkout now
   };
 }
@@ -173,7 +176,7 @@ const deliveryAddressInput = (address) => ({
       address1: address.line1,
       ...(address.extra ? { address2: address.extra } : {}),
       city: address.city || DEFAULT_CITY,
-      zip: address.zip || '',
+      zip: address.zip || DEFAULT_ZIP,
       countryCode: 'BG',
     },
   },
@@ -609,8 +612,7 @@ function typedNumberOn(address, number) {
   return {
     ...address,
     line1,
-    label: [line1, address.district, address.city].filter(Boolean).join(', '),
-    zip: '',
+    label: [line1, address.district, [address.zip, address.city].filter(Boolean).join(' ')].filter(Boolean).join(', '),
     approx: true,
     precise: true,
   };
@@ -950,8 +952,7 @@ class SmokyOrderType extends HTMLElement {
       const number = !useGoogle() && /(\d+\s?[A-Za-zА-Яа-я]?)\s*$/.exec(typed.trim())?.[1];
       if (number) {
         // the point is somewhere along the street, not this building: keep it only as an estimate
-        const line1 = `${address.street} ${number.replace(/\s+/g, '')}`;
-        address = { ...address, line1, label: `${line1}, ${address.city}`, zip: '', approx: true, precise: true };
+        address = typedNumberOn(address, number.replace(/\s+/g, '').toUpperCase());
       } else {
         // keep the street, ask for the number, search again from there
         this.renderSuggestions([]);
