@@ -1,7 +1,10 @@
 {%- doc -%}
   Cart drawer, under the items: what the customer chose in the "Доставка или вземане?" bubble
-  (snippets/smoky-order-type.liquid) with a "Промени" that reopens it, and the optional note.
-  The address is NOT typed here any more — it is picked in the bubble before the menu.
+  (snippets/smoky-order-type.liquid) with a "Промени" that reopens it, the phone number and
+  the optional note. The address is NOT typed here — it is picked in the bubble before the menu.
+  The phone is typed ONCE, here: it is remembered on the device, saved on the cart (attribute
+  „Телефон“, which the kitchen screen, the Barsy bill and the courier request read) and put on
+  the delivery address so checkout opens with it filled in.
   Behaviour: assets/smoky-cart-delivery.js.
 
   The element opts out of drawer morphing (data-skip-subtree-update): its state is owned by
@@ -12,6 +15,7 @@
   class="smoky-dlv"
   data-skip-subtree-update
   data-note="{{ cart.note | escape }}"
+  data-phone="{{ cart.attributes['Телефон'] | escape }}"
 >
   <button type="button" class="smoky-dlv__choice is-empty" data-ot-open data-dlv-choice>
     <span class="smoky-dlv__choice-icon" aria-hidden="true">
@@ -24,6 +28,23 @@
     </span>
     <span class="smoky-dlv__change" data-dlv-change hidden>{{ 'smoky.order.change' | t }}</span>
   </button>
+
+  <div class="smoky-dlv__phone" data-dlv-phone-field>
+    <label class="smoky-dlv__label" for="smoky-dlv-phone">{{ 'smoky.delivery.phone_label' | t }}</label>
+    <input
+      id="smoky-dlv-phone"
+      class="smoky-dlv__input smoky-dlv__phone-input"
+      type="tel"
+      name="smoky-dlv-phone"
+      inputmode="tel"
+      autocomplete="tel"
+      maxlength="20"
+      placeholder="0888 123 456"
+      data-dlv-phone
+      data-skip-node-update
+    >
+    <p class="smoky-dlv__error" data-dlv-error="phone" role="alert" hidden></p>
+  </div>
 
   <div class="smoky-dlv__note">
     <button type="button" class="smoky-dlv__note-toggle" data-dlv-note-toggle aria-expanded="false" aria-controls="smoky-dlv-note">
@@ -146,6 +167,51 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.025); }
   }
+
+  /* phone: typed once here, it travels with the order */
+  .smoky-dlv__phone { margin-top: 14px; }
+
+  .smoky-dlv__label {
+    display: block;
+    margin: 0 0 6px 4px;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* id-level specificity: Horizon paints every text field with its own light background */
+  #cart-drawer .smoky-dlv__phone-input,
+  .smoky-dlv .smoky-dlv__phone-input {
+    display: block;
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0 18px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 16px; /* 16px keeps iOS from zooming the page on focus */
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: none;
+    outline: none;
+  }
+
+  #cart-drawer .smoky-dlv__phone-input::placeholder,
+  .smoky-dlv .smoky-dlv__phone-input::placeholder { color: rgb(40 40 40 / 0.4); font-weight: 500; }
+
+  #cart-drawer .smoky-dlv__phone-input:focus-visible,
+  .smoky-dlv .smoky-dlv__phone-input:focus-visible { box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  #cart-drawer .smoky-dlv__phone.is-error .smoky-dlv__phone-input,
+  .smoky-dlv .smoky-dlv__phone.is-error .smoky-dlv__phone-input { border-color: var(--smoky-pink); box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  .smoky-dlv__phone .smoky-dlv__error { margin: 6px 0 0 14px; }
 
   /* note */
   .smoky-dlv__note { margin-top: 12px; }

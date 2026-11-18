@@ -17,8 +17,9 @@
  * know the street, so an address counts as deliverable only when both agree.
  *
  * The choice is saved on the cart (attributes „Получаване“, „Адрес за доставка“, „Координати“,
- * „Пощенски код“ + the note) and handed to checkout through the Storefront API (delivery
- * address / pickup preference), so checkout opens with it already filled in.
+ * „Пощенски код“, „Телефон“ + the note) and handed to checkout through the Storefront API
+ * (delivery address with the phone / pickup preference), so checkout opens with it filled in.
+ * The phone is typed once, in the cart drawer; the order cannot go to checkout without it.
  *
  * Opening hours (theme settings, Bulgarian time): outside them nothing can be ordered — the
  * bubble says when orders are taken and the checkout button is locked; after the last delivery
@@ -166,15 +167,43 @@ async function syncClock() {
  * mode:    'delivery' | 'pickup' | null
  * address: { line1, street, city, zip, lat, lng, label, precise, approx } | null
  * zone:    { min, fee } (cents) | { out: true } | null
+ * phone:   '+359888123456' (E.164) | ''
  */
+/**
+ * What people type → E.164, or null when it cannot be a phone number.
+ * "0888 123 456", "888123456", "+359 888 123456", "00359888123456", "359888123456" → "+359888123456";
+ * another country's number must come with its + code.
+ */
+export function normalizePhone(raw) {
+  let d = String(raw || '').replace(/[^\d+]/g, '');
+  if (d.startsWith('00')) d = `+${d.slice(2)}`;
+  if (d.startsWith('+')) {
+    d = `+${d.slice(1).replace(/\+/g, '')}`;
+    if (d.startsWith('+359')) return /^\+359[1-9]\d{7,8}$/.test(d) ? d : null;
+    return /^\+[1-9]\d{7,14}$/.test(d) ? d : null;
+  }
+  if (/^359[1-9]\d{7,8}$/.test(d)) return `+${d}`;
+  if (/^0[1-9]\d{7,8}$/.test(d)) return `+359${d.slice(1)}`;
+  if (/^[89]\d{8}$/.test(d)) return `+359${d}`;
+  return null;
+}
+
+/** "+359888123456" → "0888 123 456" (how it is read out loud here); other numbers stay as they are. */
+export function showPhone(e164) {
+  const text = String(e164 || '');
+  const mobile = /^\+359(\d{3})(\d{3})(\d{3})$/.exec(text);
+  if (mobile) return `0${mobile[1]} ${mobile[2]} ${mobile[3]}`;
+  return text.startsWith('+359') ? `0${text.slice(4)}` : text;
+}
+
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-    if (saved && typeof saved === 'object') return { mode: saved.mode || null, address: saved.address || null, zone: saved.zone || null };
+    if (saved && typeof saved === 'object') return { mode: saved.mode || null, address: saved.address || null, zone: saved.zone || null, phone: normalizePhone(saved.phone) || '' };
   } catch (_) {
     /* private mode / blocked storage */
   }
-  return { mode: null, address: null, zone: null };
+  return { mode: null, address: null, zone: null, phone: '' };
 }
 
 const state = loadState();
@@ -200,7 +229,7 @@ function cartAttributes() {
     // an approximate point (street matched, house number typed) is not sent as the drop-off pin
     [ATTR.coords]: address && address.lat != null && !address.approx ? `${address.lat},${address.lng}` : '',
     [ATTR.zip]: address ? address.zip || DEFAULT_ZIP : '',
-    [ATTR.phone]: '', // the phone is collected at checkout now
+    [ATTR.phone]: state.phone || '', // typed once in the cart; the kitchen, Barsy and the courier read it
   };
 }
 
@@ -240,7 +269,7 @@ async function storefront(query, variables) {
   return json.data;
 }
 
-const deliveryAddressInput = (address) => ({
+const deliveryAddressInput = (address, phone = '') => ({
   selected: true,
   oneTimeUse: true,
   address: {
@@ -250,6 +279,7 @@ const deliveryAddressInput = (address) => ({
       city: address.city || DEFAULT_CITY,
       zip: address.zip || DEFAULT_ZIP,
       countryCode: 'BG',
+      ...(phone ? { phone } : {}),
     },
   },
 });
@@ -359,7 +389,7 @@ async function prefillCheckout(cartToken) {
         cartDeliveryAddressesReplace(cartId: $id, addresses: $addresses) { userErrors { code message } }
         cartBuyerIdentityUpdate(cartId: $id, buyerIdentity: $buyer) { userErrors { code message } }
       }`,
-      { id, addresses: [deliveryAddressInput(state.address)], buyer: { countryCode: 'BG', preferences: { delivery: { deliveryMethod: ['SHIPPING'] } } } }
+      { id, addresses: [deliveryAddressInput(state.address, state.phone)], buyer: { countryCode: 'BG', preferences: { delivery: { deliveryMethod: ['SHIPPING'] } } } }
     );
   } else if (state.mode === 'pickup') {
     await storefront(
@@ -1154,6 +1184,13 @@ class SmokyCartDelivery extends HTMLElement {
         else this.noteInput.focus();
       });
       this.noteInput.addEventListener('change', () => cartUpdate({ note: this.note }).catch(() => {}));
+
+      // phone: what this device remembers, else what the cart already carries
+      this.phoneInput = this.$('[data-dlv-phone]');
+      if (!state.phone && normalizePhone(this.dataset.phone)) state.phone = normalizePhone(this.dataset.phone);
+      this.phoneInput.value = showPhone(state.phone);
+      this.phoneInput.addEventListener('input', () => this.setPhoneError(''));
+      this.phoneInput.addEventListener('change', () => this.readPhone({ complain: Boolean(this.phoneInput.value.trim()) }));
     }
     this.render();
   }
@@ -1175,6 +1212,25 @@ class SmokyCartDelivery extends HTMLElement {
   closeNote() {
     this.noteInput.hidden = true;
     this.noteToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  setPhoneError(message) {
+    const el = this.$('[data-dlv-error="phone"]');
+    el.textContent = message || '';
+    el.hidden = !message;
+    this.$('[data-dlv-phone-field]').classList.toggle('is-error', Boolean(message));
+  }
+
+  /** The phone as typed → saved in E.164. Returns it, or '' (with the error shown when asked to). */
+  readPhone({ complain = false, focus = false } = {}) {
+    const phone = normalizePhone(this.phoneInput.value) || '';
+    if (phone !== state.phone) commit({ phone });
+    this.setPhoneError(!phone && complain ? t('err_phone') : '');
+    if (!phone && focus) {
+      this.phoneInput.scrollIntoView?.({ block: 'center', behavior: 'smooth' });
+      this.phoneInput.focus({ preventScroll: true });
+    }
+    return phone;
   }
 
   setError(message) {
@@ -1303,6 +1359,9 @@ async function goToCheckout(button) {
     const step = status.reason === 'address' || status.reason === 'range' ? 'address' : 'choose';
     return void document.querySelector('smoky-order-type')?.open(step);
   }
+
+  // the phone goes with every order (courier, kitchen): no checkout without it
+  if (delivery && !delivery.readPhone({ complain: true, focus: true })) return;
 
   checkoutBusy = true;
   delivery?.setError('');
