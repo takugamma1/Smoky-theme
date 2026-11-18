@@ -456,5 +456,12 @@
       "increase": "Повече",
       "add_error": "Неуспешно добавяне"
     }
+  },
+  "shopify": {
+    "checkout": {
+      "delivery_options": {
+        "pickup": "Взимане от място"
+      }
+    }
   }
 }
