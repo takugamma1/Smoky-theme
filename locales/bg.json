@@ -460,6 +460,7 @@
   "shopify": {
     "checkout": {
       "delivery_options": {
+        "ship": "Доставка",
         "pickup": "Взимане от място"
       }
     }
