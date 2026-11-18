@@ -341,9 +341,9 @@ class SmokyCartDelivery extends HTMLElement {
       address = remembered.address;
     } else if (onCart) {
       const [lat, lng] = (this.dataset.coords || '').split(',').map(Number);
-      if (Number.isFinite(lat) && Number.isFinite(lng)) {
-        address = { line1: onCart.split(',')[0].trim(), street: onCart.split(',')[0].trim(), city: DEFAULT_CITY, zip: this.dataset.zip || '', lat, lng, label: onCart, precise: true };
-      }
+      const located = Number.isFinite(lat) && Number.isFinite(lng) && this.dataset.coords;
+      const line1 = onCart.split(',')[0].trim();
+      address = { line1, street: line1, city: DEFAULT_CITY, zip: this.dataset.zip || '', lat: located ? lat : null, lng: located ? lng : null, label: onCart, precise: true };
     }
     const phone = normalizePhone(this.dataset.phone) || normalizePhone(remembered?.phone);
 
@@ -368,6 +368,9 @@ class SmokyCartDelivery extends HTMLElement {
       if (!this.state.address && this.suggestions.length) this.renderSuggestions(this.suggestions);
     });
     this.list.addEventListener('click', (event) => {
+      // Picking a row removes it from the page. The drawer's own "tapped outside?" check runs
+      // after this handler and would find the tapped element gone → it closed the drawer on phones.
+      event.stopPropagation();
       const row = event.target.closest('[data-index]');
       if (row) this.pick(this.suggestions[Number(row.dataset.index)]);
     });
@@ -523,6 +526,8 @@ class SmokyCartDelivery extends HTMLElement {
   onAddressKey(event) {
     const rows = [...this.list.querySelectorAll('[data-index]')];
     if (event.key === 'Escape') {
+      if (this.list.hidden) return; // nothing to dismiss: Escape closes the drawer as usual
+      event.preventDefault(); // the drawer skips an Escape another component has handled
       this.renderSuggestions([], { keep: true });
       return;
     }
@@ -560,8 +565,10 @@ class SmokyCartDelivery extends HTMLElement {
       // OpenStreetMap knows the street but not the house: take the number the customer typed
       const number = !this.useGoogle() && /(\d+\s?[A-Za-zА-Яа-я]?)\s*$/.exec(typed.trim())?.[1];
       if (number) {
+        // The point OpenStreetMap returned is somewhere along the street, not this building:
+        // keep the text, drop the coordinates, district and postcode rather than send a wrong pin.
         const line1 = `${address.street} ${number.replace(/\s+/g, '')}`;
-        address = { ...address, line1, label: address.label.replace(address.line1, line1), precise: true };
+        address = { ...address, line1, label: `${line1}, ${address.city}`, zip: '', lat: null, lng: null, precise: true };
       } else {
         // keep the street, ask for the number, search again from there
         this.renderSuggestions([]);
@@ -649,7 +656,7 @@ class SmokyCartDelivery extends HTMLElement {
     return {
       attributes: {
         [ATTR.address]: address ? address.label : '',
-        [ATTR.coords]: address ? `${address.lat},${address.lng}` : '',
+        [ATTR.coords]: address && address.lat != null && address.lng != null ? `${address.lat},${address.lng}` : '',
         [ATTR.zip]: address ? address.zip || '' : '',
         [ATTR.phone]: phone || '',
       },

@@ -282,7 +282,17 @@
   #cart-drawer .cart-drawer__summary {
     border-top: 2px dotted rgb(40 40 40 / 0.3);
     mask-image: none;
+    /* pinned to the bottom while the items and the delivery form scroll under it: it must be
+       opaque (same paper as the card), or the scrolling text shows through the totals */
+    background: var(--smoky-cream) var(--smoky-grain-dark) 0 0 / 220px;
   }
+
+  /* the drawer's own colour scheme is a dark one (sand text): on the cream card its secondary
+     text — unit price under the name, the tax note — all but vanished */
+  #cart-drawer .cart-items__details,
+  #cart-drawer .cart-totals__tax-note,
+  #cart-drawer .cart-totals__tax-note small,
+  #cart-drawer .cart-totals__tax-note a { color: rgb(40 40 40 / 0.62); }
 
   #cart-drawer .cart__checkout-button.button,
   #cart-drawer .cart-items__empty-button.button {
@@ -401,6 +411,9 @@
     display: inline-block;
     overflow: hidden;
   }
+
+  /* display:inline-block would beat the hidden attribute («Поръчай» stayed next to «Добавено ✓») */
+  .smoky-roll[hidden] { display: none; }
 
   .smoky-roll > span {
     display: inline-block;
