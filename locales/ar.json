@@ -383,6 +383,8 @@
   },
   "smoky": {
     "order": {
+      "total": "Total",
+      "checkout": "Checkout",
       "q_title": "Delivery or pickup?",
       "q_sub": "Choose, then pick from the menu.",
       "delivery": "Delivery",

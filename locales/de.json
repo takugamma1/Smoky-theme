@@ -355,6 +355,8 @@
   },
   "smoky": {
     "order": {
+      "total": "Gesamt",
+      "checkout": "Zur Kasse",
       "q_title": "Lieferung oder Abholung?",
       "q_sub": "Wähle aus und stöbere dann im Menü.",
       "delivery": "Lieferung",

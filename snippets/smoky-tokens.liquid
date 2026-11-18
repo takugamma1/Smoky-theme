@@ -356,13 +356,52 @@
   #cart-drawer .cart-items__remove svg { width: 18px; height: 18px; }
   #cart-drawer .cart-items__remove:hover { background: var(--smoky-pink-soft); transform: rotate(-8deg); }
 
+  /* One gutter for everything inside the pink dot frame. The dots sit 12–14px in from the card's
+     edge; 30px keeps the title, the close button, the items, the delivery card and the checkout
+     block a clear 13px+ inside them on every side (the totals used to run under the dots). */
+  #cart-drawer .theme-drawer__dialog { --theme-drawer-padding: 30px; }
+  #cart-drawer .theme-drawer__header { padding: 30px 30px 12px; }
+
+  /* Pinned checkout block, kept small so the drawer mostly shows what was ordered:
+     progress bar, discount row, then the total and the button side by side. */
   #cart-drawer .cart-drawer__summary {
-    border-top: 2px dotted rgb(40 40 40 / 0.3);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 16px;
+    padding: 0 30px 30px;
+    border-top: 0;
     mask-image: none;
     /* pinned to the bottom while the items and the delivery form scroll under it: it must be
        opaque (same paper as the card), or the scrolling text shows through the totals */
     background: var(--smoky-cream) var(--smoky-grain-dark) 0 0 / 220px;
   }
+
+  /* the line above the block stops at the gutter, it no longer crosses the dot frame */
+  #cart-drawer .cart-drawer__summary::before {
+    content: '';
+    grid-column: 1 / -1;
+    margin-bottom: 4px;
+    border-top: 2px dotted rgb(40 40 40 / 0.3);
+  }
+
+  #cart-drawer .cart-drawer__summary > *,
+  #cart-drawer .cart-drawer__summary .smoky-prog,
+  #cart-drawer .cart-totals > * { grid-column: 1 / -1; }
+
+  /* the totals wrapper dissolves so its parts sit on the summary's grid */
+  #cart-drawer .cart-totals { display: contents; }
+  #cart-drawer .cart-totals__original-container:empty { display: none; }
+  #cart-drawer .cart-actions { margin: 0; }
+  #cart-drawer .cart-discount__summary { min-height: 32px; padding-block: 0; }
+
+  #cart-drawer .cart-drawer__summary .cart-totals__container { grid-column: 1; margin: 0; padding: 0; border: 0; }
+  #cart-drawer .cart-drawer__summary .cart__ctas { grid-column: 2; }
+
+  #cart-drawer .cart-totals__total { flex-direction: column; align-items: flex-start; gap: 2px; }
+  #cart-drawer .cart-totals__total-value { font-family: var(--smoky-font-heading); font-weight: 800; font-size: 1.4rem; line-height: 1; white-space: nowrap; }
+  #cart-drawer .cart-totals__tax-note { display: none; }
+  #cart-drawer .cart__ctas .cart__checkout-button.button { height: 50px; padding-inline: 12px; font-size: 1rem; }
 
   /* the drawer's own colour scheme is a dark one (sand text): on the cream card its secondary
      text — unit price under the name, the tax note — all but vanished */
@@ -493,21 +532,11 @@
   #cart-drawer .cart-totals__total-label {
     font-family: var(--smoky-font-heading);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.74rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--smoky-dark);
   }
-
-  #cart-drawer .smoky-cart__brand {
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 14px 28px 22px;
-  }
-
-  #cart-drawer .smoky-cart__brand img { width: auto; height: clamp(40px, 4vw, 54px); display: block; }
 
   /* ---- mascot cursor companion (desktop, fine pointers only) ---- */
   .smoky-cursor-mascot {
@@ -782,7 +811,7 @@
   // logo = "go to the start of the homepage": when already on the homepage, a link to the
   // same URL just reloads and restores the scroll position — scroll to the top instead
   document.addEventListener('click', (e) => {
-    const a = e.target.closest('.smoky-nav__logo, .smoky-footer__home, .smoky-drawer__home, .smoky-cart__brand a');
+    const a = e.target.closest('.smoky-nav__logo, .smoky-footer__home, .smoky-drawer__home');
     if (!a) return;
     const target = new URL(a.getAttribute('href'), location.href);
     const same = target.pathname.replace(/\/$/, '') === location.pathname.replace(/\/$/, '');

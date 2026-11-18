@@ -215,9 +215,7 @@ async function probeFee(address) {
   );
   const cart = data?.cartCreate?.cart;
   if (!cart) throw new Error('probe_failed');
-  const groups = cart.deliveryGroups?.nodes || [];
-  if (!groups.length) throw new Error('probe_no_groups'); // rates not calculated: fall back to distance
-  const local = groups
+  const local = (cart.deliveryGroups?.nodes || [])
     .flatMap((group) => group.deliveryOptions || [])
     .filter((option) => option.deliveryMethodType === 'LOCAL')
     .map((option) => Math.round(parseFloat(option.estimatedCost.amount) * 100));
@@ -228,7 +226,10 @@ async function probeFee(address) {
 async function resolveZone(address) {
   const { zones, store } = config();
   try {
-    const fee = await withTimeout(probeFee(address), 7000);
+    // Local delivery is the only way to ship, so "no option" = Shopify will not deliver there.
+    // Asked twice before it is believed: a single empty answer can be a hiccup.
+    let fee = await withTimeout(probeFee(address), 7000);
+    if (fee == null) fee = await withTimeout(probeFee(address), 7000);
     return fee == null ? { out: true } : zoneForFee(zones, fee);
   } catch (error) {
     if (address.lat == null || !Number.isFinite(store.lat) || !Number.isFinite(store.lng)) throw error;
