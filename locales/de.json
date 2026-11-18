@@ -355,6 +355,14 @@
   },
   "smoky": {
     "order": {
+      "closed_title": "Wir haben gerade geschlossen",
+      "closed_text": "Bestellungen täglich von [open] bis [close] Uhr. Lieferung bis [last] Uhr.",
+      "closed_ok": "Speisekarte ansehen",
+      "closed_chip": "Geschlossen · ab [open]",
+      "closed_cart": "Geschlossen — Bestellungen von [open] bis [close] Uhr",
+      "delivery_closed": "Lieferbestellungen endeten heute um [last] Uhr",
+      "delivery_closed_hint": "Abholung im Restaurant ist bis [close] Uhr möglich.",
+      "delivery_until": "bis [last] Uhr",
       "total": "Gesamt",
       "checkout": "Zur Kasse",
       "q_title": "Lieferung oder Abholung?",

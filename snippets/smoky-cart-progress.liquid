@@ -2,7 +2,9 @@
   Minimum-order progress bar, pinned above the totals in the cart drawer. For a delivery order
   it fills up towards the zone's minimum ("Още €3,61 до минималната поръчка") and, while it is
   not full, the checkout button is shown locked; reaching the minimum unlocks it. Hidden for
-  pickup (no minimum). Behaviour: assets/smoky-cart-delivery.js.
+  pickup (no minimum). Outside opening hours (or after the last delivery time, for a delivery
+  order) the same place says so and the button stays locked.
+  Behaviour: assets/smoky-cart-delivery.js.
 
   data-total is re-rendered by Shopify on every cart change (the drawer morph updates the
   attribute even though the subtree is skipped) — that is what moves the bar.
@@ -97,6 +99,10 @@
   .smoky-prog__meta:empty { display: none; }
 
   .smoky-prog.is-done .smoky-prog__text { color: #1f8a4c; }
+
+  /* closed: the line says when orders are taken, there is nothing to fill */
+  .smoky-prog.is-closed .smoky-prog__track { display: none; }
+  .smoky-prog.is-closed .smoky-prog__text { margin-bottom: 0; }
   .smoky-prog.is-done .smoky-prog__dimo { animation: smoky-prog-cheer 0.7s var(--smoky-bounce); }
 
   @keyframes smoky-prog-cheer {

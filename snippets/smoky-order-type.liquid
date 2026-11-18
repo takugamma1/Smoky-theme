@@ -7,6 +7,10 @@
   are shown in the cart, not here. It only stays open for an address we do not deliver to.
   Behaviour: assets/smoky-cart-delivery.js.
 
+  Opening hours (theme settings „Работно време за поръчки“, Bulgarian time): outside them the
+  bubble says when orders are taken instead of asking; after the last delivery time only
+  "Вземане" can be chosen. The cart's checkout button follows the same clock.
+
   Rendered once per page from layout/theme.liquid. It also carries the configuration the cart
   pieces read (zones, restaurant position, lookup key, translated strings).
 
@@ -27,6 +31,9 @@
   data-store-lng="{{ settings.smoky_store_lng | strip | escape }}"
   data-store-address="{{ settings.smoky_store_address | escape }}"
   data-pickup="{{ settings.smoky_pickup_enabled }}"
+  data-open="{{ settings.smoky_open_time | strip | escape }}"
+  data-close="{{ settings.smoky_close_time | strip | escape }}"
+  data-last-delivery="{{ settings.smoky_last_delivery_time | strip | escape }}"
   data-maps-key="{{ settings.smoky_maps_key | strip | escape }}"
   data-probe-variant="{{ probe_product.selected_or_first_available_variant.id }}"
   data-probe-price="{{ probe_product.selected_or_first_available_variant.price }}"
@@ -48,6 +55,12 @@
       "pickup_at": {{ 'smoky.order.pickup_at' | t | json }},
       "progress_more": {{ 'smoky.order.progress_more' | t | json }},
       "progress_done": {{ 'smoky.order.progress_done' | t | json }},
+      "closed_text": {{ 'smoky.order.closed_text' | t | json }},
+      "closed_chip": {{ 'smoky.order.closed_chip' | t | json }},
+      "closed_cart": {{ 'smoky.order.closed_cart' | t | json }},
+      "delivery_closed": {{ 'smoky.order.delivery_closed' | t | json }},
+      "delivery_closed_hint": {{ 'smoky.order.delivery_closed_hint' | t | json }},
+      "delivery_until": {{ 'smoky.order.delivery_until' | t | json }},
       "locating": {{ 'smoky.delivery.locating' | t | json }},
       "err_address": {{ 'smoky.delivery.err_address' | t | json }},
       "err_pick": {{ 'smoky.delivery.err_pick' | t | json }},
@@ -98,6 +111,13 @@
             </button>
           {%- endif -%}
         </div>
+      </div>
+
+      {%- comment -%} outside opening hours: no question, just when orders are taken {%- endcomment -%}
+      <div class="smoky-ot__step" data-ot-step="closed" hidden>
+        <h2 class="smoky-ot__title">{{ 'smoky.order.closed_title' | t }}</h2>
+        <p class="smoky-ot__sub" data-ot-closed-text></p>
+        <button type="button" class="smoky-ot__cta" data-ot-close>{{ 'smoky.order.closed_ok' | t }}</button>
       </div>
 
       {%- comment -%} step 2a — delivery address {%- endcomment -%}
@@ -284,6 +304,19 @@
   .smoky-ot__choice + .smoky-ot__choice:hover { transform: translateY(-4px) rotate(2deg); }
   .smoky-ot__choice:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--smoky-shadow-color); }
   .smoky-ot__choice.is-current { background: var(--smoky-pink-soft); }
+
+  /* delivery after the last delivery time: shown, not choosable */
+  .smoky-ot__choice.is-off,
+  .smoky-ot__choice.is-off:hover,
+  .smoky-ot__choice.is-off:active {
+    transform: none;
+    background: var(--smoky-sand);
+    box-shadow: 0 2px 0 var(--smoky-shadow-color);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .smoky-ot__choice.is-off .smoky-ot__choice-icon { background: rgb(40 40 40 / 0.35); }
 
   .smoky-ot__choice-icon {
     width: 60px;
@@ -514,6 +547,8 @@
   .smoky-ot-chip[hidden] { display: none; }
   .smoky-ot-chip:hover { transform: translateY(-3px) rotate(-1.5deg); }
   .smoky-ot-chip.is-empty { background: var(--smoky-pink); color: var(--smoky-cream); }
+  .smoky-ot-chip.is-closed { background: var(--smoky-sand); color: var(--smoky-dark); }
+  .smoky-ot-chip.is-closed .smoky-ot-chip__icon { background: rgb(40 40 40 / 0.35); color: var(--smoky-cream); }
 
   .smoky-ot-chip__icon {
     flex: 0 0 34px;

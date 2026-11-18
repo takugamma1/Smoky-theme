@@ -20,6 +20,11 @@
  * „Пощенски код“ + the note) and handed to checkout through the Storefront API (delivery
  * address / pickup preference), so checkout opens with it already filled in.
  *
+ * Opening hours (theme settings, Bulgarian time): outside them nothing can be ordered — the
+ * bubble says when orders are taken and the checkout button is locked; after the last delivery
+ * time only pickup is left until closing. The clock is the server's (Date header of /cart.js)
+ * when the device's own differs from it.
+ *
  * Lookup: Google Maps (Places + Geocoding) when the theme has an API key, otherwise
  * OpenStreetMap (Photon / Nominatim) — same UI, less precise house numbers. The OpenStreetMap
  * path reads the address the way people write it (parseAddressQuery): „ул./бул./кв./ж.к.“,
@@ -30,6 +35,8 @@
 
 const LS_KEY = 'smoky_order_v2';
 const SS_ASKED = 'smoky_order_asked';
+const SS_CLOSED = 'smoky_order_closed_seen';
+const SHOP_TIMEZONE = 'Europe/Sofia';
 const ATTR = { mode: 'Получаване', address: 'Адрес за доставка', coords: 'Координати', zip: 'Пощенски код', phone: 'Телефон' };
 // order attribute values the kitchen / bridge read (same wording as the other restaurants' shops)
 const MODE_VALUE = { delivery: 'Доставка', pickup: 'Вземане от място' };
@@ -64,6 +71,35 @@ export function parseZones(text) {
     .sort((a, b) => a.radius - b.radius);
 }
 
+/** "09:00" → 540 (minutes after midnight); null when it is not a time. */
+export function parseTime(text) {
+  const match = /^\s*(\d{1,2})[:.](\d{2})\s*$/.exec(String(text || ''));
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  return hours <= 24 && minutes < 60 ? hours * 60 + minutes : null;
+}
+
+/** Minutes after midnight at the restaurant for a moment in time (epoch ms). */
+export function shopMinutes(epochMs, timeZone = SHOP_TIMEZONE) {
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(epochMs));
+  const part = (type) => Number(parts.find((p) => p.type === type)?.value || 0);
+  return part('hour') * 60 + part('minute');
+}
+
+/**
+ * hours = { open, close, lastDelivery } in minutes after midnight (no open/close = always open).
+ * → { open, delivery }: are orders taken at all, and are delivery orders taken.
+ * The closing minute is already closed; the last delivery minute still counts ("20:40 is the
+ * last moment to order").
+ */
+export function hoursStatus(minutes, hours) {
+  const { open, close, lastDelivery } = hours || {};
+  if (open == null || close == null) return { open: true, delivery: true };
+  const isOpen = open < close ? minutes >= open && minutes < close : minutes >= open || minutes < close;
+  return { open: isOpen, delivery: isOpen && (lastDelivery == null || minutes <= lastDelivery) };
+}
+
 let cachedConfig = null;
 function config() {
   if (cachedConfig) return cachedConfig;
@@ -79,6 +115,7 @@ function config() {
     zones: parseZones(d.zones),
     store: { lat: parseFloat(d.storeLat), lng: parseFloat(d.storeLng), address: d.storeAddress || '' },
     pickup: d.pickup !== 'false',
+    hours: { open: parseTime(d.open), close: parseTime(d.close), lastDelivery: parseTime(d.lastDelivery) },
     mapsKey: d.mapsKey || '',
     probeVariant: d.probeVariant || '',
     probePrice: Number(d.probePrice || 0),
@@ -89,6 +126,39 @@ function config() {
 }
 
 const t = (key) => config().strings[key] || '';
+
+/* ── the clock ───────────────────────────────────────── */
+
+let clockOffset = 0; // server time − device time, when the device clock is off
+const now = () => Date.now() + clockOffset;
+const openNow = () => hoursStatus(shopMinutes(now()), config().hours);
+const showTime = (minutes) => `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, '0')}`;
+/** "от [open] до [close]" with the hours from the settings. */
+const withHours = (text) => {
+  const { open, close, lastDelivery } = config().hours;
+  return String(text || '')
+    .replace('[open]', showTime(open ?? 0))
+    .replace('[close]', showTime(close ?? 0))
+    .replace('[last]', showTime(lastDelivery ?? close ?? 0));
+};
+const announce = () => document.dispatchEvent(new CustomEvent('smoky:order', { detail: state }));
+
+/** A device clock that is right to the minute is left alone; a real difference is corrected. */
+async function syncClock() {
+  try {
+    const started = Date.now();
+    const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart.js`, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+    const server = Date.parse(response.headers.get('Date') || '');
+    if (!Number.isFinite(server)) return;
+    const offset = server - (started + Date.now()) / 2;
+    if (Math.abs(offset) > 90000) {
+      clockOffset = offset;
+      announce();
+    }
+  } catch (_) {
+    /* the device clock it is */
+  }
+}
 
 /* ── state ───────────────────────────────────────────── */
 
@@ -119,7 +189,7 @@ function commit(patch) {
   }
   clearTimeout(cartSyncTimer);
   cartSyncTimer = setTimeout(() => cartUpdate({ attributes: cartAttributes() }).catch(() => {}), 300);
-  document.dispatchEvent(new CustomEvent('smoky:order', { detail: state }));
+  announce();
 }
 
 function cartAttributes() {
@@ -134,10 +204,12 @@ function cartAttributes() {
   };
 }
 
-/** Can this cart go to checkout? `reason`: choose | address | range | min. */
-export function orderStatus(current, totalCents) {
+/** Can this cart go to checkout? `reason`: closed | choose | delivery-closed | address | range | min. */
+export function orderStatus(current, totalCents, hours = { open: true, delivery: true }) {
+  if (!hours.open) return { ok: false, reason: 'closed' };
   if (!current.mode) return { ok: false, reason: 'choose' };
   if (current.mode === 'pickup') return { ok: true };
+  if (!hours.delivery) return { ok: false, reason: 'delivery-closed' };
   if (!current.address) return { ok: false, reason: 'address' };
   if (!current.zone || current.zone.out) return { ok: false, reason: 'range' };
   if (totalCents < current.zone.min) return { ok: false, reason: 'min', missing: current.zone.min - totalCents };
@@ -713,13 +785,19 @@ class SmokyOrderType extends HTMLElement {
     // the cart may have lost the choice (new cart, other tab): put it back
     if (state.mode && (this.dataset.cartMode || '') !== MODE_VALUE[state.mode]) commit({});
 
-    let asked = false;
-    try {
-      asked = Boolean(sessionStorage.getItem(SS_ASKED));
-    } catch (_) {
-      asked = false;
-    }
-    if (this.dataset.auto === 'true' && !state.mode && !asked) setTimeout(() => this.open('choose'), 900);
+    const seen = (key) => {
+      try {
+        return Boolean(sessionStorage.getItem(key));
+      } catch (_) {
+        return false;
+      }
+    };
+    // closed: say when orders are taken (once per visit); open: ask the question (once per visit)
+    const shouldOpen = openNow().open ? !state.mode && !seen(SS_ASKED) : !seen(SS_CLOSED);
+    if (this.dataset.auto === 'true' && shouldOpen) setTimeout(() => this.open('choose'), 900);
+
+    syncClock();
+    setInterval(announce, 30000); // opening, last delivery and closing arrive while the page is open
   }
 
   bind() {
@@ -746,7 +824,7 @@ class SmokyOrderType extends HTMLElement {
     // first and bring it back once the choice is made.
     this.reopenDrawer = Boolean(drawer?.querySelector('dialog')?.open);
     if (this.reopenDrawer) drawer.close?.();
-    this.show(step);
+    this.show(openNow().open ? step : 'closed');
     if (!this.dialog.open) this.dialog.showModal();
   }
 
@@ -757,7 +835,8 @@ class SmokyOrderType extends HTMLElement {
   onClosed() {
     this.checkSeq++; // closed while an address was being checked: that answer is dropped
     try {
-      sessionStorage.setItem(SS_ASKED, '1'); // asked once per visit; the chip and the cart keep offering it
+      // once per visit each; the chip and the cart keep offering the question
+      sessionStorage.setItem(this.shownClosed ? SS_CLOSED : SS_ASKED, '1');
     } catch (_) {
       /* ignore */
     }
@@ -774,6 +853,21 @@ class SmokyOrderType extends HTMLElement {
     this.querySelectorAll('[data-ot-step="choose"] [data-ot-mode]').forEach((el) => {
       el.classList.toggle('is-current', el.dataset.otMode === state.mode);
     });
+    this.shownClosed = step === 'closed';
+    if (step === 'closed') this.$('[data-ot-closed-text]').textContent = withHours(t('closed_text'));
+    if (step === 'choose') {
+      // after the last delivery time the tile stays, greyed out, and says until when it was
+      const tile = this.$('[data-ot-step="choose"] [data-ot-mode="delivery"]');
+      const hint = tile?.querySelector('small');
+      const off = !openNow().delivery;
+      if (tile && hint) {
+        if (this.deliveryHint == null) this.deliveryHint = hint.textContent;
+        tile.classList.toggle('is-off', off);
+        tile.setAttribute('aria-disabled', String(off));
+        if (off) tile.classList.remove('is-current');
+        hint.textContent = off ? withHours(t('delivery_until')) : this.deliveryHint;
+      }
+    }
     this.checkSeq++; // whatever was being checked belongs to the step we just left
     if (step !== 'address') return;
     this.setError('');
@@ -790,6 +884,7 @@ class SmokyOrderType extends HTMLElement {
 
   /** The bubble never asks twice: pickup is settled by the tap, delivery by picking the address. */
   choose(mode) {
+    if (mode === 'delivery' && !openNow().delivery) return void this.show('choose');
     if (mode === 'delivery') return void this.show('address');
     if (!config().pickup) return;
     commit({ mode: 'pickup' });
@@ -828,11 +923,14 @@ class SmokyOrderType extends HTMLElement {
     if (!this.chip) return;
     this.chip.hidden = this.dataset.chip !== 'true';
     const text = this.$('[data-ot-chip-text]');
-    this.chip.classList.toggle('is-empty', !state.mode);
+    const closed = !openNow().open;
+    this.chip.classList.toggle('is-closed', closed);
+    this.chip.classList.toggle('is-empty', !state.mode && !closed);
     this.querySelectorAll('[data-ot-chip-icon]').forEach((icon) => {
       icon.toggleAttribute('hidden', icon.dataset.otChipIcon !== (state.mode === 'pickup' ? 'pickup' : 'delivery'));
     });
-    if (state.mode === 'delivery' && state.address) text.textContent = `${t('delivery')} · ${state.address.line1}`;
+    if (closed) text.textContent = withHours(t('closed_chip'));
+    else if (state.mode === 'delivery' && state.address) text.textContent = `${t('delivery')} · ${state.address.line1}`;
     else if (state.mode === 'pickup') text.textContent = `${t('pickup')} · ${config().store.address}`;
     else text.textContent = t('q_title');
   }
@@ -977,6 +1075,7 @@ class SmokyOrderType extends HTMLElement {
     if (zone.out) return void this.setStatus('out');
     // We deliver there: nothing left to confirm — the fee and the minimum are shown in the cart.
     this.setStatus('');
+    if (!openNow().delivery) return void this.show('choose'); // the last delivery minute passed meanwhile
     commit({ mode: 'delivery', address, zone });
     this.close();
   }
@@ -1136,7 +1235,7 @@ class SmokyCartProgress extends HTMLElement {
 
   render() {
     const drawer = cartDrawer();
-    const status = orderStatus(state, this.total);
+    const status = orderStatus(state, this.total, openNow());
     if (drawer) {
       const wasLocked = drawer.getAttribute('data-smoky-lock');
       if (status.ok) drawer.removeAttribute('data-smoky-lock');
@@ -1150,6 +1249,16 @@ class SmokyCartProgress extends HTMLElement {
     // state goes on the inner body: the drawer morph resets this element's own attributes
     const body = this.querySelector('[data-prog-body]');
     if (!body) return; // children not parsed yet
+    // closed (or no more deliveries today): the line says so, there is no bar to fill
+    const shut = status.reason === 'closed' || status.reason === 'delivery-closed';
+    body.classList.toggle('is-closed', shut);
+    if (shut) {
+      body.hidden = false;
+      body.classList.remove('is-done');
+      this.querySelector('[data-prog-text]').textContent = withHours(t(status.reason === 'closed' ? 'closed_cart' : 'delivery_closed'));
+      this.querySelector('[data-prog-meta]').textContent = status.reason === 'closed' ? '' : withHours(t('delivery_closed_hint'));
+      return;
+    }
     const zone = state.mode === 'delivery' && state.zone && !state.zone.out ? state.zone : null;
     body.hidden = !zone;
     if (!zone) return;
@@ -1187,10 +1296,12 @@ async function goToCheckout(button) {
   if (checkoutBusy) return;
   const delivery = document.querySelector('smoky-cart-delivery');
   const progress = document.querySelector('smoky-cart-progress');
-  const status = orderStatus(state, progress ? progress.total : 0);
+  const status = orderStatus(state, progress ? progress.total : 0, openNow());
   if (!status.ok) {
-    if (status.reason === 'min') return void progress?.nudge();
-    return void document.querySelector('smoky-order-type')?.open(status.reason === 'choose' ? 'choose' : 'address');
+    if (status.reason === 'min' || status.reason === 'closed') return void progress?.nudge();
+    // no more deliveries today → back to the question, where only pickup can be chosen
+    const step = status.reason === 'address' || status.reason === 'range' ? 'address' : 'choose';
+    return void document.querySelector('smoky-order-type')?.open(step);
   }
 
   checkoutBusy = true;

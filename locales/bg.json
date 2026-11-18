@@ -355,6 +355,14 @@
   },
   "smoky": {
     "order": {
+      "closed_title": "Сега сме затворени",
+      "closed_text": "Приемаме поръчки всеки ден от [open] до [close]. Доставка — до [last].",
+      "closed_ok": "Разгледай менюто",
+      "closed_chip": "Затворено · от [open]",
+      "closed_cart": "Затворено е — приемаме поръчки от [open] до [close]",
+      "delivery_closed": "Доставките за днес приключиха в [last]",
+      "delivery_closed_hint": "Можеш да вземеш поръчката от ресторанта до [close].",
+      "delivery_until": "до [last]",
       "total": "Общо",
       "checkout": "Към плащане",
       "q_title": "Доставка или вземане?",

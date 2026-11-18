@@ -355,6 +355,14 @@
   },
   "smoky": {
     "order": {
+      "closed_title": "We're closed right now",
+      "closed_text": "We take orders every day from [open] to [close]. Delivery until [last].",
+      "closed_ok": "Browse the menu",
+      "closed_chip": "Closed · opens [open]",
+      "closed_cart": "Closed — we take orders from [open] to [close]",
+      "delivery_closed": "Delivery orders ended at [last] today",
+      "delivery_closed_hint": "You can still pick up at the restaurant until [close].",
+      "delivery_until": "until [last]",
       "total": "Total",
       "checkout": "Checkout",
       "q_title": "Delivery or pickup?",
