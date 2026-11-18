@@ -389,11 +389,114 @@
   #cart-drawer .cart__checkout-button.button:hover,
   #cart-drawer .cart-items__empty-button.button:hover { transform: translateY(-3px); }
 
-  #cart-drawer .cart-discount__input,
   #cart-drawer .cart-note textarea {
     border: var(--smoky-border) !important;
     border-radius: 999px !important;
     background: var(--smoky-cream) !important;
+  }
+
+  /* discount code: same language as the rest of the card — condensed label with a round «+»,
+     white pill field, dark pill «Приложи», applied codes as soft-pink stickers */
+  #cart-drawer .cart-actions { border-block: 0; }
+
+  #cart-drawer .cart-discount__summary { min-height: 44px; padding-block: 6px; }
+
+  #cart-drawer .cart-discount__label {
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--smoky-dark);
+  }
+
+  #cart-drawer .cart-discount__summary .cart-totals__icon {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink-soft);
+    color: var(--smoky-dark);
+  }
+
+  #cart-drawer .cart-discount__summary .cart-totals__icon svg { width: 10px; height: 10px; }
+
+  #cart-drawer .cart-discount__form { display: flex; align-items: center; gap: 8px; }
+
+  #cart-drawer .cart-discount__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 46px;
+    padding: 0 18px;
+    border: var(--smoky-border) !important;
+    border-radius: 999px !important;
+    background: #fff !important;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    box-shadow: none;
+    outline: none;
+  }
+
+  #cart-drawer .cart-discount__input::placeholder { color: rgb(40 40 40 / 0.45); text-transform: none; }
+  #cart-drawer .cart-discount__input:focus-visible { box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  #cart-drawer .cart-discount__button.button {
+    flex: 0 0 auto;
+    height: 46px;
+    padding: 0 20px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-dark);
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  #cart-drawer .cart-discount__button.button:hover { transform: translateY(-2px); }
+  #cart-drawer .cart-discount__button.button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--smoky-shadow-color); }
+
+  #cart-drawer .cart-discount__codes { gap: 8px; margin-top: 10px; }
+
+  #cart-drawer .cart-discount__pill {
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-pink-soft);
+    color: var(--smoky-dark);
+    padding: 4px 8px 4px 14px;
+  }
+
+  #cart-drawer .cart-discount__pill-code {
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--smoky-dark);
+  }
+
+  #cart-drawer .cart-discount__pill-remove { color: var(--smoky-dark); }
+  #cart-drawer .cart-discount__error,
+  #cart-drawer .cart-discount__error-text { color: #c8005f; font-weight: 600; }
+
+  /* cart totals: the label in the brand's condensed caps */
+  #cart-drawer .cart-totals__total-label {
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--smoky-dark);
   }
 
   #cart-drawer .smoky-cart__brand {
