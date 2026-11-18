@@ -681,7 +681,7 @@ class SmokyCartDelivery extends HTMLElement {
     if (this.busy) return;
     this.setError('save', '');
     this.commitPhone();
-    if (!this.state.address) return void this.fail('address', this.t('err_pick'));
+    if (!this.state.address) return void this.fail('address', this.t(this.addressInput.value.trim() ? 'err_pick' : 'err_address'));
     if (!this.state.phone) return void this.fail('phone', this.t('err_phone'));
     this.state.note = this.noteInput.hidden ? '' : this.noteInput.value.trim();
 

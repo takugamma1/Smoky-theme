@@ -12,6 +12,7 @@
     "smoky_product": {
       "type": "smoky-product",
       "settings": {
+        "ordering": true,
         "add_label": "Поръчай",
         "added_label": "Добавено ✓",
         "menu_label": "Към менюто",

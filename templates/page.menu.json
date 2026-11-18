@@ -132,7 +132,7 @@
         "limit": 24,
         "curve_top": false,
         "curve_bottom": true,
-        "ordering": false,
+        "ordering": true,
         "soon_label": "Скоро и доставка",
         "show_price": true
       }

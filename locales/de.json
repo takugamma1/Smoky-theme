@@ -364,6 +364,7 @@
       "note_toggle": "Liefernotiz",
       "optional": "optional",
       "note_placeholder": "Eingang, Etage, Klingel…",
+      "err_address": "Bitte gib deine Lieferadresse ein.",
       "err_pick": "Bitte wähle eine Adresse aus der Liste.",
       "err_number": "Bitte ergänze die Hausnummer.",
       "err_area": "Dorthin liefern wir noch nicht.",

@@ -371,6 +371,7 @@
       "note_toggle": "Delivery note",
       "optional": "optional",
       "note_placeholder": "Entrance, floor, doorbell…",
+      "err_address": "Enter your delivery address.",
       "err_pick": "Pick an address from the list.",
       "err_number": "Add the building or block number.",
       "err_area": "We don't deliver to this address yet.",
