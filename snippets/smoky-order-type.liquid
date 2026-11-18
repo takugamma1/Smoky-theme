@@ -1,9 +1,11 @@
 {%- doc -%}
   "Доставка или вземане?" — the first question of an order, asked as a speech bubble when the
-  menu opens (and from the chip / the cart's "Промени" afterwards). Delivery continues to the
-  address step: the address is picked from a lookup (or "use my location"), Shopify is asked
-  which delivery zone it falls in, and the bubble shows the fee and the minimum order before
-  the customer starts filling the cart. Behaviour: assets/smoky-cart-delivery.js.
+  menu opens (and from the chip / the cart's "Промени" afterwards). It gets out of the way as
+  soon as it has its answer: "Вземане" closes it on the tap; "Доставка" continues to the address
+  step, where the address is picked from a lookup (or "use my location"), Shopify is asked which
+  delivery zone it falls in, and the bubble closes by itself — the fee and the minimum order
+  are shown in the cart, not here. It only stays open for an address we do not deliver to.
+  Behaviour: assets/smoky-cart-delivery.js.
 
   Rendered once per page from layout/theme.liquid. It also carries the configuration the cart
   pieces read (zones, restaurant position, lookup key, translated strings).
@@ -37,7 +39,6 @@
       "pickup": {{ 'smoky.order.pickup' | t | json }},
       "q_title": {{ 'smoky.order.q_title' | t | json }},
       "checking": {{ 'smoky.order.checking' | t | json }},
-      "zone_ok": {{ 'smoky.order.zone_ok' | t | json }},
       "fee_label": {{ 'smoky.order.fee_label' | t | json }},
       "min_label": {{ 'smoky.order.min_label' | t | json }},
       "out_of_range": {{ 'smoky.order.out_of_range' | t | json }},
@@ -134,40 +135,20 @@
           <p class="smoky-ot__error" data-ot-error role="alert" hidden></p>
         </div>
 
-        {%- comment -%} filled in by the script once Shopify has answered for the picked address {%- endcomment -%}
+        {%- comment -%}
+          Only while Shopify is asked about the picked address, or when the address is outside
+          the delivery area. A deliverable address closes the bubble straight away.
+        {%- endcomment -%}
         <div class="smoky-ot__result" data-ot-result hidden>
-          <p class="smoky-ot__result-head">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.4 4.4L19 7.4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p class="smoky-ot__result-head" aria-live="polite">
+            <span class="smoky-ot__spinner" aria-hidden="true"></span>
             <span data-ot-result-title></span>
           </p>
-          <p class="smoky-ot__result-address" data-ot-result-address></p>
-          <dl class="smoky-ot__facts" data-ot-facts>
-            <div><dt>{{ 'smoky.order.fee_label' | t }}</dt><dd data-ot-fee></dd></div>
-            <div><dt>{{ 'smoky.order.min_label' | t }}</dt><dd data-ot-min></dd></div>
-          </dl>
+          <p class="smoky-ot__result-address" data-ot-result-address hidden></p>
           {%- if settings.smoky_pickup_enabled -%}
-            <button type="button" class="smoky-ot__link" data-ot-mode="pickup" data-ot-switch hidden>{{ 'smoky.order.switch_pickup' | t }}</button>
+            <button type="button" class="smoky-ot__cta" data-ot-mode="pickup" data-ot-switch hidden>{{ 'smoky.order.switch_pickup' | t }}</button>
           {%- endif -%}
         </div>
-
-        <button type="button" class="smoky-ot__cta" data-ot-confirm disabled>{{ 'smoky.order.to_menu' | t }}</button>
-      </div>
-
-      {%- comment -%} step 2b — pickup {%- endcomment -%}
-      <div class="smoky-ot__step" data-ot-step="pickup" hidden>
-        <button type="button" class="smoky-ot__back" data-ot-back>
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          {{ 'smoky.order.back' | t }}
-        </button>
-        <h2 class="smoky-ot__title">{{ 'smoky.order.pickup_title' | t }}</h2>
-        <div class="smoky-ot__result">
-          <p class="smoky-ot__result-head">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21.2s-6.6-6-6.6-11.1a6.6 6.6 0 1 1 13.2 0c0 5.1-6.6 11.1-6.6 11.1Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="12" cy="10.1" r="2.3" stroke="currentColor" stroke-width="2.2"/></svg>
-            <span>{{ settings.smoky_store_address }}</span>
-          </p>
-          <p class="smoky-ot__result-address">{{ 'smoky.order.pickup_note' | t }}</p>
-        </div>
-        <button type="button" class="smoky-ot__cta" data-ot-confirm>{{ 'smoky.order.to_menu' | t }}</button>
       </div>
     </div>
   </dialog>
@@ -328,26 +309,6 @@
 
   .smoky-ot__choice small { font-family: var(--smoky-font-body); font-size: 0.82rem; color: rgb(40 40 40 / 0.65); }
 
-  .smoky-ot__link {
-    display: block;
-    margin: 14px auto 0;
-    padding: 6px 10px;
-    border: 0;
-    background: none;
-    color: rgb(40 40 40 / 0.7);
-    font-family: var(--smoky-font-heading);
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    text-decoration: underline dotted;
-    text-underline-offset: 4px;
-    cursor: pointer;
-  }
-
-  .smoky-ot__link[hidden] { display: none; }
-  .smoky-ot__link:hover { color: var(--smoky-pink); }
-
   .smoky-ot__back {
     display: inline-flex;
     align-items: center;
@@ -459,21 +420,22 @@
 
   .smoky-ot__error[hidden] { display: none; }
 
+  /* status under the field: "checking…" while Shopify answers, or the out-of-range card */
   .smoky-ot__result {
     margin-top: 12px;
-    padding: 12px 14px;
+    padding: 14px;
     border: var(--smoky-border);
     border-radius: 18px;
-    background: #fff;
+    background: var(--smoky-pink-soft);
   }
 
   .smoky-ot__result[hidden] { display: none; }
-  .smoky-ot__result.is-out { background: var(--smoky-pink-soft); }
+  .smoky-ot__result.is-busy { padding: 4px 6px 0; border-color: transparent; background: none; }
 
   .smoky-ot__result-head {
     display: flex;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     margin: 0;
     font-family: var(--smoky-font-heading);
     font-weight: 800;
@@ -484,16 +446,22 @@
     color: var(--smoky-dark);
   }
 
-  .smoky-ot__result-head svg { flex: 0 0 20px; width: 20px; height: 20px; color: #1f8a4c; }
-  .smoky-ot__result.is-out .smoky-ot__result-head svg { display: none; }
+  .smoky-ot__result.is-busy .smoky-ot__result-head { font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em; }
+
+  .smoky-ot__spinner {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--smoky-pink-soft);
+    border-top-color: var(--smoky-pink);
+    border-radius: 50%;
+    animation: smoky-ot-spin 0.8s linear infinite;
+  }
+
+  .smoky-ot__result:not(.is-busy) .smoky-ot__spinner { display: none; }
 
   .smoky-ot__result-address { margin: 4px 0 0; font-family: var(--smoky-font-body); font-size: 0.9rem; line-height: 1.3; color: rgb(40 40 40 / 0.72); }
-
-  .smoky-ot__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 0; }
-  .smoky-ot__facts[hidden] { display: none; }
-  .smoky-ot__facts > div { padding: 8px 10px; border-radius: 12px; background: var(--smoky-sand); }
-  .smoky-ot__facts dt { font-family: var(--smoky-font-heading); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(40 40 40 / 0.7); }
-  .smoky-ot__facts dd { margin: 2px 0 0; font-family: var(--smoky-font-heading); font-weight: 800; font-size: 1.25rem; line-height: 1; color: var(--smoky-dark); }
+  .smoky-ot__result-address[hidden] { display: none; }
 
   .smoky-ot__cta {
     display: block;
@@ -511,12 +479,11 @@
     letter-spacing: 0.06em;
     box-shadow: 0 5px 0 var(--smoky-shadow-color);
     cursor: pointer;
-    transition: transform var(--smoky-anim-bounce), opacity 0.2s ease;
+    transition: transform var(--smoky-anim-bounce);
   }
 
-  .smoky-ot__cta:hover:not(:disabled) { transform: translateY(-3px); }
-  .smoky-ot__cta:disabled { background: var(--smoky-sand); color: rgb(40 40 40 / 0.45); box-shadow: 0 3px 0 var(--smoky-shadow-color); cursor: default; }
-  .smoky-ot__cta.is-busy { opacity: 0.7; pointer-events: none; }
+  .smoky-ot__cta[hidden] { display: none; }
+  .smoky-ot__cta:hover { transform: translateY(-3px); }
 
   /* ---- the chip ---- */
   .smoky-ot-chip {

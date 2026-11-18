@@ -458,6 +458,15 @@ async function osmReverse(lat, lng) {
 
 const cartDrawer = () => document.querySelector('theme-drawer#cart-drawer');
 
+/** A known address as a row of the list: the one already on the order, or the one "locate" found. */
+function addressRow(address) {
+  const rest =
+    address.label && address.label.startsWith(address.line1)
+      ? address.label.slice(address.line1.length).replace(/^[,\s]+/, '')
+      : address.city || '';
+  return { title: address.line1, subtitle: rest, resolve: async () => address };
+}
+
 class SmokyOrderType extends HTMLElement {
   connectedCallback() {
     if (this.ready) return;
@@ -470,12 +479,11 @@ class SmokyOrderType extends HTMLElement {
     this.locateButton = this.$('[data-ot-locate]');
     this.result = this.$('[data-ot-result]');
     this.chip = this.$('[data-ot-chip]');
-    this.addressConfirm = this.$('[data-ot-step="address"] [data-ot-confirm]');
 
     this.suggestions = [];
     this.active = -1;
     this.searchSeq = 0;
-    this.pending = null; // { address, zone } picked in the bubble, not confirmed yet
+    this.checkSeq = 0; // a zone answer only counts if nothing happened in the bubble meanwhile
     this.reopenDrawer = false;
 
     this.bind();
@@ -500,7 +508,6 @@ class SmokyOrderType extends HTMLElement {
       if (mode) return void this.choose(mode.dataset.otMode);
       if (event.target.closest('[data-ot-back]')) return void this.show('choose');
       if (event.target.closest('[data-ot-close]')) return void this.close();
-      if (event.target.closest('[data-ot-confirm]')) return void this.confirm();
       if (event.target.closest('[data-ot-locate]')) return void this.locate();
       const row = event.target.closest('[data-index]');
       if (row) return void this.pick(this.suggestions[Number(row.dataset.index)]);
@@ -528,6 +535,7 @@ class SmokyOrderType extends HTMLElement {
   }
 
   onClosed() {
+    this.checkSeq++; // closed while an address was being checked: that answer is dropped
     try {
       sessionStorage.setItem(SS_ASKED, '1'); // asked once per visit; the chip and the cart keep offering it
     } catch (_) {
@@ -546,33 +554,25 @@ class SmokyOrderType extends HTMLElement {
     this.querySelectorAll('[data-ot-step="choose"] [data-ot-mode]').forEach((el) => {
       el.classList.toggle('is-current', el.dataset.otMode === state.mode);
     });
+    this.checkSeq++; // whatever was being checked belongs to the step we just left
     if (step !== 'address') return;
     this.setError('');
-    this.renderSuggestions([]);
-    if (state.mode === 'delivery' && state.address && state.zone) {
-      this.pending = { address: state.address, zone: state.zone };
-      this.input.value = state.address.line1;
-    } else if (!this.pending) {
-      this.input.value = '';
-    }
-    this.renderResult();
-    if (!this.input.value) setTimeout(() => this.input.focus(), 60);
+    this.setStatus('');
+    // the address already on the order is the first row of the list: one tap keeps it
+    const saved = state.address && state.address.line1 ? state.address : null;
+    this.input.value = saved ? saved.line1 : '';
+    this.renderSuggestions(saved ? [addressRow(saved)] : []);
+    setTimeout(() => {
+      this.input.focus();
+      this.input.select();
+    }, 60);
   }
 
+  /** The bubble never asks twice: pickup is settled by the tap, delivery by picking the address. */
   choose(mode) {
-    if (mode === 'pickup' && !config().pickup) return;
-    this.show(mode === 'delivery' ? 'address' : 'pickup');
-  }
-
-  confirm() {
-    const pickupStep = !this.$('[data-ot-step="pickup"]').hidden;
-    if (pickupStep) {
-      commit({ mode: 'pickup' });
-      return void this.close();
-    }
-    if (!this.pending) return void this.fail(t(this.input.value.trim() ? 'err_pick' : 'err_address'));
-    if (this.pending.zone.out) return;
-    commit({ mode: 'delivery', address: this.pending.address, zone: this.pending.zone });
+    if (mode === 'delivery') return void this.show('address');
+    if (!config().pickup) return;
+    commit({ mode: 'pickup' });
     this.close();
   }
 
@@ -591,36 +591,17 @@ class SmokyOrderType extends HTMLElement {
     return false;
   }
 
-  setBusy(busy) {
-    this.addressConfirm.classList.toggle('is-busy', busy);
-    if (busy) {
-      this.result.hidden = false;
-      this.result.classList.remove('is-out');
-      this.$('[data-ot-result-title]').textContent = t('checking');
-      this.$('[data-ot-result-address]').textContent = '';
-      this.$('[data-ot-facts]').hidden = true;
-      const switcher = this.$('[data-ot-switch]');
-      if (switcher) switcher.hidden = true;
-    }
-  }
-
-  /** The answer for the picked address: fee + minimum, or "we don't deliver there (yet)". */
-  renderResult() {
-    const pending = this.pending;
+  /** Under the field: '' (nothing), 'busy' (asking Shopify) or 'out' (we don't deliver there). */
+  setStatus(status) {
+    const offerPickup = status === 'out' && config().pickup;
+    const note = this.$('[data-ot-result-address]');
     const switcher = this.$('[data-ot-switch]');
-    this.result.hidden = !pending;
-    this.addressConfirm.disabled = !pending || Boolean(pending.zone.out);
-    if (!pending) return;
-    const out = Boolean(pending.zone.out);
-    this.result.classList.toggle('is-out', out);
-    this.$('[data-ot-result-title]').textContent = t(out ? 'out_of_range' : 'zone_ok');
-    this.$('[data-ot-result-address]').textContent = out && config().pickup ? t('out_of_range_pickup') : pending.address.label;
-    this.$('[data-ot-facts]').hidden = out;
-    if (!out) {
-      this.$('[data-ot-fee]').textContent = money(pending.zone.fee);
-      this.$('[data-ot-min]').textContent = money(pending.zone.min);
-    }
-    if (switcher) switcher.hidden = !out;
+    this.result.hidden = !status;
+    this.result.classList.toggle('is-busy', status === 'busy');
+    this.$('[data-ot-result-title]').textContent = status ? t(status === 'busy' ? 'checking' : 'out_of_range') : '';
+    note.textContent = offerPickup ? t('out_of_range_pickup') : '';
+    note.hidden = !offerPickup;
+    if (switcher) switcher.hidden = !offerPickup;
   }
 
   renderChip() {
@@ -640,8 +621,8 @@ class SmokyOrderType extends HTMLElement {
 
   onInput() {
     clearTimeout(this.searchTimer);
-    this.pending = null; // editing invalidates the previous choice
-    this.renderResult();
+    this.checkSeq++; // editing drops an answer that is still on its way
+    this.setStatus('');
     this.setError('');
     const query = this.input.value.trim();
     if (query.length < 3) {
@@ -717,7 +698,6 @@ class SmokyOrderType extends HTMLElement {
       event.preventDefault();
       const chosen = this.suggestions[this.active >= 0 ? this.active : 0];
       if (chosen && !this.list.hidden) this.pick(chosen);
-      else if (this.pending) this.confirm();
       return;
     }
     if (!rows.length || (event.key !== 'ArrowDown' && event.key !== 'ArrowUp')) return;
@@ -759,20 +739,22 @@ class SmokyOrderType extends HTMLElement {
     this.renderSuggestions([]);
     this.setError('');
     this.input.value = address.line1;
-    this.pending = null;
-    this.setBusy(true);
+    this.setStatus('busy');
+    const seq = ++this.checkSeq;
     let zone = null;
     try {
       zone = await resolveZone(address);
     } catch (_) {
-      this.setBusy(false);
-      this.result.hidden = true;
+      if (seq !== this.checkSeq) return;
+      this.setStatus('');
       return void this.fail(t('err_lookup'));
     }
-    this.setBusy(false);
-    this.pending = { address, zone };
-    this.renderResult();
-    if (!zone.out) this.addressConfirm.focus({ preventScroll: true });
+    if (seq !== this.checkSeq) return; // typed again, went back or closed meanwhile
+    if (zone.out) return void this.setStatus('out');
+    // We deliver there: nothing left to confirm — the fee and the minimum are shown in the cart.
+    this.setStatus('');
+    commit({ mode: 'delivery', address, zone });
+    this.close();
   }
 
   /* ── "use my location" ── */
@@ -782,8 +764,8 @@ class SmokyOrderType extends HTMLElement {
     if (this.locateButton.classList.contains('is-busy')) return;
     this.locateButton.classList.add('is-busy');
     this.renderSuggestions([]);
-    this.pending = null;
-    this.renderResult();
+    this.checkSeq++;
+    this.setStatus('');
     this.setError('');
     const placeholder = this.input.placeholder;
     this.input.value = '';
@@ -798,10 +780,7 @@ class SmokyOrderType extends HTMLElement {
         const { latitude: lat, longitude: lng } = coords;
         try {
           // far from Varna: no need to look the street up, we don't deliver there
-          if (!inArea(lat, lng)) {
-            this.pending = { address: { line1: '', label: '', lat, lng }, zone: { out: true } };
-            return void this.renderResult();
-          }
+          if (!inArea(lat, lng)) return void this.setStatus('out');
           let address = null;
           if (useGoogle()) {
             try {
@@ -812,7 +791,10 @@ class SmokyOrderType extends HTMLElement {
           }
           if (!address && !useGoogle()) address = await osmReverse(lat, lng);
           if (!address) return void this.fail(t('err_geo_fail'));
-          await this.accept(address);
+          if (!address.precise) return void (await this.accept(address)); // street only: asks for the number
+          // Offered as a row to tap, never taken silently: the pin can land on the building next door.
+          this.input.value = address.line1;
+          this.renderSuggestions([addressRow(address)]);
         } catch (_) {
           this.fail(t('err_geo_fail'));
         } finally {
