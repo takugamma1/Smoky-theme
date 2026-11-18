@@ -197,6 +197,19 @@
     </div>
 
     {% render 'cart-drawer', render_wrapper: true %}
+
+    {%- comment -%} Smoky: "Доставка или вземане?" bubble + its chip (asked when the menu opens) {%- endcomment -%}
+    {%- liquid
+      assign smoky_ot_auto = false
+      assign smoky_ot_chip = false
+      if template.name == 'page' and template.suffix == 'menu'
+        assign smoky_ot_auto = true
+        assign smoky_ot_chip = true
+      elsif template.name == 'product'
+        assign smoky_ot_chip = true
+      endif
+    -%}
+    {% render 'smoky-order-type', auto: smoky_ot_auto, chip: smoky_ot_chip %}
     {% render 'theme-drawer' %}
 
     {% render 'search-modal' %}

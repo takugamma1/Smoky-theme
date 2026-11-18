@@ -122,10 +122,12 @@
                   {% render 'cart-products', context: 'drawer' %}
                 </scroll-hint>
 
-                {% comment %} Smoky: address, phone and note are collected here and handed to checkout {% endcomment %}
+                {% comment %} Smoky: the delivery / pickup choice made in the bubble, and the optional note {% endcomment %}
                 {% render 'smoky-cart-delivery' %}
 
                 <div class="cart-drawer__summary">
+                  {% comment %} Smoky: minimum-order progress, the checkout button unlocks when it is full {% endcomment %}
+                  {% render 'smoky-cart-progress' %}
                   {% render 'cart-summary', section_id: 'cart-drawer-section' %}
                 </div>
               </scroll-hint>

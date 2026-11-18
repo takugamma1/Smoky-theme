@@ -2122,7 +2122,46 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Адресът в кошницата се избира от списък, за да е точен за куриера. С ключ за Google Maps адресите са същите като в Google Maps; без ключ се ползва OpenStreetMap."
+        "content": "Клиентът избира доставка или вземане и адреса си още в менюто. Зоната, таксата и минималната поръчка се питат от Shopify (Settings → Shipping and delivery → Local delivery) — таблицата тук трябва да е същата."
+      },
+      {
+        "type": "textarea",
+        "id": "smoky_zones",
+        "label": "Зони за доставка",
+        "info": "Един ред на зона: радиус до (км) | минимална поръчка | такса. Трябва да съвпада с Local delivery в Shopify.",
+        "default": "2 | 10.99 | 2.59\n4 | 12.99 | 3.49\n5 | 15.00 | 3.99"
+      },
+      {
+        "type": "text",
+        "id": "smoky_store_address",
+        "label": "Адрес на ресторанта (за вземане)",
+        "default": "бул. „Цар Освободител“ 76 А, Варна"
+      },
+      {
+        "type": "text",
+        "id": "smoky_store_lat",
+        "label": "Ресторант — географска ширина",
+        "default": "43.2147333"
+      },
+      {
+        "type": "text",
+        "id": "smoky_store_lng",
+        "label": "Ресторант — географска дължина",
+        "default": "27.9141246"
+      },
+      {
+        "type": "checkbox",
+        "id": "smoky_pickup_enabled",
+        "label": "Предлагай вземане от място",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Адреси"
+      },
+      {
+        "type": "paragraph",
+        "content": "Адресът се избира от списък, за да е точен за куриера. С ключ за Google Maps адресите са същите като в Google Maps; без ключ се ползва OpenStreetMap."
       },
       {
         "type": "text",

@@ -1,0 +1,574 @@
+{%- doc -%}
+  "Доставка или вземане?" — the first question of an order, asked as a speech bubble when the
+  menu opens (and from the chip / the cart's "Промени" afterwards). Delivery continues to the
+  address step: the address is picked from a lookup (or "use my location"), Shopify is asked
+  which delivery zone it falls in, and the bubble shows the fee and the minimum order before
+  the customer starts filling the cart. Behaviour: assets/smoky-cart-delivery.js.
+
+  Rendered once per page from layout/theme.liquid. It also carries the configuration the cart
+  pieces read (zones, restaurant position, lookup key, translated strings).
+
+  @param {boolean} [auto] - open by itself when no choice has been made yet (menu page)
+  @param {boolean} [chip] - show the floating "Доставка · адрес" chip on this page
+{%- enddoc -%}
+
+{%- liquid
+  assign probe_product = collections.all.products | where: 'available' | first
+  assign zones_attr = settings.smoky_zones | strip | newline_to_br | strip_newlines | replace: '<br />', ';'
+-%}
+
+<smoky-order-type
+  data-auto="{{ auto | default: false }}"
+  data-chip="{{ chip | default: false }}"
+  data-zones="{{ zones_attr | escape }}"
+  data-store-lat="{{ settings.smoky_store_lat | strip | escape }}"
+  data-store-lng="{{ settings.smoky_store_lng | strip | escape }}"
+  data-store-address="{{ settings.smoky_store_address | escape }}"
+  data-pickup="{{ settings.smoky_pickup_enabled }}"
+  data-maps-key="{{ settings.smoky_maps_key | strip | escape }}"
+  data-probe-variant="{{ probe_product.selected_or_first_available_variant.id }}"
+  data-probe-price="{{ probe_product.selected_or_first_available_variant.price }}"
+  data-cart-mode="{{ cart.attributes['Получаване'] | escape }}"
+  data-cart-address="{{ cart.attributes['Адрес за доставка'] | escape }}"
+>
+  <script type="application/json" data-ot-strings>
+    {
+      "delivery": {{ 'smoky.order.delivery' | t | json }},
+      "pickup": {{ 'smoky.order.pickup' | t | json }},
+      "q_title": {{ 'smoky.order.q_title' | t | json }},
+      "checking": {{ 'smoky.order.checking' | t | json }},
+      "zone_ok": {{ 'smoky.order.zone_ok' | t | json }},
+      "fee_label": {{ 'smoky.order.fee_label' | t | json }},
+      "min_label": {{ 'smoky.order.min_label' | t | json }},
+      "out_of_range": {{ 'smoky.order.out_of_range' | t | json }},
+      "out_of_range_pickup": {{ 'smoky.order.out_of_range_pickup' | t | json }},
+      "change": {{ 'smoky.order.change' | t | json }},
+      "delivery_to": {{ 'smoky.order.delivery_to' | t | json }},
+      "pickup_at": {{ 'smoky.order.pickup_at' | t | json }},
+      "progress_more": {{ 'smoky.order.progress_more' | t | json }},
+      "progress_done": {{ 'smoky.order.progress_done' | t | json }},
+      "locating": {{ 'smoky.delivery.locating' | t | json }},
+      "err_address": {{ 'smoky.delivery.err_address' | t | json }},
+      "err_pick": {{ 'smoky.delivery.err_pick' | t | json }},
+      "err_number": {{ 'smoky.delivery.err_number' | t | json }},
+      "err_none": {{ 'smoky.delivery.err_none' | t | json }},
+      "err_lookup": {{ 'smoky.delivery.err_lookup' | t | json }},
+      "err_geo_denied": {{ 'smoky.delivery.err_geo_denied' | t | json }},
+      "err_geo_fail": {{ 'smoky.delivery.err_geo_fail' | t | json }},
+      "err_save": {{ 'smoky.delivery.err_save' | t | json }}
+    }
+  </script>
+
+  {%- comment -%} floating reminder of the choice; tapping it reopens the bubble {%- endcomment -%}
+  <button type="button" class="smoky-ot-chip" data-ot-open data-ot-chip hidden>
+    <span class="smoky-ot-chip__icon" aria-hidden="true">
+      <svg data-ot-chip-icon="delivery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 17h7M15.5 17l-2-9h-2.2M13 8h3.2l2 4.5M4 12h5.5l1.2 5"/></svg>
+      <svg data-ot-chip-icon="pickup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M5.5 8.5h13l-1 11.5h-11z"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"/></svg>
+    </span>
+    <span class="smoky-ot-chip__text" data-ot-chip-text>{{ 'smoky.order.q_title' | t }}</span>
+  </button>
+
+  <dialog class="smoky-ot" aria-labelledby="smoky-ot-title">
+    <div class="smoky-ot__bubble">
+      <img class="smoky-ot__mascot" src="{{ 'smoky-mascot-happy-sticker.svg' | asset_url }}" alt="" width="249" height="323" loading="lazy" aria-hidden="true">
+      <button type="button" class="smoky-ot__close" data-ot-close aria-label="{{ 'smoky.order.close' | t }}">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </button>
+
+      {%- comment -%} step 1 — the question {%- endcomment -%}
+      <div class="smoky-ot__step" data-ot-step="choose">
+        <h2 class="smoky-ot__title" id="smoky-ot-title">{{ 'smoky.order.q_title' | t }}</h2>
+        <p class="smoky-ot__sub">{{ 'smoky.order.q_sub' | t }}</p>
+        <div class="smoky-ot__choices">
+          <button type="button" class="smoky-ot__choice" data-ot-mode="delivery">
+            <span class="smoky-ot__choice-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 17h7M15.5 17l-2-9h-2.2M13 8h3.2l2 4.5M4 12h5.5l1.2 5"/></svg>
+            </span>
+            <span class="smoky-ot__choice-name">{{ 'smoky.order.delivery' | t }}</span>
+            <small>{{ 'smoky.order.delivery_sub' | t }}</small>
+          </button>
+          {%- if settings.smoky_pickup_enabled -%}
+            <button type="button" class="smoky-ot__choice" data-ot-mode="pickup">
+              <span class="smoky-ot__choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8.5h13l-1 11.5h-11z"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"/></svg>
+              </span>
+              <span class="smoky-ot__choice-name">{{ 'smoky.order.pickup' | t }}</span>
+              <small>{{ 'smoky.order.pickup_sub' | t }}</small>
+            </button>
+          {%- endif -%}
+        </div>
+        <button type="button" class="smoky-ot__link" data-ot-close>{{ 'smoky.order.browse' | t }}</button>
+      </div>
+
+      {%- comment -%} step 2a — delivery address {%- endcomment -%}
+      <div class="smoky-ot__step" data-ot-step="address" hidden>
+        <button type="button" class="smoky-ot__back" data-ot-back>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ 'smoky.order.back' | t }}
+        </button>
+        <h2 class="smoky-ot__title">{{ 'smoky.order.where_title' | t }}</h2>
+        <p class="smoky-ot__sub">{{ 'smoky.order.where_hint' | t }}</p>
+
+        <div class="smoky-ot__field" data-ot-field>
+          <div class="smoky-ot__row">
+            <input
+              class="smoky-ot__input"
+              type="text"
+              name="smoky-ot-address"
+              autocomplete="off"
+              autocapitalize="words"
+              spellcheck="false"
+              enterkeyhint="search"
+              placeholder="{{ 'smoky.delivery.address_placeholder' | t }}"
+              aria-label="{{ 'smoky.delivery.address_label' | t }}"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="smoky-ot-suggestions"
+              data-ot-address
+            >
+            <button type="button" class="smoky-ot__locate" data-ot-locate aria-label="{{ 'smoky.delivery.locate' | t }}" title="{{ 'smoky.delivery.locate' | t }}">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="6.2" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2.2v3.2M12 18.6v3.2M2.2 12h3.2M18.6 12h3.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <ul class="smoky-ot__suggestions" id="smoky-ot-suggestions" role="listbox" data-ot-suggestions hidden></ul>
+          <p class="smoky-ot__error" data-ot-error role="alert" hidden></p>
+        </div>
+
+        {%- comment -%} filled in by the script once Shopify has answered for the picked address {%- endcomment -%}
+        <div class="smoky-ot__result" data-ot-result hidden>
+          <p class="smoky-ot__result-head">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.4 4.4L19 7.4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-ot-result-title></span>
+          </p>
+          <p class="smoky-ot__result-address" data-ot-result-address></p>
+          <dl class="smoky-ot__facts" data-ot-facts>
+            <div><dt>{{ 'smoky.order.fee_label' | t }}</dt><dd data-ot-fee></dd></div>
+            <div><dt>{{ 'smoky.order.min_label' | t }}</dt><dd data-ot-min></dd></div>
+          </dl>
+          {%- if settings.smoky_pickup_enabled -%}
+            <button type="button" class="smoky-ot__link" data-ot-mode="pickup" data-ot-switch hidden>{{ 'smoky.order.switch_pickup' | t }}</button>
+          {%- endif -%}
+        </div>
+
+        <button type="button" class="smoky-ot__cta" data-ot-confirm disabled>{{ 'smoky.order.to_menu' | t }}</button>
+      </div>
+
+      {%- comment -%} step 2b — pickup {%- endcomment -%}
+      <div class="smoky-ot__step" data-ot-step="pickup" hidden>
+        <button type="button" class="smoky-ot__back" data-ot-back>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ 'smoky.order.back' | t }}
+        </button>
+        <h2 class="smoky-ot__title">{{ 'smoky.order.pickup_title' | t }}</h2>
+        <div class="smoky-ot__result">
+          <p class="smoky-ot__result-head">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21.2s-6.6-6-6.6-11.1a6.6 6.6 0 1 1 13.2 0c0 5.1-6.6 11.1-6.6 11.1Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="12" cy="10.1" r="2.3" stroke="currentColor" stroke-width="2.2"/></svg>
+            <span>{{ settings.smoky_store_address }}</span>
+          </p>
+          <p class="smoky-ot__result-address">{{ 'smoky.order.pickup_note' | t }}</p>
+        </div>
+        <button type="button" class="smoky-ot__cta" data-ot-confirm>{{ 'smoky.order.to_menu' | t }}</button>
+      </div>
+    </div>
+  </dialog>
+</smoky-order-type>
+
+{% stylesheet %}
+  smoky-order-type { display: contents; }
+
+  /* ---- the bubble ---- */
+  .smoky-ot {
+    width: min(440px, calc(100vw - 24px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 46px 8px 26px 0; /* room for the mascot above and the hard shadow + tail below */
+    border: 0;
+    background: transparent;
+    color: var(--smoky-dark);
+    overflow: visible;
+  }
+
+  .smoky-ot::backdrop { background: rgb(40 40 40 / 0.55); }
+
+  .smoky-ot__bubble {
+    position: relative;
+    padding: 26px 20px 20px;
+    border: var(--smoky-border);
+    border-radius: 30px;
+    background: var(--smoky-cream);
+    box-shadow: 6px 7px 0 var(--smoky-pink);
+  }
+
+  /* speech-bubble tail, like the footer's contact bubbles */
+  .smoky-ot__bubble::after {
+    content: '';
+    position: absolute;
+    left: 46px;
+    bottom: -15px;
+    width: 26px;
+    height: 16px;
+    background: var(--smoky-cream);
+    border: var(--smoky-border);
+    border-top: 0;
+    clip-path: polygon(0 0, 100% 0, 25% 100%);
+  }
+
+  .smoky-ot[open] .smoky-ot__bubble { animation: smoky-ot-pop 0.55s var(--smoky-bounce) both; }
+  .smoky-ot[open]::backdrop { animation: smoky-ot-fade 0.25s ease both; }
+
+  @keyframes smoky-ot-pop {
+    from { opacity: 0; transform: translateY(34px) scale(0.72) rotate(-5deg); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes smoky-ot-fade { from { opacity: 0; } }
+
+  .smoky-ot__mascot {
+    position: absolute;
+    right: 54px;
+    top: -52px;
+    width: 62px;
+    height: auto;
+    transform: rotate(9deg);
+    filter: drop-shadow(0 5px 6px rgb(40 40 40 / 0.3));
+    animation: smoky-ot-bob 2.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes smoky-ot-bob {
+    0%, 100% { transform: rotate(9deg) translateY(0); }
+    50% { transform: rotate(4deg) translateY(-5px); }
+  }
+
+  .smoky-ot__close {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--smoky-dark);
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-ot__close svg { width: 16px; height: 16px; }
+  .smoky-ot__close:hover { transform: rotate(90deg); }
+
+  .smoky-ot__step[hidden] { display: none; }
+
+  .smoky-ot__title {
+    margin: 0 44px 6px 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: clamp(1.7rem, 6vw, 2.1rem);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--smoky-dark);
+  }
+
+  .smoky-ot__sub {
+    margin: 0 0 16px;
+    font-family: var(--smoky-font-body);
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: rgb(40 40 40 / 0.72);
+  }
+
+  .smoky-ot__choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 12px; }
+
+  .smoky-ot__choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 8px 16px;
+    border: var(--smoky-border);
+    border-radius: 22px;
+    background: #fff;
+    color: var(--smoky-dark);
+    box-shadow: 0 5px 0 var(--smoky-shadow-color);
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce), background-color 0.2s ease;
+  }
+
+  .smoky-ot__choice:hover { transform: translateY(-4px) rotate(-2deg); }
+  .smoky-ot__choice + .smoky-ot__choice:hover { transform: translateY(-4px) rotate(2deg); }
+  .smoky-ot__choice:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--smoky-shadow-color); }
+  .smoky-ot__choice.is-current { background: var(--smoky-pink-soft); }
+
+  .smoky-ot__choice-icon {
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+  }
+
+  .smoky-ot__choice-icon svg { width: 32px; height: 32px; }
+
+  .smoky-ot__choice-name {
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: 1.3rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .smoky-ot__choice small { font-family: var(--smoky-font-body); font-size: 0.82rem; color: rgb(40 40 40 / 0.65); }
+
+  .smoky-ot__link {
+    display: block;
+    margin: 14px auto 0;
+    padding: 6px 10px;
+    border: 0;
+    background: none;
+    color: rgb(40 40 40 / 0.7);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: underline dotted;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+
+  .smoky-ot__link[hidden] { display: none; }
+  .smoky-ot__link:hover { color: var(--smoky-pink); }
+
+  .smoky-ot__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin: -8px 0 8px -6px;
+    padding: 4px 8px 4px 2px;
+    border: 0;
+    background: none;
+    color: rgb(40 40 40 / 0.7);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .smoky-ot__back svg { width: 16px; height: 16px; }
+
+  /* ---- address step ---- */
+  .smoky-ot__row { display: flex; align-items: center; gap: 8px; }
+
+  .smoky-ot .smoky-ot__input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 52px;
+    margin: 0;
+    padding: 0 18px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 16px; /* 16px keeps iOS from zooming the page on focus */
+    font-weight: 500;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .smoky-ot .smoky-ot__input::placeholder { color: rgb(40 40 40 / 0.45); }
+  .smoky-ot .smoky-ot__input:focus-visible { box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+  .smoky-ot .smoky-ot__field.is-error .smoky-ot__input { border-color: var(--smoky-pink); box-shadow: 0 0 0 3px var(--smoky-pink-soft); }
+
+  .smoky-ot__locate {
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-ot__locate svg { width: 28px; height: 28px; }
+  .smoky-ot__locate:hover { transform: translateY(-2px) rotate(-8deg); }
+  .smoky-ot__locate.is-busy { pointer-events: none; }
+  .smoky-ot__locate.is-busy svg { animation: smoky-ot-spin 1s linear infinite; }
+
+  @keyframes smoky-ot-spin { to { transform: rotate(360deg); } }
+
+  .smoky-ot__suggestions {
+    list-style: none;
+    max-height: 244px;
+    margin: 8px 0 0;
+    padding: 6px;
+    border: var(--smoky-border);
+    border-radius: 18px;
+    background: #fff;
+    overflow-y: auto;
+  }
+
+  .smoky-ot__suggestions[hidden] { display: none; }
+
+  .smoky-ot__suggestion {
+    display: block;
+    width: 100%;
+    padding: 11px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--smoky-dark);
+    font-family: var(--smoky-font-body);
+    font-size: 0.98rem;
+    line-height: 1.25;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .smoky-ot__suggestion strong { display: block; font-weight: 700; }
+  .smoky-ot__suggestion span { display: block; font-size: 0.84rem; opacity: 0.65; }
+  .smoky-ot__suggestion:hover,
+  .smoky-ot__suggestion.is-active { background: var(--smoky-sand); }
+
+  .smoky-ot__error {
+    margin: 8px 0 0 14px;
+    color: #c8005f;
+    font-family: var(--smoky-font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .smoky-ot__error[hidden] { display: none; }
+
+  .smoky-ot__result {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: var(--smoky-border);
+    border-radius: 18px;
+    background: #fff;
+  }
+
+  .smoky-ot__result[hidden] { display: none; }
+  .smoky-ot__result.is-out { background: var(--smoky-pink-soft); }
+
+  .smoky-ot__result-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    font-family: var(--smoky-font-heading);
+    font-weight: 800;
+    font-size: 1.1rem;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--smoky-dark);
+  }
+
+  .smoky-ot__result-head svg { flex: 0 0 20px; width: 20px; height: 20px; color: #1f8a4c; }
+  .smoky-ot__result.is-out .smoky-ot__result-head svg { display: none; }
+
+  .smoky-ot__result-address { margin: 4px 0 0; font-family: var(--smoky-font-body); font-size: 0.9rem; line-height: 1.3; color: rgb(40 40 40 / 0.72); }
+
+  .smoky-ot__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 0; }
+  .smoky-ot__facts[hidden] { display: none; }
+  .smoky-ot__facts > div { padding: 8px 10px; border-radius: 12px; background: var(--smoky-sand); }
+  .smoky-ot__facts dt { font-family: var(--smoky-font-heading); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(40 40 40 / 0.7); }
+  .smoky-ot__facts dd { margin: 2px 0 0; font-family: var(--smoky-font-heading); font-weight: 800; font-size: 1.25rem; line-height: 1; color: var(--smoky-dark); }
+
+  .smoky-ot__cta {
+    display: block;
+    width: 100%;
+    height: 54px;
+    margin-top: 14px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+    font-family: var(--smoky-font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: 0 5px 0 var(--smoky-shadow-color);
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce), opacity 0.2s ease;
+  }
+
+  .smoky-ot__cta:hover:not(:disabled) { transform: translateY(-3px); }
+  .smoky-ot__cta:disabled { background: var(--smoky-sand); color: rgb(40 40 40 / 0.45); box-shadow: 0 3px 0 var(--smoky-shadow-color); cursor: default; }
+  .smoky-ot__cta.is-busy { opacity: 0.7; pointer-events: none; }
+
+  /* ---- the chip ---- */
+  .smoky-ot-chip {
+    position: fixed;
+    left: 14px;
+    bottom: 18px;
+    z-index: 99;
+    max-width: min(320px, calc(100vw - 116px));
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 16px 0 5px;
+    border: var(--smoky-border);
+    border-radius: 999px;
+    background: var(--smoky-cream);
+    color: var(--smoky-dark);
+    box-shadow: 0 4px 0 var(--smoky-shadow-color);
+    font-family: var(--smoky-font-heading);
+    font-weight: 700;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform var(--smoky-anim-bounce);
+  }
+
+  .smoky-ot-chip[hidden] { display: none; }
+  .smoky-ot-chip:hover { transform: translateY(-3px) rotate(-1.5deg); }
+  .smoky-ot-chip.is-empty { background: var(--smoky-pink); color: var(--smoky-cream); }
+
+  .smoky-ot-chip__icon {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: var(--smoky-border);
+    border-radius: 50%;
+    background: var(--smoky-pink);
+    color: var(--smoky-cream);
+  }
+
+  .smoky-ot-chip.is-empty .smoky-ot-chip__icon { background: var(--smoky-cream); color: var(--smoky-dark); }
+  .smoky-ot-chip__icon svg { width: 20px; height: 20px; }
+  .smoky-ot-chip__icon svg[hidden] { display: none; }
+  .smoky-ot-chip__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .smoky-ot[open] .smoky-ot__bubble,
+    .smoky-ot__mascot,
+    .smoky-ot__locate.is-busy svg { animation: none; }
+  }
+{% endstylesheet %}
