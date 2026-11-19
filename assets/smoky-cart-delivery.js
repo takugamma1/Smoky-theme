@@ -32,6 +32,12 @@
  * quotes, district, city and postcode are understood, not required; „бл.“ is a house number,
  * „вх./ет./ап.“ are kept as the second address line. A street that is known without that
  * house number is still offered with the number the customer typed (approximate point).
+ *
+ * "Посочи на картата": for an address no lookup spells the way the customer does. A map
+ * (Leaflet + OpenStreetMap tiles, loaded only when asked for) moves under a pin fixed in the
+ * middle; the street under the pin is written below it, the customer adds or corrects the
+ * house number and confirms. The point is then the customer's own, the words are theirs too,
+ * and the address goes through the same gatekeeper as a picked one (accept → zone check).
  */
 
 const LS_KEY = 'smoky_order_v2';
@@ -51,6 +57,9 @@ const DEFAULT_CITY = 'Варна';
 // Checkout will not show delivery options without a postcode, and nobody knows theirs by heart:
 // when the lookup has none for the address, Varna's general one goes in.
 const DEFAULT_ZIP = '9000';
+// The map behind "Посочи на картата": OpenStreetMap's own tiles (no key; credit shown on the map).
+const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_CREDIT = '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
 const LOOKUP_LANG = 'bg';
 
 const inArea = (lat, lng) => lat >= AREA.south && lat <= AREA.north && lng >= AREA.west && lng <= AREA.east;
@@ -118,6 +127,7 @@ function config() {
     pickup: d.pickup !== 'false',
     hours: { open: parseTime(d.open), close: parseTime(d.close), lastDelivery: parseTime(d.lastDelivery) },
     mapsKey: d.mapsKey || '',
+    map: { js: d.mapJs || '', css: d.mapCss || '' },
     probeVariant: d.probeVariant || '',
     probePrice: Number(d.probePrice || 0),
     strings,
@@ -504,14 +514,15 @@ async function googleSearch(query) {
     }));
 }
 
-async function googleReverse(lat, lng) {
+/** The address at a point; `any` also settles for a street without a house number (the map pin). */
+async function googleReverse(lat, lng, { any = false } = {}) {
   const maps = await loadGoogle(config().mapsKey);
   const { Geocoder } = await maps.importLibrary('geocoding');
   const { results } = await new Geocoder().geocode({ location: { lat, lng }, language: LOOKUP_LANG, region: 'bg' });
   const addresses = (results || [])
     .map((r) => fromGoogle({ components: r.address_components, formatted: r.formatted_address, location: r.geometry?.location, types: r.types }))
     .filter(Boolean);
-  return addresses.find((a) => a.precise) || null;
+  return addresses.find((a) => a.precise) || (any && addresses.find((a) => a.street)) || null;
 }
 
 // ── OpenStreetMap (no key) ──
@@ -555,8 +566,8 @@ function fromPhoton(feature) {
 /* What people actually type: „ЛевскиПриморски, ул. „Мир“ 33, 9010 Варна“ (copied from a map),
    „ж.к. Чайка бл. 28 вх. Б ет. 5 ап. 60“, „Мир 33“. The lookup wants bare words. */
 const lower = (text) => String(text || '').toLowerCase();
-const STREET_MARK = /(?:^|[\s,])(?:улица|ул|булевард|бул|площад|пл)(?:\.\s*|\s+)/i;
-const AREA_MARK = /(?:^|[\s,])(?:квартал|кв|ж\.\s?к|жк|район|р-н|местност|м-т)(?:\.\s*|\s+)/gi;
+const STREET_MARK = /(?:^|[\s,])(?:улица|ул|булевард|бул|площад|пл|ulitsa|ul|bulevard|bul|blvd|ploshtad|pl)(?:\.\s*|\s+)/i;
+const AREA_MARK = /(?:^|[\s,])(?:квартал|кв|ж\.\s?к|жк|район|р-н|местност|м-т|kvartal|kv|zh\.\s?k|zhk|g\.\s?k|gk|rayon|mestnost)(?:\.\s*|\s+)/gi;
 const BLOCK = /(?:^|[\s,])бл(?:ок)?\.?\s*(\d+\s?[А-Яа-яA-Za-z]?)(?=$|[\s,.])/i;
 const EXTRA = /(?:^|[\s,])(вх(?:од)?|ет(?:аж)?|ап(?:артамент)?)\.?\s*(\d+\s?[А-Яа-яA-Za-z]?|[А-Яа-яA-Za-z])(?=$|[\s,.])/gi;
 const HOUSE_NUMBER = /\s(\d+\s?[А-Яа-яA-Za-z]?)\s*$/;
@@ -631,12 +642,45 @@ export function parseAddressQuery(raw) {
   return { street, area, number: number.replace(/\s+/g, '').toUpperCase(), block, extras, latin: /[a-z]/i.test(street) && !/[а-я]/i.test(street) };
 }
 
-const SKIP_WORDS = new Set(['ул', 'улица', 'бул', 'булевард', 'пл', 'площад', 'кв', 'жк', 'ж', 'к']);
-const words = (text) =>
+const LATIN_PAIRS = [['sht', 'щ'], ['zh', 'ж'], ['ch', 'ч'], ['sh', 'ш'], ['ts', 'ц'], ['yu', 'ю'], ['ya', 'я'], ['kh', 'х']];
+const LATIN_LETTERS = { a: 'а', b: 'б', c: 'к', d: 'д', e: 'е', f: 'ф', g: 'г', h: 'х', i: 'и', j: 'дж', k: 'к', l: 'л', m: 'м', n: 'н', o: 'о', p: 'п', q: 'к', r: 'р', s: 'с', t: 'т', u: 'у', v: 'в', w: 'в', x: 'кс', y: 'й', z: 'з' };
+/** "skorchev 35" → „скорчев 35“ (lower case): Bulgarian written in Latin letters, read back. */
+function toCyrillic(text) {
+  let out = lower(text);
+  if (!/[a-z]/.test(out)) return out;
+  LATIN_PAIRS.forEach(([latin, cyrillic]) => {
+    out = out.split(latin).join(cyrillic);
+  });
+  return out.replace(/[a-z]/g, (letter) => LATIN_LETTERS[letter]);
+}
+
+/**
+ * A word as it is compared: "Osvoboditel" and „Освободител“ are the same word, and so are the
+ * spellings Latin letters cannot tell apart („Първи“ / "Parvi", „Мария“ / "Maria", „Чайка“ / "Chayka").
+ */
+export function wordKey(word) {
+  return toCyrillic(word).replace(/ия/g, 'иа').replace(/ъ/g, 'а').replace(/й/g, 'и').replace(/ь/g, '');
+}
+const SKIP_WORDS = new Set(['ул', 'улица', 'бул', 'булевард', 'пл', 'площад', 'кв', 'жк', 'ж', 'к', 'ul', 'ulitsa', 'bul', 'bulevard', 'blvd', 'pl', 'kv', 'zhk', 'gk']);
+// Titles are written out by some maps and shortened by others: „Доктор Петър Скорчев“ on one,
+// „Д-р Скорчев“ on another. They never decide which street is meant.
+const TITLE_WORDS = new Set([
+  'д', 'р', 'др', 'доктор', 'проф', 'професор', 'ген', 'генерал', 'полк', 'полковник', 'подп', 'подполковник',
+  'кап', 'капитан', 'адм', 'адмирал', 'акад', 'академик', 'инж', 'инженер', 'арх', 'архитект', 'св', 'свети', 'света',
+  'dr', 'doctor', 'doktor', 'prof', 'professor', 'profesor', 'gen', 'general', 'polk', 'polkovnik', 'kap', 'kapitan',
+  'adm', 'admiral', 'akad', 'akademik', 'inzh', 'inzhener', 'sv', 'sveti', 'sveta',
+]);
+const TITLE_KEYS = new Set([...TITLE_WORDS].map(wordKey));
+/** The words that name the street: no titles, no initials. */
+const coreWords = (list) => list.filter((word) => word.length > 1 && !TITLE_KEYS.has(word));
+/** The words as written (what a lookup is asked with) … */
+const rawWords = (text) =>
   lower(text)
     .replace(/["„“”«».,()]/g, ' ')
     .split(/[\s-]+/)
     .filter((word) => word && !SKIP_WORDS.has(word));
+/** … and as compared. */
+const words = (text) => rawWords(text).map(wordKey);
 const numberKey = (text) => lower(text).replace(/бл(?:ок)?\.?/, '').replace(/[^0-9a-zа-я]/g, '');
 
 /**
@@ -647,6 +691,7 @@ const numberKey = (text) => lower(text).replace(/бл(?:ок)?\.?/, '').replace(
  */
 export function addressRows(features, parsed) {
   const typed = words(parsed.street);
+  const typedCore = coreWords(typed);
   const areaWords = words(parsed.area);
   const wanted = numberKey(parsed.number);
   const shown = parsed.number ? (parsed.block ? `бл. ${parsed.number}` : parsed.number) : '';
@@ -663,7 +708,10 @@ export function addressRows(features, parsed) {
     const placeWords = words(`${p.district || ''} ${p.locality || ''} ${p.city || ''}`);
     const nameWords = p.type === 'street' ? [] : words(p.name);
     const starts = (pool) => (word) => pool.some((candidate) => candidate.startsWith(word));
-    const byStreet = parsed.latin || !typed.length || (typed.some(starts(streetWords)) && typed.every(starts([...streetWords, ...placeWords])));
+    // the map's name is all there in what was typed: „Доктор Петър Скорчев“ for „Д-р Скорчев“
+    const core = coreWords(streetWords);
+    const within = core.length > 0 && core.every((word) => typedCore.some((own) => own.length >= 3 && word.startsWith(own)));
+    const byStreet = !typed.length || within || (typed.some(starts(streetWords)) && typed.every(starts([...streetWords, ...placeWords])));
     const byName = !byStreet && !wanted && nameWords.length > 0 && typed.some(starts(nameWords)) && typed.every(starts([...nameWords, ...placeWords]));
     if (!byStreet && !byName) return;
 
@@ -720,7 +768,73 @@ function typedNumberOn(address, number) {
   };
 }
 
-async function photonFeatures(query) {
+// Photon (the type-ahead lookup) shuts a visitor out completely — connection refused, for a long
+// while — once they ask in bursts; seen 2026-11-19 after ~25 questions in ten seconds. Then
+// nothing at all is found. So: the same question is never asked twice, questions leave one at
+// a time and a second apart, and the moment Photon refuses, Nominatim answers instead for the
+// next ten minutes. Nominatim is not to be used as type-ahead (its usage policy), so it is only
+// asked about an address that already has its house number, one question a second.
+const PHOTON_GAP_MS = 1000;
+const NOMINATIM_GAP_MS = 1100;
+const PHOTON_REST_MS = 10 * 60 * 1000;
+const lookupAnswers = new Map();
+let photonFree = 0; // when the next question may leave
+let nominatimFree = 0;
+let photonRestsUntil = 0;
+let lookupWantsNumber = false; // the last search could not be asked without a house number
+
+const remember = (key, features) => {
+  if (lookupAnswers.size > 300) lookupAnswers.clear();
+  lookupAnswers.set(key, features);
+  return features;
+};
+
+async function nominatimFeatures(query, isStale = () => false) {
+  const key = `n|${query}`;
+  if (lookupAnswers.has(key)) return lookupAnswers.get(key);
+  const wait = nominatimFree - Date.now();
+  nominatimFree = Math.max(Date.now(), nominatimFree) + NOMINATIM_GAP_MS;
+  if (wait > 0) await sleep(wait);
+  if (isStale()) return [];
+  const params = new URLSearchParams({
+    format: 'jsonv2',
+    addressdetails: '1',
+    limit: '10',
+    countrycodes: 'bg',
+    'accept-language': LOOKUP_LANG,
+    viewbox: `${AREA.west},${AREA.north},${AREA.east},${AREA.south}`,
+    bounded: '1',
+    q: toCyrillic(query), // it does not read Bulgarian names in Latin letters
+  });
+  const data = await fetchJson(`${NOMINATIM_URL}/search?${params}`);
+  // the same shape Photon answers in, so one set of rules (addressRows) reads both
+  const features = (Array.isArray(data) ? data : [])
+    .map((place) => {
+      const a = place.address || {};
+      const street = a.road || a.pedestrian || a.residential || '';
+      return {
+        properties: {
+          type: a.house_number ? 'house' : 'street',
+          name: street,
+          street,
+          housenumber: a.house_number || '',
+          district: a.suburb || a.neighbourhood || '',
+          city: a.city || a.town || a.village || '',
+          postcode: a.postcode,
+        },
+        geometry: { coordinates: [Number(place.lon), Number(place.lat)] },
+      };
+    })
+    .filter((feature) => feature.properties.street);
+  return remember(key, features);
+}
+
+async function photonFeatures(query, isStale = () => false) {
+  if (lookupAnswers.has(query)) return lookupAnswers.get(query);
+  const wait = photonFree - Date.now();
+  photonFree = Math.max(Date.now(), photonFree) + PHOTON_GAP_MS;
+  if (wait > 0) await sleep(wait);
+  if (isStale()) return []; // typed on meanwhile: this question is not worth asking any more
   const params = new URLSearchParams({
     q: query,
     limit: '10',
@@ -731,7 +845,7 @@ async function photonFeatures(query) {
   });
   ['house', 'street'].forEach((layer) => params.append('layer', layer));
   const data = await fetchJson(`${PHOTON_URL}/api/?${params}`);
-  return data?.features || [];
+  return remember(query, data?.features || []);
 }
 
 /** Several spellings of the same question, most telling first; the first that finds something wins. */
@@ -739,32 +853,62 @@ export async function osmSearch(query, isStale = () => false) {
   const parsed = parseAddressQuery(query);
   if (!parsed.street) return [];
   const { street, area, number } = parsed;
+  const city = parsed.latin ? 'Varna' : DEFAULT_CITY;
+  // „Доктор Петър Скорчев“ is „Д-р Скорчев“ on this map: ask again without the title, then by
+  // the last word alone — the surname is what every map agrees on
+  const all = rawWords(street);
+  const named = all.filter((word) => word.length > 1 && !TITLE_KEYS.has(wordKey(word)));
+  const surname = named[named.length - 1] || '';
   const spellings = [
-    [street, number, DEFAULT_CITY], // "Мир 33" alone finds nothing, "Мир 33 Варна" does
+    [street, number, city], // "Мир 33" alone finds nothing, "Мир 33 Варна" does
+    named.length && named.length < all.length ? [named.join(' '), number, city] : null,
+    named.length > 1 ? [surname, number, city] : null,
+    number ? [street, city] : null,
     [street, number],
     area ? [area, street, number] : null,
-    number ? [street, DEFAULT_CITY] : null,
   ]
     .filter(Boolean)
     .map((parts) => parts.filter(Boolean).join(' '));
-  for (const spelling of new Set(spellings)) {
-    const rows = addressRows(await photonFeatures(spelling), parsed);
-    if (rows.length || isStale()) return rows;
+
+  const ask = async (spelling) => {
+    if (Date.now() >= photonRestsUntil) {
+      try {
+        return await photonFeatures(spelling, isStale);
+      } catch (_) {
+        photonRestsUntil = Date.now() + PHOTON_REST_MS; // refused: leave it alone, ask the other one
+      }
+    }
+    lookupWantsNumber = !number;
+    if (!number) return [];
+    try {
+      return await nominatimFeatures(spelling, isStale);
+    } catch (_) {
+      failed = true; // one unanswered question is not the end: the next spelling may get through
+      return [];
+    }
+  };
+
+  let failed = false;
+  lookupWantsNumber = false;
+  // every question costs a second, so only the four most telling spellings are asked
+  for (const spelling of [...new Set(spellings)].slice(0, 4)) {
+    if (isStale()) return [];
+    const rows = addressRows(await ask(spelling), parsed);
+    if (rows.length || isStale() || lookupWantsNumber) return rows;
   }
+  if (failed) throw new Error('lookup_failed'); // nobody answered: "search is down", not "no such street"
   return [];
 }
 
-async function osmReverse(lat, lng) {
-  try {
-    const data = await fetchJson(`${PHOTON_URL}/reverse?lat=${lat}&lon=${lng}&lang=default`);
-    const address = fromPhoton(data?.features?.[0]);
-    if (address?.precise) return address;
-  } catch (_) {
-    /* fall through to Nominatim */
-  }
+async function photonPoint(lat, lng) {
+  const data = await fetchJson(`${PHOTON_URL}/reverse?lat=${lat}&lon=${lng}&lang=default`);
+  return fromPhoton(data?.features?.[0]);
+}
+
+async function nominatimPoint(lat, lng) {
   const data = await fetchJson(`${NOMINATIM_URL}/reverse?format=jsonv2&addressdetails=1&zoom=18&accept-language=${LOOKUP_LANG}&lat=${lat}&lon=${lng}`);
   const a = data?.address || {};
-  const address = osmAddress({
+  return osmAddress({
     street: a.road || a.pedestrian || a.residential || '',
     housenumber: a.house_number || '',
     district: a.suburb || a.neighbourhood || '',
@@ -773,8 +917,136 @@ async function osmReverse(lat, lng) {
     lat: Number(data?.lat),
     lng: Number(data?.lon),
   });
+}
+
+/** "Use my location": only an address with a house number counts. */
+async function osmReverse(lat, lng) {
+  try {
+    const address = await photonPoint(lat, lng);
+    if (address?.precise) return address;
+  } catch (_) {
+    /* fall through to Nominatim */
+  }
+  const address = await nominatimPoint(lat, lng);
   return address?.precise ? address : null;
 }
+
+/**
+ * The street under a point of the map — with the house number when the map knows it, without
+ * when it does not (most of Varna). Null when nothing answers; the customer then types it.
+ */
+async function streetAt(lat, lng) {
+  if (useGoogle()) {
+    try {
+      return await googleReverse(lat, lng, { any: true });
+    } catch (_) {
+      googleBroken = true;
+    }
+  }
+  try {
+    const address = await nominatimPoint(lat, lng);
+    if (address) return address;
+  } catch (_) {
+    /* fall through to Photon */
+  }
+  try {
+    return await photonPoint(lat, lng);
+  } catch (_) {
+    return null;
+  }
+}
+
+/* ── the pin on the map ──────────────────────────────── */
+
+/** "бул. „Цар Освободител“" and "цар освободител" are the same street. */
+export const streetKey = (street) => words(street).join(' ');
+
+/**
+ * What the field under the map says after the pin moved.
+ *   text    what stands in the field now
+ *   street  streetKey of the street those words were written for; '' when they were typed
+ *           before the pin stood anywhere (carried over from the search box)
+ *   edited  the customer typed there since the pin last wrote into it
+ *   found   the street under the pin now (streetAt), or null when no lookup answered
+ * The street follows the pin. The customer's own words stay while the pin is still on the
+ * street they wrote them for; a house number typed in the search box moves to the pin's street
+ * once. On any other change of street the number is dropped — a wrong number is worse than a
+ * question — and the map's own number is used when it has one.
+ */
+export function pinText({ text = '', street = '', edited = false } = {}, found = null) {
+  if (!found || !found.street) return { text, street, edited };
+  const key = streetKey(found.street);
+  if (edited && street === key) return { text, street, edited };
+  const typed = parseAddressQuery(text);
+  const carried = edited && street === '' && typed.number ? [typed.block ? `бл. ${typed.number}` : typed.number, ...typed.extras].join(' ') : '';
+  if (carried) return { text: `${found.street} ${carried}`, street: key, edited: true };
+  return { text: found.precise ? found.line1 : `${found.street} `, street: key, edited: false };
+}
+
+/**
+ * The address for a confirmed pin: the point is where the customer put the pin, the words are
+ * what stands in the field under the map. → { address } or { error: 'address' | 'number' }.
+ */
+export function pinnedAddress(text, point, found = null) {
+  const typed = parseAddressQuery(text);
+  if (!typed.street) return { error: 'address' };
+  if (!typed.number) return { error: 'number' };
+  // the map's own spelling ("бул. Цар Освободител") while the words are still about that street
+  const known = found && found.street && streetKey(found.street) === streetKey(typed.street) ? found.street : '';
+  const street = known || typed.street;
+  const line1 = `${street} ${typed.block ? `бл. ${typed.number}` : typed.number}`;
+  const district = (found && found.district) || typed.area || '';
+  const city = (found && found.city) || DEFAULT_CITY;
+  const zip = (found && found.zip) || '';
+  const extra = typed.extras.join(', ');
+  return {
+    address: {
+      line1,
+      street,
+      district,
+      city,
+      zip,
+      lat: round6(point.lat),
+      lng: round6(point.lng),
+      label: [line1, district, [zip, city].filter(Boolean).join(' '), extra].filter(Boolean).join(', '),
+      precise: true,
+      pinned: true,
+      ...(extra ? { extra } : {}),
+    },
+  };
+}
+
+let leaflet = null; // Promise<L>
+
+/** Leaflet (theme assets), fetched the first time the map is asked for. */
+function loadLeaflet({ js, css }) {
+  if (!leaflet) {
+    const styles = new Promise((resolve) => {
+      if (!css) return void resolve();
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = css;
+      link.onload = link.onerror = () => resolve();
+      document.head.appendChild(link);
+    });
+    const script = new Promise((resolve, reject) => {
+      if (!js) return void reject(new Error('no_map_library'));
+      const el = document.createElement('script');
+      el.src = js;
+      el.async = true;
+      el.onload = () => (window.L ? resolve(window.L) : reject(new Error('map_load_failed')));
+      el.onerror = () => reject(new Error('map_load_failed'));
+      document.head.appendChild(el);
+    });
+    leaflet = Promise.all([script, styles]).then(([L]) => L);
+    leaflet.catch(() => {
+      leaflet = null; // a failed download is tried again the next time the map is opened
+    });
+  }
+  return leaflet;
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /* ── the bubble ──────────────────────────────────────── */
 
@@ -801,6 +1073,11 @@ class SmokyOrderType extends HTMLElement {
     this.locateButton = this.$('[data-ot-locate]');
     this.result = this.$('[data-ot-result]');
     this.chip = this.$('[data-ot-chip]');
+    this.stage = this.$('[data-ot-map-stage]');
+    this.pinInput = this.$('[data-ot-map-address]');
+    this.pin = { text: '', street: '', edited: false }; // see pinText()
+    this.pinFound = null; // the street under the pin, as the lookup gave it
+    this.pinSeq = 0;
 
     this.suggestions = [];
     this.active = -1;
@@ -834,9 +1111,16 @@ class SmokyOrderType extends HTMLElement {
     this.addEventListener('click', (event) => {
       const mode = event.target.closest('[data-ot-mode]');
       if (mode) return void this.choose(mode.dataset.otMode);
-      if (event.target.closest('[data-ot-back]')) return void this.show('choose');
+      const back = event.target.closest('[data-ot-back]');
+      if (back) return void this.show(back.dataset.otBack || 'choose');
       if (event.target.closest('[data-ot-close]')) return void this.close();
       if (event.target.closest('[data-ot-locate]')) return void this.locate();
+      if (event.target.closest('[data-ot-map-open]')) return void this.openMap();
+      if (event.target.closest('[data-ot-map-confirm]')) return void this.confirmPin();
+      const zoom = event.target.closest('[data-ot-map-zoom]');
+      if (zoom) return void this.map?.setZoom(this.map.getZoom() + Number(zoom.dataset.otMapZoom));
+      const here = event.target.closest('[data-ot-map-locate]');
+      if (here) return void this.locateOnMap(here);
       const row = event.target.closest('[data-index]');
       if (row) return void this.pick(this.suggestions[Number(row.dataset.index)]);
       if (event.target === this.dialog) this.close(); // the dimmed area around the bubble
@@ -844,6 +1128,16 @@ class SmokyOrderType extends HTMLElement {
     this.dialog.addEventListener('close', () => this.onClosed());
     this.input.addEventListener('input', () => this.onInput());
     this.input.addEventListener('keydown', (event) => this.onKey(event));
+    this.pinInput?.addEventListener('input', () => {
+      // the words now belong to the street the pin stands on
+      this.pin = { text: this.pinInput.value, street: this.pinFound ? streetKey(this.pinFound.street) : this.pin.street, edited: true };
+      this.setPinError('');
+    });
+    this.pinInput?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      this.confirmPin();
+    });
   }
 
   /* ── open / close / steps ── */
@@ -864,6 +1158,8 @@ class SmokyOrderType extends HTMLElement {
 
   onClosed() {
     this.checkSeq++; // closed while an address was being checked: that answer is dropped
+    clearTimeout(this.pinTimer);
+    this.pinSeq++;
     try {
       // once per visit each; the chip and the cart keep offering the question
       sessionStorage.setItem(this.shownClosed ? SS_CLOSED : SS_ASKED, '1');
@@ -876,7 +1172,8 @@ class SmokyOrderType extends HTMLElement {
     }
   }
 
-  show(step) {
+  /** `fresh: false` shows the address step as it is (the map hands it an address to check). */
+  show(step, { fresh = true } = {}) {
     this.querySelectorAll('[data-ot-step]').forEach((el) => {
       el.hidden = el.dataset.otStep !== step;
     });
@@ -899,7 +1196,11 @@ class SmokyOrderType extends HTMLElement {
       }
     }
     this.checkSeq++; // whatever was being checked belongs to the step we just left
-    if (step !== 'address') return;
+    if (step !== 'map') {
+      clearTimeout(this.pinTimer);
+      this.pinSeq++;
+    }
+    if (step !== 'address' || !fresh) return;
     this.setError('');
     this.setStatus('');
     // the address already on the order is the first row of the list: one tap keeps it
@@ -978,7 +1279,7 @@ class SmokyOrderType extends HTMLElement {
       this.renderSuggestions([]);
       return;
     }
-    this.searchTimer = setTimeout(() => this.search(query), 280);
+    this.searchTimer = setTimeout(() => this.search(query), 500);
   }
 
   async search(query) {
@@ -1004,7 +1305,8 @@ class SmokyOrderType extends HTMLElement {
     }
     if (seq !== this.searchSeq) return; // a newer keystroke superseded this lookup
     this.renderSuggestions(results);
-    this.setError(results.length ? '' : t('err_none'));
+    // the backup lookup is only asked about a finished address: until the number is there, say so
+    this.setError(results.length ? '' : t(lookupWantsNumber && !useGoogle() ? 'err_number' : 'err_none'));
   }
 
   renderSuggestions(results) {
@@ -1108,6 +1410,169 @@ class SmokyOrderType extends HTMLElement {
     if (!openNow().delivery) return void this.show('choose'); // the last delivery minute passed meanwhile
     commit({ mode: 'delivery', address, zone });
     this.close();
+  }
+
+  /* ── "Посочи на картата" ── */
+
+  setPinError(message) {
+    const el = this.$('[data-ot-map-error]');
+    el.textContent = message || '';
+    el.hidden = !message;
+  }
+
+  /** Under the address: where the pin is ("кв. Бриз, Варна"), "searching…", or "we don't deliver here". */
+  setPinNote(text) {
+    const note = this.$('[data-ot-map-note]');
+    const { store, zones } = config();
+    const last = zones[zones.length - 1];
+    const center = this.map?.getCenter();
+    const out = Boolean(center && last && Number.isFinite(store.lat) && distanceKm(store, center) > last.radius + RANGE_TOLERANCE_KM);
+    note.classList.toggle('is-out', out);
+    note.textContent = out ? t('out_of_range') : text || '';
+  }
+
+  async openMap() {
+    const typed = this.input.value.trim();
+    const saved = state.address && state.address.lat != null ? state.address : null;
+    // words typed in the search box come along, unless they are just the saved address again
+    const carried = typed && !(saved && typed === saved.line1) ? typed : '';
+    const guess = carried && !useGoogle() ? this.suggestions[0] : null; // the lookup's best row: a place to start from
+    this.show('map');
+    this.setPinError('');
+    const text = this.$('[data-ot-map-state]');
+    this.stage.dataset.state = 'loading';
+    text.textContent = t('map_loading');
+    let L = null;
+    let near = null;
+    try {
+      [L, near] = await Promise.all([loadLeaflet(config().map), guess ? guess.resolve().catch(() => null) : null]);
+    } catch (_) {
+      this.stage.dataset.state = 'failed';
+      text.textContent = t('map_failed');
+      return;
+    }
+    if (this.$('[data-ot-step="map"]').hidden) return; // went back while it was loading
+    this.stage.dataset.state = 'ready';
+    this.stage.classList.remove('is-moved', 'is-moving');
+
+    const { store } = config();
+    const home = Number.isFinite(store.lat) && Number.isFinite(store.lng) ? store : CENTER;
+    // back on the map with the address it just produced (out of range, say): the pin is where it was left
+    const again = carried && this.lastPin && carried === this.lastPin.line1 ? this.lastPin : null;
+    const known = again || (!carried && saved) || null;
+    let start = { lat: home.lat, lng: home.lng, zoom: 15 };
+    if (known) start = { lat: known.lat, lng: known.lng, zoom: 18 };
+    else if (near && near.lat != null) start = { lat: near.lat, lng: near.lng, zoom: 17 };
+
+    if (known) this.pin = { text: [known.line1, known.extra].filter(Boolean).join(', '), street: streetKey(known.street || known.line1), edited: true };
+    else if (carried) this.pin = { text: carried, street: '', edited: true };
+    else this.pin = { text: '', street: '', edited: false };
+    this.pinInput.value = this.pin.text;
+    this.pinFound = null;
+
+    if (this.map) {
+      this.map.invalidateSize();
+      this.map.setView([start.lat, start.lng], start.zoom, { animate: false });
+    } else {
+      this.buildMap(L, start);
+    }
+    this.pinMoved();
+  }
+
+  buildMap(L, start) {
+    const { store, zones } = config();
+    const map = L.map(this.$('[data-ot-map]'), {
+      center: [start.lat, start.lng],
+      zoom: start.zoom,
+      minZoom: 12,
+      maxZoom: 19,
+      zoomControl: false, // our own, bigger buttons
+      attributionControl: false,
+      maxBounds: [[AREA.south, AREA.west], [AREA.north, AREA.east]],
+      maxBoundsViscosity: 1,
+      // zooming keeps the spot under the pin where it is
+      scrollWheelZoom: 'center',
+      doubleClickZoom: 'center',
+      touchZoom: 'center',
+    });
+    L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
+    L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_CREDIT }).addTo(map);
+
+    // the restaurant and how far it delivers
+    if (Number.isFinite(store.lat) && Number.isFinite(store.lng) && zones.length) {
+      const at = [store.lat, store.lng];
+      L.circle(at, { radius: zones[zones.length - 1].radius * 1000, color: '#FA0082', weight: 2, dashArray: '6 8', fillColor: '#FA0082', fillOpacity: 0.04, interactive: false }).addTo(map);
+      L.marker(at, { interactive: false, keyboard: false, icon: L.divIcon({ className: 'smoky-ot__map-store', html: 'S', iconSize: [30, 30] }) }).addTo(map);
+    }
+
+    map.on('click', (event) => map.panTo(event.latlng)); // a tap puts the pin there
+    map.on('movestart', () => this.stage.classList.add('is-moving'));
+    map.on('moveend', () => {
+      this.stage.classList.remove('is-moving');
+      this.stage.classList.add('is-moved');
+      this.pinMoved();
+    });
+    this.map = map;
+  }
+
+  /** The pin stands somewhere new: say so at once, look the street up when it has settled. */
+  pinMoved() {
+    clearTimeout(this.pinTimer);
+    this.pinSeq++;
+    this.setPinNote(t('map_searching'));
+    this.pinTimer = setTimeout(() => this.lookupPin(), 650);
+  }
+
+  async lookupPin() {
+    const seq = this.pinSeq;
+    const { lat, lng } = this.map.getCenter();
+    // the free lookup answers one question a second
+    const wait = 1100 - (Date.now() - (this.pinAsked || 0));
+    if (wait > 0) await sleep(wait);
+    if (seq !== this.pinSeq) return;
+    this.pinAsked = Date.now();
+    const found = await streetAt(round6(lat), round6(lng));
+    if (seq !== this.pinSeq) return; // the pin moved on meanwhile
+    this.pinFound = found;
+    this.pin = pinText({ ...this.pin, text: this.pinInput.value }, found);
+    if (this.pinInput.value !== this.pin.text) this.pinInput.value = this.pin.text;
+    this.setPinNote(found ? [found.district, found.city].filter(Boolean).join(', ') : '');
+  }
+
+  confirmPin() {
+    if (!this.map || this.stage.dataset.state !== 'ready') return;
+    const { address, error } = pinnedAddress(this.pinInput.value, this.map.getCenter(), this.pinFound);
+    if (error) {
+      this.setPinError(t(error === 'number' ? 'err_number' : 'err_address'));
+      const end = this.pinInput.value.length;
+      this.pinInput.focus({ preventScroll: false });
+      this.pinInput.setSelectionRange?.(end, end);
+      return;
+    }
+    this.setPinError('');
+    this.lastPin = address;
+    // the same gatekeeper as a picked address; its "checking…" and "out of range" live on the address step
+    this.show('address', { fresh: false });
+    this.accept(address);
+  }
+
+  locateOnMap(button) {
+    if (!navigator.geolocation || !this.map) return void this.setPinError(t('err_geo_denied'));
+    if (button.classList.contains('is-busy')) return;
+    button.classList.add('is-busy');
+    this.setPinError('');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        button.classList.remove('is-busy');
+        if (!inArea(coords.latitude, coords.longitude)) return void this.setPinError(t('out_of_range'));
+        this.map.setView([coords.latitude, coords.longitude], 18);
+      },
+      (error) => {
+        button.classList.remove('is-busy');
+        this.setPinError(t(error?.code === 1 ? 'err_geo_denied' : 'err_geo_fail'));
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
+    );
   }
 
   /* ── "use my location" ── */
