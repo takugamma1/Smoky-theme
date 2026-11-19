@@ -1469,6 +1469,9 @@ class SmokyOrderType extends HTMLElement {
     else this.pin = { text: '', street: '', edited: false };
     this.pinInput.value = this.pin.text;
     this.pinFound = null;
+    // Opened on the restaurant with the customer's own words in the field: that street is not
+    // theirs, so the words wait until the pin has actually been moved somewhere.
+    this.pinParked = carried && !known && !(near && near.lat != null) ? { lat: start.lat, lng: start.lng } : null;
 
     if (this.map) {
       this.map.invalidateSize();
@@ -1533,6 +1536,8 @@ class SmokyOrderType extends HTMLElement {
     this.pinAsked = Date.now();
     const found = await streetAt(round6(lat), round6(lng));
     if (seq !== this.pinSeq) return; // the pin moved on meanwhile
+    if (this.pinParked && distanceKm(this.pinParked, { lat, lng }) < 0.03) return void this.setPinNote('');
+    this.pinParked = null;
     this.pinFound = found;
     this.pin = pinText({ ...this.pin, text: this.pinInput.value }, found);
     if (this.pinInput.value !== this.pin.text) this.pinInput.value = this.pin.text;
